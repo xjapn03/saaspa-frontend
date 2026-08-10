@@ -1,3 +1,5 @@
+import { BookingsTable } from "@/components/dashboard/bookings-table"
+
 export default function CitasPage() {
   return (
     <div>
@@ -6,15 +8,11 @@ export default function CitasPage() {
           Citas
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Gestión de reservas y agenda
+          Gestión de reservas. Confirma, completa o cancela citas.
         </p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-12 text-center">
-        <p className="text-sm text-muted-foreground">
-          La gestión de citas estará disponible próximamente.
-        </p>
-      </div>
+      <BookingsTable />
     </div>
   )
 }

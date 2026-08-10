@@ -1,4 +1,24 @@
+"use client"
+
+import { useState, useCallback } from "react"
+import { UsersTable } from "@/components/dashboard/users-table"
+import { EditUserDrawer } from "@/components/dashboard/edit-user-drawer"
+import type { User } from "@/types/auth"
+
 export default function ClientesPage() {
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [refreshKey, setRefreshKey] = useState(0)
+
+  const handleEdit = useCallback((user: User) => {
+    setEditingUser(user)
+    setDrawerOpen(true)
+  }, [])
+
+  const handleSaved = useCallback(() => {
+    setRefreshKey((k) => k + 1)
+  }, [])
+
   return (
     <div>
       <div className="mb-8">
@@ -6,15 +26,18 @@ export default function ClientesPage() {
           Clientes
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Listado de clientes registrados
+          Listado de usuarios registrados. Edita roles, datos de contacto o desactiva cuentas.
         </p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-12 text-center">
-        <p className="text-sm text-muted-foreground">
-          La gestión de clientes estará disponible próximamente.
-        </p>
-      </div>
+      <UsersTable onEdit={handleEdit} refreshKey={refreshKey} />
+
+      <EditUserDrawer
+        user={editingUser}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        onSaved={handleSaved}
+      />
     </div>
   )
 }

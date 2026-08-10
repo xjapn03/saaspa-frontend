@@ -46,3 +46,14 @@ export interface ApiErrorResponse {
   message: string | string[]
   error?: string
 }
+
+export interface UpdateUserRequest {
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  birthday?: string
+  description?: string
+  role?: Role
+  isActive?: boolean
+}

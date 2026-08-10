@@ -1,7 +1,7 @@
 # Plan de Estructura & Diseño — Kamerinos SPA Frontend
 
-> **Estado actual:** Agosto 2026 — Layout público completo, auth conectado al backend, dashboard con sidebar/RBAC, tests funcionando.
-> **Próximo paso:** Flujo de agendamiento `/agendar` con pasarela de pagos + Meta Pixel.
+> **Estado actual:** Agosto 2026 — Layout público completo, auth conectado al backend, dashboard con sidebar/RBAC, Wompi real integrado, Google Calendar sync, tests funcionando.
+> **Próximo paso:** Cupones de descuento + Meta Pixel/CAPI.
 
 ---
 
@@ -29,32 +29,29 @@
 | 3 | **Home page** | Completo | 6 secciones: Hero, Filosofía, Servicios, Equipo, Testimonios, CTA cierre |
 | 4 | **Servicios (público)** | Completo | `/servicios` (listing), `/servicios/[slug]` (detalle con beneficios) |
 | 5 | **Políticas** | Completo | `/politicas` (abono, cancelación, puntualidad) |
-| 6 | **Agendar (wizard)** | Completo | `/agendar` — service picker → slot calendar → resumen → pago simulado |
+| 6 | **Agendar (wizard)** | Completo | `/agendar` — service picker → slot calendar → resumen → pago Wompi real |
 | 7 | **Auth (login/registro)** | Completo | `/login`, `/registro` — forms validados, conectados al backend NestJS |
 | 8 | **API client** | Completo | `lib/api.ts` — fetch wrapper con refresh automático de JWT (401 → refresh → retry) |
 | 9 | **Auth state** | Completo | `context/auth-provider.tsx` — AuthContext global, `useAuth()` hook |
-| 10 | **Dashboard admin** | Completo | `dashboard/layout.tsx` — sidebar con RBAC. Vistas reales: clientes (CRUD), servicios (CRUD), citas (tabla) |
+| 10 | **Dashboard admin** | Completo | `dashboard/layout.tsx` — sidebar con RBAC. Vistas reales: clientes (CRUD), servicios (CRUD), citas (tabla + reagendar), stats reales |
 | 11 | **Navbar auth dinámico** | Completo | Botones "Iniciar sesión" / "Dashboard + nombre" según estado, desktop y mobile |
 | 12 | **CORS + Envs** | Completo | `.env.example` + `.env.local`, CORS multi-origin en backend |
 | 13 | **Tests** | Completo (18 tests) | `vitest` + `@testing-library/react` + `msw`. 4 archivos |
 | 14 | **Docker** | Completo | `Dockerfile`, `docker-compose.yml` raíz, Nginx reverse proxy |
 | 15 | **Documentación** | Completo | `docs/STRUCTURE.md`, `docs/Frontend-Plan.md`, `docs-general/` |
+| 16 | **Reagendar citas** | Completo | `bookings-table.tsx` — modal con SlotPicker para reagendar desde admin |
+| 17 | **Dashboard stats** | Completo | Citas hoy, Clientes activos, Ingresos del mes con datos reales |
 
 ## 3. Pendiente (orden de prioridad)
 
 | # | Tarea | Dependencias |
 |---|-------|-------------|
-| 1 | Integración real Wompi (reemplazar pago simulado) | Backend: módulo Payments |
-| 2 | Captura `ctwa_clid` + Meta Pixel + CAPI | Backend: módulo Meta |
-| 3 | Google Calendar sync en backend | Backend: módulo Calendar |
-| 4 | Cupones de descuento (backend + frontend) | Backend: módulo Coupons |
-| 5 | WhatsApp bot + IA agent | Backend: módulo WhatsApp |
-| 6 | Animaciones (split-text, scroll reveal, GSAP) | — |
-| 7 | SSL/Certbot con Nginx en producción | VPS + dominio |
-| 5 | Gestión de clientes en dashboard (admin) | Backend: módulo Users (ya existe) |
-| 6 | Cupones de descuento en dashboard (admin) | Backend: módulo Coupons |
-| 7 | Animaciones (split-text, scroll reveal, GSAP) | — |
-| 8 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
+| 1 | Captura `ctwa_clid` + Meta Pixel + CAPI | Backend: módulo Meta |
+| 2 | Cupones de descuento (backend + frontend) | Backend: módulo Coupons |
+| 3 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
+| 4 | Animaciones (split-text, scroll reveal, GSAP) | — |
+| 5 | SSL/Certbot con Nginx en producción | VPS + dominio |
+| 6 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
 
 ## 4. Arquitectura de carpetas
 

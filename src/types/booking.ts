@@ -24,3 +24,7 @@ export interface CreateBookingRequest {
   serviceId: string
   startTime: string
 }
+
+export interface RescheduleRequest {
+  startTime: string
+}

@@ -39,4 +39,8 @@ export const bookingsApi = {
   async reschedule(id: string, startTime: string): Promise<Booking> {
     return api.patch<Booking>(ENDPOINTS.BOOKINGS.RESCHEDULE(id), { startTime })
   },
+
+  async createForUser(userId: string, data: { serviceId: string; startTime: string }): Promise<Booking> {
+    return api.post<Booking>(ENDPOINTS.BOOKINGS.ADMIN_CREATE, { ...data, userId })
+  },
 }

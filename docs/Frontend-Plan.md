@@ -1,7 +1,7 @@
 # Plan de Estructura & Diseño — Kamerinos SPA Frontend
 
-> **Estado actual:** Agosto 2026 — Layout público completo, auth conectado al backend, dashboard con sidebar/RBAC, Wompi real integrado, Google Calendar sync, Coupons completo, Meta Pixel + CAPI activo, tests funcionando.
-> **Próximo paso:** WhatsApp bot + IA agent + Animaciones GSAP.
+> **Estado actual:** Agosto 2026 — Layout público, auth, dashboard, Wompi, Google Calendar, Cupones, Meta Pixel, Animaciones GSAP, Toast/Modal system, Mobile sidebar, Client dashboard, Admin booking, Recuperación de contraseña — completos.
+> **Próximo paso:** WhatsApp bot + IA agent.
 
 ---
 
@@ -43,15 +43,19 @@
 | 17 | **Dashboard stats** | Completo | Citas hoy, Clientes activos, Ingresos del mes con datos reales |
 | 18 | **Cupones admin** | Completo | `coupons-table.tsx` + `create-coupon-dialog.tsx` — CRUD de cupones |
 | 19 | **Meta Pixel + CAPI** | Completo | `meta-pixel-script.tsx` — Pixel en <head> + captura ctwa_clid. `meta-pixel.ts` — helpers track(). CAPI server-side en backend |
+| 20 | **Toast + Modal system** | Completo | `toast.tsx` + `modal.tsx` — feedback de errores elegante, modales centrados |
+| 21 | **Mobile sidebar + Client dashboard** | Completo | Menú hamburguesa en mobile. Métricas personales para clientes. |
+| 22 | **Admin create booking** | Completo | `admin-create-booking.tsx` — crear citas para clientes desde mostrador |
+| 23 | **Recuperar contraseña** | Completo | `/recuperar` + `/recuperar/[token]` — flujo self-service |
+| 24 | **Animaciones GSAP** | Completo | `animations.ts` + `animated-grid.tsx` — scroll reveal, hero timeline, parallax, countUp |
 
 ## 3. Pendiente (orden de prioridad)
 
 | # | Tarea | Dependencias |
 |---|-------|-------------|
 | 1 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
-| 2 | Animaciones (split-text, scroll reveal, GSAP) | — |
-| 3 | SSL/Certbot con Nginx en producción | VPS + dominio |
-| 4 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
+| 2 | SSL/Certbot con Nginx en producción | VPS + dominio |
+| 3 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
 
 ## 4. Arquitectura de carpetas
 

@@ -133,6 +133,8 @@ export default function AgendarPage() {
 
         {step === "payment" && selectedService && (
           <PaymentWidget
+            serviceId={selectedService.id}
+            startTime={selectedTime}
             serviceName={selectedService.name}
             depositAmount={deposit}
             onPaymentComplete={handlePaymentComplete}

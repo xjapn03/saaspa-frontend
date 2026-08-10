@@ -106,7 +106,15 @@ export function BookingsTable() {
   if (paged.length === 0) {
     return (
       <div className="rounded-2xl border border-border bg-card p-12 text-center">
-        <p className="text-sm text-muted-foreground">No hay citas registradas.</p>
+        <p className="text-sm text-muted-foreground">
+          Aún no tienes citas agendadas.
+        </p>
+        <Button
+          className="mt-4"
+          size="sm"
+          nativeButton={false}
+          render={<a href="/agendar">Agendar mi primer ritual</a>}
+        />
       </div>
     )
   }

@@ -2,9 +2,9 @@ import { useEffect, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
-if (typeof window !== "undefined" && window.matchMedia) {
+try {
   gsap.registerPlugin(ScrollTrigger)
-}
+} catch { /* SSR / test environment — ScrollTrigger not available */ }
 
 export function useReducedMotion(): boolean {
   if (typeof window === "undefined") return false

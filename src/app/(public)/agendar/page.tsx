@@ -1,12 +1,14 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useCallback, useEffect, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Loader2 } from "lucide-react"
 import { ServicePicker } from "@/components/booking/service-picker"
 import { SlotPicker } from "@/components/booking/slot-picker"
 import { DepositSummary } from "@/components/booking/deposit-summary"
 import { PaymentWidget } from "@/components/booking/payment-widget"
 import { Button } from "@/components/ui/button"
+import { servicesApi } from "@/lib/services-api"
 import type { Service } from "@/types/service"
 
 type Step = "service" | "slot" | "summary" | "payment"
@@ -18,12 +20,33 @@ const STEP_LABELS: Record<Step, string> = {
   payment: "Pago",
 }
 
-export default function AgendarPage() {
+function AgendarContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const preselectedServiceId = searchParams.get("service")
+
   const [step, setStep] = useState<Step>("service")
   const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [selectedDate, setSelectedDate] = useState("")
   const [selectedTime, setSelectedTime] = useState("")
+  const [isPreloading, setIsPreloading] = useState(!!preselectedServiceId)
+
+  useEffect(() => {
+    if (!preselectedServiceId) {
+      setIsPreloading(false)
+      return
+    }
+    servicesApi.listPublic().then((list) => {
+      const found = list.find((s) => s.id === preselectedServiceId)
+      if (found) {
+        setSelectedService(found)
+        setStep("slot")
+      }
+      setIsPreloading(false)
+    }).catch(() => {
+      setIsPreloading(false)
+    })
+  }, [preselectedServiceId])
 
   const steps: Step[] = ["service", "slot", "summary", "payment"]
   const currentIdx = steps.indexOf(step)
@@ -44,6 +67,14 @@ export default function AgendarPage() {
   const handlePaymentComplete = useCallback(() => {
     router.push("/dashboard/citas")
   }, [router])
+
+  if (isPreloading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <Loader2 className="size-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
 
   const deposit = selectedService ? Math.round(selectedService.price * 0.3) : 0
 
@@ -143,5 +174,17 @@ export default function AgendarPage() {
         )}
       </div>
     </section>
+  )
+}
+
+export default function AgendarPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-32">
+        <Loader2 className="size-8 animate-spin text-muted-foreground" />
+      </div>
+    }>
+      <AgendarContent />
+    </Suspense>
   )
 }

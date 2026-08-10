@@ -3,7 +3,7 @@ import { ArrowRight, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function CtaSection() {
-  const waPhone = "573000000000"
+  const waPhone = "573041338567"
   const waMessage = encodeURIComponent("Hola, quiero agendar una cita")
 
   return (

@@ -1,16 +1,23 @@
 "use client"
 
 import Link from "next/link"
-import { LayoutDashboard, LogIn } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { LayoutDashboard, LogIn, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/context/auth-provider"
 
 export function NavbarAuthButtons() {
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, user, logout } = useAuth()
+  const router = useRouter()
+
+  async function handleLogout() {
+    await logout()
+    router.push("/")
+  }
 
   if (isAuthenticated) {
     return (
-      <div className="hidden items-center gap-3 md:flex">
+      <div className="hidden items-center gap-2 md:flex">
         <Button
           className="inline-flex"
           size="sm"
@@ -27,6 +34,9 @@ export function NavbarAuthButtons() {
             </Link>
           }
         />
+        <Button variant="ghost" size="icon-sm" onClick={handleLogout} title="Cerrar sesión">
+          <LogOut className="size-4" strokeWidth={1.5} />
+        </Button>
       </div>
     )
   }

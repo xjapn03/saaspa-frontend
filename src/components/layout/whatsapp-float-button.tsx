@@ -4,7 +4,7 @@ import { MessageCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function WhatsAppFloatButton() {
-  const phone = "573000000000"
+  const phone = "573041338567"
   const message = encodeURIComponent("Hola, quiero agendar una cita")
 
   return (

@@ -17,50 +17,6 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/context/auth-provider"
 import type { Role } from "@/types/auth"
 
-const navItems: {
-  href: string
-  label: string
-  icon: React.ElementType
-  roles: Role[]
-}[] = [
-  {
-    href: "/dashboard",
-    label: "Resumen",
-    icon: LayoutDashboard,
-    roles: ["ADMIN", "EMPLEADO"],
-  },
-  {
-    href: "/dashboard/citas",
-    label: "Citas",
-    icon: Calendar,
-    roles: ["ADMIN", "EMPLEADO", "CLIENTE"],
-  },
-  {
-    href: "/dashboard/clientes",
-    label: "Clientes",
-    icon: Users,
-    roles: ["ADMIN"],
-  },
-  {
-    href: "/dashboard/servicios",
-    label: "Servicios",
-    icon: Sparkles,
-    roles: ["ADMIN"],
-  },
-  {
-    href: "/dashboard/cupones",
-    label: "Cupones",
-    icon: Ticket,
-    roles: ["ADMIN"],
-  },
-  {
-    href: "/dashboard/configuracion",
-    label: "Configuración",
-    icon: Settings,
-    roles: ["ADMIN", "EMPLEADO", "CLIENTE"],
-  },
-]
-
 export default function DashboardLayout({
   children,
 }: {
@@ -84,6 +40,50 @@ export default function DashboardLayout({
   }
 
   if (!user) return null
+
+  const navItems: {
+    href: string
+    label: string
+    icon: React.ElementType
+    roles: Role[]
+  }[] = [
+    {
+      href: "/dashboard",
+      label: "Resumen",
+      icon: LayoutDashboard,
+      roles: ["ADMIN", "EMPLEADO"],
+    },
+    {
+      href: "/dashboard/citas",
+      label: user.role === "CLIENTE" ? "Mis citas" : "Citas",
+      icon: Calendar,
+      roles: ["ADMIN", "EMPLEADO", "CLIENTE"],
+    },
+    {
+      href: "/dashboard/clientes",
+      label: "Clientes",
+      icon: Users,
+      roles: ["ADMIN"],
+    },
+    {
+      href: "/dashboard/servicios",
+      label: "Servicios",
+      icon: Sparkles,
+      roles: ["ADMIN"],
+    },
+    {
+      href: "/dashboard/cupones",
+      label: "Cupones",
+      icon: Ticket,
+      roles: ["ADMIN"],
+    },
+    {
+      href: "/dashboard/configuracion",
+      label: "Configuración",
+      icon: Settings,
+      roles: ["ADMIN", "EMPLEADO", "CLIENTE"],
+    },
+  ]
 
   const filteredNav = navItems.filter((item) =>
     item.roles.includes(user.role)

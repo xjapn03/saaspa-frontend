@@ -15,6 +15,19 @@ export const ENDPOINTS = {
     LIST: `${API_PREFIX}/users`,
     BY_ID: (id: string) => `${API_PREFIX}/users/${id}`,
   },
+  SERVICES: {
+    PUBLIC: `${API_PREFIX}/services/public`,
+    LIST: `${API_PREFIX}/services`,
+    BY_ID: (id: string) => `${API_PREFIX}/services/${id}`,
+  },
+  BOOKINGS: {
+    LIST: `${API_PREFIX}/bookings`,
+    SLOTS: `${API_PREFIX}/bookings/slots`,
+    BY_ID: (id: string) => `${API_PREFIX}/bookings/${id}`,
+    CANCEL: (id: string) => `${API_PREFIX}/bookings/${id}/cancel`,
+    CONFIRM: (id: string) => `${API_PREFIX}/bookings/${id}/confirm`,
+    COMPLETE: (id: string) => `${API_PREFIX}/bookings/${id}/complete`,
+  },
 } as const
 
 export const TOKEN_KEYS = {

@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { fraunces, geistSans, geistMono } from "@/lib/fonts"
 import { ClientProviders } from "@/components/layout/client-providers"
+import { MetaPixelScript } from "@/components/layout/meta-pixel-script"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 
@@ -23,6 +25,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "font-sans"
       )}
     >
+      <head>
+        <Suspense fallback={null}>
+          <MetaPixelScript />
+        </Suspense>
+      </head>
       <body className="min-h-full flex flex-col">
         <ClientProviders>{children}</ClientProviders>
       </body>

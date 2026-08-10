@@ -1,12 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Loader2, CheckCircle, CreditCard, LogIn } from "lucide-react"
+import Script from "next/script"
+import { Loader2, CheckCircle, LogIn } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useAuth } from "@/context/auth-provider"
-import { bookingsApi } from "@/lib/bookings-api"
+import { paymentsApi } from "@/lib/payments-api"
+
+declare global {
+  interface Window {
+    WidgetCheckout: new (config: unknown) => { open: (cb: (result: unknown) => void) => void }
+  }
+}
 
 interface PaymentWidgetProps {
   serviceId: string
@@ -26,9 +33,60 @@ export function PaymentWidget({
   onCancel,
 }: PaymentWidgetProps) {
   const { isAuthenticated } = useAuth()
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [wompiConfig, setWompiConfig] = useState<{
+    publicKey: string
+    reference: string
+    amountInCents: number
+    currency: string
+    signature: string
+  } | null>(null)
+  const [bookingId, setBookingId] = useState<string | null>(null)
+  const [scriptReady, setScriptReady] = useState(false)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
+
+  useEffect(() => {
+    if (!isAuthenticated || !wompiConfig || !scriptReady) return
+
+    const checkout = new window.WidgetCheckout({
+      currency: wompiConfig.currency,
+      amountInCents: wompiConfig.amountInCents,
+      reference: wompiConfig.reference,
+      publicKey: wompiConfig.publicKey,
+      signature: { integrity: wompiConfig.signature },
+    })
+
+    checkout.open(function (result: any) {
+      const transaction = result?.transaction
+      if (transaction?.status === "APPROVED") {
+        setPaymentSuccess(true)
+      } else if (transaction) {
+        setError(`Pago ${transaction.status === "DECLINED" ? "rechazado" : "con error"}. Intenta de nuevo.`)
+      }
+    })
+  }, [isAuthenticated, wompiConfig, scriptReady])
+
+  async function handleStartPayment() {
+    setError("")
+    setIsLoading(true)
+    try {
+      const booking = await import("@/lib/bookings-api").then(m =>
+        m.bookingsApi.create({ serviceId, startTime })
+      )
+      setBookingId(booking.id)
+
+      const config = await paymentsApi.init(booking.id)
+      setWompiConfig(config)
+    } catch (err: unknown) {
+      const msg = err && typeof err === "object" && "message" in err
+        ? Array.isArray(err.message) ? err.message[0] : err.message
+        : "Error al iniciar el pago"
+      setError(String(msg))
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const formatPrice = (p: number) =>
     new Intl.NumberFormat("es-CO", {
@@ -37,56 +95,29 @@ export function PaymentWidget({
       minimumFractionDigits: 0,
     }).format(p)
 
-  async function handlePay() {
-    if (!isAuthenticated) return
-    setError("")
-    setIsProcessing(true)
-    try {
-      await bookingsApi.create({ serviceId, startTime })
-      setIsSuccess(true)
-    } catch (err: unknown) {
-      const msg =
-        err && typeof err === "object" && "message" in err
-          ? Array.isArray(err.message)
-            ? err.message[0]
-            : err.message
-          : "Error al crear la cita"
-      setError(String(msg))
-    } finally {
-      setIsProcessing(false)
-    }
-  }
-
   if (!isAuthenticated) {
     return (
       <div className="rounded-2xl border border-border bg-card p-12 text-center">
         <LogIn className="mx-auto size-10 text-muted-foreground" strokeWidth={1.5} />
-        <p className="mt-4 font-heading text-xl font-semibold">Inicia sesión para continuar</p>
+        <p className="mt-4 font-heading text-xl font-semibold">Inicia sesión para pagar</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Necesitas una cuenta para agendar tu cita. Es rápido y gratuito.
+          Necesitas una cuenta para confirmar tu cita con el abono del 30%.
         </p>
         <div className="mt-6 flex justify-center gap-3">
-          <Button
-            variant="outline"
-            nativeButton={false}
-            render={<Link href="/registro">Crear cuenta</Link>}
-          />
-          <Button
-            nativeButton={false}
-            render={<Link href="/login?redirect=/agendar">Iniciar sesión</Link>}
-          />
+          <Button variant="outline" nativeButton={false} render={<Link href="/registro">Crear cuenta</Link>} />
+          <Button nativeButton={false} render={<Link href="/login?redirect=/agendar">Iniciar sesión</Link>} />
         </div>
       </div>
     )
   }
 
-  if (isSuccess) {
+  if (paymentSuccess) {
     return (
       <div className="rounded-2xl border border-border bg-card p-12 text-center">
         <CheckCircle className="mx-auto size-12 text-primary" strokeWidth={1.5} />
-        <p className="mt-4 font-heading text-2xl font-semibold">¡Cita agendada!</p>
+        <p className="mt-4 font-heading text-2xl font-semibold">¡Pago exitoso!</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Tu cita para {serviceName} ha sido reservada. El estado es <strong>pendiente de pago</strong>.
+          Tu cita para {serviceName} ha sido confirmada. Te esperamos.
         </p>
         <Button className="mt-6" size="lg" onClick={onPaymentComplete}>
           Ver mis citas
@@ -97,17 +128,15 @@ export function PaymentWidget({
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-          <CreditCard className="size-5 text-primary" strokeWidth={1.5} />
-        </div>
-        <div>
-          <p className="font-heading text-lg font-semibold">Confirmar reserva</p>
-          <p className="text-xs text-muted-foreground">
-            Se creará con estado pendiente de pago
-          </p>
-        </div>
-      </div>
+      <Script
+        src="https://checkout.wompi.co/widget.js"
+        onReady={() => setScriptReady(true)}
+      />
+
+      <p className="mb-2 font-heading text-lg font-semibold">Confirmar y pagar abono</p>
+      <p className="mb-4 text-xs text-muted-foreground">
+        Se abrirá el widget de Wompi para pagar con PSE, Nequi o tarjeta.
+      </p>
 
       <Separator className="my-4" />
 
@@ -119,24 +148,20 @@ export function PaymentWidget({
 
       <div className="mb-6 rounded-xl bg-muted/30 p-6 text-center">
         <p className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">
-          Abono requerido (30%)
+          Abono del 30%
         </p>
         <p className="mt-1 font-heading text-3xl font-semibold">{formatPrice(depositAmount)}</p>
         <p className="mt-2 text-xs text-muted-foreground">
-          Paga en el spa el día de tu cita
+          Wompi — PSE, Nequi, tarjetas de crédito/débito
         </p>
       </div>
 
       <div className="flex gap-3">
-        <Button variant="outline" className="flex-1" onClick={onCancel} disabled={isProcessing}>
-          Cancelar
+        <Button variant="outline" className="flex-1" onClick={onCancel} disabled={isLoading}>
+          Volver
         </Button>
-        <Button className="flex-1" size="lg" onClick={handlePay} disabled={isProcessing}>
-          {isProcessing ? (
-            <Loader2 className="size-4 animate-spin" />
-          ) : (
-            "Confirmar reserva"
-          )}
+        <Button className="flex-1" size="lg" onClick={handleStartPayment} disabled={isLoading}>
+          {isLoading ? <Loader2 className="size-4 animate-spin" /> : `Pagar ${formatPrice(depositAmount)}`}
         </Button>
       </div>
     </div>

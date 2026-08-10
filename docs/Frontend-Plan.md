@@ -1,7 +1,7 @@
 # Plan de Estructura & Diseño — Kamerinos SPA Frontend
 
-> **Estado actual:** Agosto 2026 — Layout público completo, auth conectado al backend, dashboard con sidebar/RBAC, Wompi real integrado, Google Calendar sync, tests funcionando.
-> **Próximo paso:** Cupones de descuento + Meta Pixel/CAPI.
+> **Estado actual:** Agosto 2026 — Layout público completo, auth conectado al backend, dashboard con sidebar/RBAC, Wompi real integrado, Google Calendar sync, Coupons completo, Meta Pixel + CAPI activo, tests funcionando.
+> **Próximo paso:** WhatsApp bot + IA agent + Animaciones GSAP.
 
 ---
 
@@ -41,17 +41,17 @@
 | 15 | **Documentación** | Completo | `docs/STRUCTURE.md`, `docs/Frontend-Plan.md`, `docs-general/` |
 | 16 | **Reagendar citas** | Completo | `bookings-table.tsx` — modal con SlotPicker para reagendar desde admin |
 | 17 | **Dashboard stats** | Completo | Citas hoy, Clientes activos, Ingresos del mes con datos reales |
+| 18 | **Cupones admin** | Completo | `coupons-table.tsx` + `create-coupon-dialog.tsx` — CRUD de cupones |
+| 19 | **Meta Pixel + CAPI** | Completo | `meta-pixel-script.tsx` — Pixel en <head> + captura ctwa_clid. `meta-pixel.ts` — helpers track(). CAPI server-side en backend |
 
 ## 3. Pendiente (orden de prioridad)
 
 | # | Tarea | Dependencias |
 |---|-------|-------------|
-| 1 | Captura `ctwa_clid` + Meta Pixel + CAPI | Backend: módulo Meta |
-| 2 | Cupones de descuento (backend + frontend) | Backend: módulo Coupons |
-| 3 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
-| 4 | Animaciones (split-text, scroll reveal, GSAP) | — |
-| 5 | SSL/Certbot con Nginx en producción | VPS + dominio |
-| 6 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
+| 1 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
+| 2 | Animaciones (split-text, scroll reveal, GSAP) | — |
+| 3 | SSL/Certbot con Nginx en producción | VPS + dominio |
+| 4 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
 
 ## 4. Arquitectura de carpetas
 

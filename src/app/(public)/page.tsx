@@ -4,10 +4,25 @@ import { ServiceCard } from "@/components/marketing/service-card"
 import { TeamSection } from "@/components/marketing/team-card"
 import { TestimonialsSection } from "@/components/marketing/testimonial-card"
 import { CtaSection } from "@/components/marketing/cta-section"
-import { services } from "@/lib/services"
-import { Separator } from "@/components/ui/separator"
+import type { Service } from "@/types/service"
 
-export default function Home() {
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+
+async function getServices(): Promise<Service[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/services/public`, {
+      next: { revalidate: 60 },
+    })
+    if (!res.ok) return []
+    return res.json()
+  } catch {
+    return []
+  }
+}
+
+export default async function Home() {
+  const services = await getServices()
+
   return (
     <>
       <Hero />
@@ -27,11 +42,31 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => (
-              <ServiceCard key={service.slug} {...service} />
-            ))}
-          </div>
+          {services.length === 0 ? (
+            <div className="rounded-2xl border border-border bg-card p-12 text-center">
+              <p className="text-sm text-muted-foreground">
+                Cargando servicios...
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {services.map((svc) => (
+                <ServiceCard
+                  key={svc.id}
+                  name={svc.name}
+                  slug={svc.id}
+                  category={svc.category || "General"}
+                  duration={`${svc.duration} min`}
+                  description={svc.description || ""}
+                  price={new Intl.NumberFormat("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                    minimumFractionDigits: 0,
+                  }).format(svc.price)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

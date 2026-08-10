@@ -1,14 +1,27 @@
 "use client"
 
+import { useEffect, useRef } from "react"
+import gsap from "gsap"
 import { MessageCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function WhatsAppFloatButton() {
+  const ref = useRef<HTMLAnchorElement>(null)
   const phone = "573041338567"
   const message = encodeURIComponent("Hola, quiero agendar una cita")
 
+  useEffect(() => {
+    if (!ref.current) return
+    const el = ref.current
+    const tl = gsap.timeline({ repeat: -1, yoyo: true, repeatDelay: 0.5 })
+    tl.to(el, { y: -6, duration: 2.5, ease: "sine.inOut" })
+    tl.to(el, { y: 0, duration: 2.5, ease: "sine.inOut" }, "+=0.5")
+    return () => { tl.kill() }
+  }, [])
+
   return (
     <a
+      ref={ref}
       href={`https://wa.me/${phone}?text=${message}`}
       target="_blank"
       rel="noopener noreferrer"
@@ -19,7 +32,6 @@ export function WhatsAppFloatButton() {
         "rounded-full bg-[#25D366] text-white shadow-lg",
         "transition-all duration-300",
         "hover:scale-110 hover:shadow-xl",
-        "motion-safe:animate-pulse",
         "sm:size-16"
       )}
     >

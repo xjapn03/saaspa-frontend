@@ -29,24 +29,28 @@
 | 3 | **Home page** | Completo | 6 secciones: Hero, Filosofía, Servicios, Equipo, Testimonios, CTA cierre |
 | 4 | **Servicios (público)** | Completo | `/servicios` (listing), `/servicios/[slug]` (detalle con beneficios) |
 | 5 | **Políticas** | Completo | `/politicas` (abono, cancelación, puntualidad) |
-| 6 | **Agendar** | Placeholder | `/agendar` (CTA WhatsApp, listo para flujo real) |
+| 6 | **Agendar (wizard)** | Completo | `/agendar` — service picker → slot calendar → resumen → pago simulado |
 | 7 | **Auth (login/registro)** | Completo | `/login`, `/registro` — forms validados, conectados al backend NestJS |
 | 8 | **API client** | Completo | `lib/api.ts` — fetch wrapper con refresh automático de JWT (401 → refresh → retry) |
 | 9 | **Auth state** | Completo | `context/auth-provider.tsx` — AuthContext global, `useAuth()` hook |
-| 10 | **Dashboard** | Layout completo + placeholders | `dashboard/layout.tsx` — sidebar con RBAC (ADMIN/EMPLEADO/CLIENTE), 6 vistas placeholder |
+| 10 | **Dashboard admin** | Completo | `dashboard/layout.tsx` — sidebar con RBAC. Vistas reales: clientes (CRUD), servicios (CRUD), citas (tabla) |
 | 11 | **Navbar auth dinámico** | Completo | Botones "Iniciar sesión" / "Dashboard + nombre" según estado, desktop y mobile |
-| 12 | **CORS + Envs** | Completo | `.env.example` + `.env.local` en frontend, `CORS_ORIGIN` validado en backend Joi |
-| 13 | **Tests** | Completo (18 tests) | `vitest` + `@testing-library/react` + `msw`. 4 archivos: api, auth, service-card, home |
-| 14 | **Documentación** | Completo | `docs/STRUCTURE.md` (guía de carpetas), `docs/Frontend-Plan.md` (este archivo) |
+| 12 | **CORS + Envs** | Completo | `.env.example` + `.env.local`, CORS multi-origin en backend |
+| 13 | **Tests** | Completo (18 tests) | `vitest` + `@testing-library/react` + `msw`. 4 archivos |
+| 14 | **Docker** | Completo | `Dockerfile`, `docker-compose.yml` raíz, Nginx reverse proxy |
+| 15 | **Documentación** | Completo | `docs/STRUCTURE.md`, `docs/Frontend-Plan.md`, `docs-general/` |
 
 ## 3. Pendiente (orden de prioridad)
 
 | # | Tarea | Dependencias |
 |---|-------|-------------|
-| 1 | Flujo `/agendar`: service picker → calendario → resumen → pasarela de pago (Wompi) | Backend: módulo Payments + Bookings |
+| 1 | Integración real Wompi (reemplazar pago simulado) | Backend: módulo Payments |
 | 2 | Captura `ctwa_clid` + Meta Pixel + CAPI | Backend: módulo Meta |
-| 3 | CRUD servicios en dashboard (admin) | Backend: módulo Services |
-| 4 | Gestión de citas en dashboard | Backend: módulo Bookings |
+| 3 | Google Calendar sync en backend | Backend: módulo Calendar |
+| 4 | Cupones de descuento (backend + frontend) | Backend: módulo Coupons |
+| 5 | WhatsApp bot + IA agent | Backend: módulo WhatsApp |
+| 6 | Animaciones (split-text, scroll reveal, GSAP) | — |
+| 7 | SSL/Certbot con Nginx en producción | VPS + dominio |
 | 5 | Gestión de clientes en dashboard (admin) | Backend: módulo Users (ya existe) |
 | 6 | Cupones de descuento en dashboard (admin) | Backend: módulo Coupons |
 | 7 | Animaciones (split-text, scroll reveal, GSAP) | — |

@@ -29,6 +29,12 @@ export const ENDPOINTS = {
     COMPLETE: (id: string) => `${API_PREFIX}/bookings/${id}/complete`,
     RESCHEDULE: (id: string) => `${API_PREFIX}/bookings/${id}/reschedule`,
   },
+  COUPONS: {
+    LIST: `${API_PREFIX}/coupons`,
+    BY_ID: (id: string) => `${API_PREFIX}/coupons/${id}`,
+    VALIDATE: `${API_PREFIX}/coupons/validate`,
+    USE: (id: string) => `${API_PREFIX}/coupons/${id}/use`,
+  },
 } as const
 
 export const TOKEN_KEYS = {

@@ -1,3 +1,7 @@
+"use client"
+
+import { CouponsTable } from "@/components/dashboard/coupons-table"
+
 export default function CuponesPage() {
   return (
     <div>
@@ -6,15 +10,11 @@ export default function CuponesPage() {
           Cupones
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Gestión de cupones de descuento y promociones
+          Crea y gestiona cupones de descuento. Los códigos se validan al momento del pago.
         </p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-12 text-center">
-        <p className="text-sm text-muted-foreground">
-          La gestión de cupones estará disponible próximamente.
-        </p>
-      </div>
+      <CouponsTable />
     </div>
   )
 }

@@ -15,55 +15,20 @@ export function NavbarAuthButtons() {
     router.push("/")
   }
 
-  if (isAuthenticated) {
-    return (
-      <div className="hidden items-center gap-2 md:flex">
-        <Button
-          className="inline-flex"
-          size="sm"
-          nativeButton={false}
-          render={
-            <Link href="/dashboard">
-              <LayoutDashboard
-                data-slot="icon"
-                data-icon="inline-start"
-                className="size-4"
-                strokeWidth={1.5}
-              />
-              {user?.firstName || "Dashboard"}
-            </Link>
-          }
-        />
-        <Button variant="ghost" size="icon-sm" onClick={handleLogout} title="Cerrar sesión">
-          <LogOut className="size-4" strokeWidth={1.5} />
-        </Button>
-      </div>
-    )
-  }
-
   return (
-    <div className="hidden items-center gap-3 md:flex">
-      <Button
-        variant="ghost"
-        size="sm"
-        nativeButton={false}
-        render={
-          <Link href="/login">
-            <LogIn
-              data-slot="icon"
-              data-icon="inline-start"
-              className="size-4"
-              strokeWidth={1.5}
-            />
-            Iniciar sesión
-          </Link>
-        }
-      />
-      <Button
-        size="sm"
-        nativeButton={false}
-        render={<Link href="/agendar">Agendar</Link>}
-      />
-    </div>
+    <>
+      {isAuthenticated ? null : (
+        <div className="hidden items-center gap-3 md:flex">
+          <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/login"><LogIn data-slot="icon" data-icon="inline-start" className="size-4" strokeWidth={1.5} />Iniciar sesión</Link>} />
+          <Button size="sm" nativeButton={false} render={<Link href="/agendar">Agendar</Link>} />
+        </div>
+      )}
+      {isAuthenticated && (
+        <div className="hidden items-center gap-2 md:flex">
+          <Button className="inline-flex" size="sm" nativeButton={false} render={<Link href="/dashboard"><LayoutDashboard data-slot="icon" data-icon="inline-start" className="size-4" strokeWidth={1.5} />{user?.firstName || "Dashboard"}</Link>} />
+          <Button variant="ghost" size="icon-sm" onClick={handleLogout} title="Cerrar sesión"><LogOut className="size-4" strokeWidth={1.5} /></Button>
+        </div>
+      )}
+    </>
   )
 }

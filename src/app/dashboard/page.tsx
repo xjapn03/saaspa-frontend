@@ -97,6 +97,20 @@ export default function DashboardPage() {
     )
   }
 
+  useEffect(() => {
+    if (isLoading) return
+    if (gridRef.current) {
+      gsap.fromTo(
+        gridRef.current.querySelectorAll(".stats-card"),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "power3.out" }
+      )
+    }
+    if (revenueRef.current && ingresosMes != null && ingresosMes > 0) {
+      countUp(revenueRef.current, ingresosMes, { prefix: "$", duration: 1.5 })
+    }
+  }, [isLoading, ingresosMes])
+
   return (
     <div>
       <div className="mb-8">

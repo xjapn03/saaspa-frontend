@@ -1,4 +1,5 @@
 import { ServiceCard } from "@/components/marketing/service-card"
+import { AnimatedGrid } from "@/components/layout/animated-grid"
 import type { Service } from "@/types/service"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
@@ -43,23 +44,24 @@ export default async function ServiciosPage() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <AnimatedGrid className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {services.map((svc) => (
-              <ServiceCard
-                key={svc.id}
-                name={svc.name}
-                slug={svc.id}
-                category={svc.category || "General"}
-                duration={`${svc.duration} min`}
-                description={svc.description || ""}
-                price={new Intl.NumberFormat("es-CO", {
-                  style: "currency",
-                  currency: "COP",
-                  minimumFractionDigits: 0,
-                }).format(svc.price)}
-              />
+              <div key={svc.id} className="grid-card">
+                <ServiceCard
+                  name={svc.name}
+                  slug={svc.id}
+                  category={svc.category || "General"}
+                  duration={`${svc.duration} min`}
+                  description={svc.description || ""}
+                  price={new Intl.NumberFormat("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                    minimumFractionDigits: 0,
+                  }).format(svc.price)}
+                />
+              </div>
             ))}
-          </div>
+          </AnimatedGrid>
         )}
       </div>
     </section>

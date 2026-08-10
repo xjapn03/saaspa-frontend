@@ -1,3 +1,6 @@
+"use client"
+
+import { useEffect, useRef } from "react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   Card,
@@ -7,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { scrollRevealStagger, useReducedMotion } from "@/lib/animations"
 
 const teamMembers = [
   {
@@ -77,6 +81,14 @@ function TeamCard({
 }
 
 export function TeamSection() {
+  const reduced = useReducedMotion()
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (reduced) return
+    scrollRevealStagger(gridRef.current, ".team-card", { stagger: 0.15, y: 32 })
+  }, [reduced])
+
   return (
     <section className="py-24 md:py-32 bg-muted/30">
       <div className="mx-auto max-w-6xl px-6">
@@ -91,9 +103,9 @@ export function TeamSection() {
           </h2>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3">
+        <div ref={gridRef} className="grid gap-8 md:grid-cols-3">
           {teamMembers.map((member) => (
-            <TeamCard key={member.name} {...member} />
+            <TeamCard key={member.name} {...member} className="team-card" />
           ))}
         </div>
       </div>

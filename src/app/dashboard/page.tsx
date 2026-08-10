@@ -1,10 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
+import gsap from "gsap"
 import { Calendar, Users, Sparkles, DollarSign } from "lucide-react"
 import { StatsCard } from "@/components/dashboard/stats-card"
 import { bookingsApi } from "@/lib/bookings-api"
 import { users as usersApi } from "@/lib/users"
+import { countUp } from "@/lib/animations"
 import type { User } from "@/types/auth"
 
 function todayStr() {
@@ -16,6 +18,8 @@ export default function DashboardPage() {
   const [clientesActivos, setClientesActivos] = useState<number | null>(null)
   const [ingresosMes, setIngresosMes] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const gridRef = useRef<HTMLDivElement>(null)
+  const revenueRef = useRef<HTMLSpanElement | null>(null)
 
   useEffect(() => {
     async function fetchStats() {
@@ -48,6 +52,20 @@ export default function DashboardPage() {
     fetchStats()
   }, [])
 
+  useEffect(() => {
+    if (isLoading) return
+    if (gridRef.current) {
+      gsap.fromTo(
+        gridRef.current.querySelectorAll(".stats-card"),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "power3.out" }
+      )
+    }
+    if (revenueRef.current && ingresosMes != null && ingresosMes > 0) {
+      countUp(revenueRef.current, ingresosMes, { prefix: "$", duration: 1.5 })
+    }
+  }, [isLoading, ingresosMes])
+
   return (
     <div>
       <div className="mb-8">
@@ -59,24 +77,27 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div ref={gridRef} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Citas hoy"
           value={isLoading ? "—" : String(citasHoy ?? "—")}
           subtitle="Agendadas para hoy"
           icon={Calendar}
+          className="stats-card"
         />
         <StatsCard
           title="Clientes activos"
           value={isLoading ? "—" : String(clientesActivos ?? "—")}
           subtitle="Registrados en la plataforma"
           icon={Users}
+          className="stats-card"
         />
         <StatsCard
           title="Servicios"
           value="6"
           subtitle="Activos"
           icon={Sparkles}
+          className="stats-card"
         />
         <StatsCard
           title="Ingresos del mes"
@@ -89,6 +110,7 @@ export default function DashboardPage() {
           }
           subtitle="Confirmados / completados"
           icon={DollarSign}
+          className="stats-card"
         />
       </div>
     </div>

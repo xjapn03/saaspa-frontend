@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Loader2, Check, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { Loader2, Check, X, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { bookingsApi } from "@/lib/bookings-api"
+import { SlotPicker } from "@/components/booking/slot-picker"
 import type { Booking, BookingStatus } from "@/types/booking"
 
 const STATUS_LABELS: Record<BookingStatus, string> = {
@@ -31,6 +32,11 @@ export function BookingsTable() {
   const [error, setError] = useState("")
   const [page, setPage] = useState(1)
   const [actionId, setActionId] = useState<string | null>(null)
+  const [rescheduleBooking, setRescheduleBooking] = useState<Booking | null>(null)
+  const [rescheduleDate, setRescheduleDate] = useState("")
+  const [rescheduleTime, setRescheduleTime] = useState("")
+  const [rescheduleError, setRescheduleError] = useState("")
+  const [rescheduling, setRescheduling] = useState(false)
 
   const fetchBookings = useCallback(async () => {
     setIsLoading(true)
@@ -66,6 +72,39 @@ export function BookingsTable() {
       alert(String(msg))
     } finally {
       setActionId(null)
+    }
+  }
+
+  function openReschedule(booking: Booking) {
+    setRescheduleBooking(booking)
+    setRescheduleDate("")
+    setRescheduleTime("")
+    setRescheduleError("")
+  }
+
+  function closeReschedule() {
+    setRescheduleBooking(null)
+    setRescheduleDate("")
+    setRescheduleTime("")
+    setRescheduleError("")
+  }
+
+  async function confirmReschedule() {
+    if (!rescheduleBooking || !rescheduleTime) return
+    setRescheduling(true)
+    setRescheduleError("")
+    try {
+      await bookingsApi.reschedule(rescheduleBooking.id, rescheduleTime)
+      closeReschedule()
+      await fetchBookings()
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === "object" && "message" in err
+          ? Array.isArray(err.message) ? err.message[0] : err.message
+          : "Error al reagendar"
+      setRescheduleError(String(msg))
+    } finally {
+      setRescheduling(false)
     }
   }
 
@@ -120,6 +159,7 @@ export function BookingsTable() {
   }
 
   return (
+    <>
     <div>
       <div className="overflow-x-auto rounded-2xl border border-border">
         <table className="w-full text-left text-sm">
@@ -186,18 +226,28 @@ export function BookingsTable() {
                       </Button>
                     )}
                     {b.status !== "CANCELADA" && b.status !== "COMPLETADA" && (
-                      <Button
-                        variant="ghost" size="icon-sm"
-                        disabled={actionId === b.id}
-                        onClick={() => handleAction(b.id, "cancel")}
-                        title="Cancelar"
-                      >
-                        {actionId === b.id ? (
-                          <Loader2 className="size-4 animate-spin" />
-                        ) : (
-                          <X className="size-4" strokeWidth={1.5} />
-                        )}
-                      </Button>
+                      <>
+                        <Button
+                          variant="ghost" size="icon-sm"
+                          disabled={actionId === b.id}
+                          onClick={() => openReschedule(b)}
+                          title="Reagendar"
+                        >
+                          <RefreshCw className="size-4" strokeWidth={1.5} />
+                        </Button>
+                        <Button
+                          variant="ghost" size="icon-sm"
+                          disabled={actionId === b.id}
+                          onClick={() => handleAction(b.id, "cancel")}
+                          title="Cancelar"
+                        >
+                          {actionId === b.id ? (
+                            <Loader2 className="size-4 animate-spin" />
+                          ) : (
+                            <X className="size-4" strokeWidth={1.5} />
+                          )}
+                        </Button>
+                      </>
                     )}
                   </div>
                 </td>
@@ -222,5 +272,57 @@ export function BookingsTable() {
         </div>
       )}
     </div>
+
+      {rescheduleBooking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h3 className="font-heading text-lg font-semibold">Reagendar cita</h3>
+                <p className="text-sm text-muted-foreground">
+                  {rescheduleBooking.user?.firstName} {rescheduleBooking.user?.lastName} — {rescheduleBooking.service?.name}
+                </p>
+              </div>
+              <Button variant="ghost" size="icon-sm" onClick={closeReschedule} title="Cerrar">
+                <X className="size-4" strokeWidth={1.5} />
+              </Button>
+            </div>
+
+            {rescheduleError && (
+              <div className="mb-4 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+                {rescheduleError}
+              </div>
+            )}
+
+            <SlotPicker
+              serviceId={rescheduleBooking.serviceId}
+              duration={rescheduleBooking.service?.duration || 60}
+              onSelect={(date, time) => {
+                setRescheduleDate(date)
+                setRescheduleTime(time)
+              }}
+              selectedDate={rescheduleDate}
+              selectedTime={rescheduleTime}
+            />
+
+            <div className="mt-6 flex justify-end gap-2">
+              <Button variant="outline" size="sm" onClick={closeReschedule} disabled={rescheduling}>
+                Cancelar
+              </Button>
+              <Button size="sm" onClick={confirmReschedule} disabled={!rescheduleTime || rescheduling}>
+                {rescheduling ? (
+                  <>
+                    <Loader2 className="mr-1 size-3 animate-spin" />
+                    Reagendando...
+                  </>
+                ) : (
+                  "Confirmar reagendamiento"
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

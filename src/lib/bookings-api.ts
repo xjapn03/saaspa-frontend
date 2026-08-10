@@ -35,4 +35,8 @@ export const bookingsApi = {
   async complete(id: string): Promise<Booking> {
     return api.patch<Booking>(ENDPOINTS.BOOKINGS.COMPLETE(id))
   },
+
+  async reschedule(id: string, startTime: string): Promise<Booking> {
+    return api.patch<Booking>(ENDPOINTS.BOOKINGS.RESCHEDULE(id), { startTime })
+  },
 }

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
 import type { Product } from "@/types/product"
+import { cartApi } from "@/lib/cart-api"
 
 export interface CartItem {
   productId: string
@@ -29,21 +30,19 @@ interface CartState {
 
 const CartContext = createContext<CartState | null>(null)
 
-function getStorageKey(userId?: string): string {
-  return userId ? `kamerinos_user_cart_${userId}` : "kamerinos_guest_cart"
+function getGuestKey(): string {
+  return "kamerinos_guest_cart"
 }
 
-function loadCart(key: string): CartItem[] {
+function loadGuestCart(): CartItem[] {
   try {
-    const raw = localStorage.getItem(key)
+    const raw = localStorage.getItem(getGuestKey())
     return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
-  }
+  } catch { return [] }
 }
 
-function saveCart(key: string, items: CartItem[]) {
-  localStorage.setItem(key, JSON.stringify(items))
+function saveGuestCart(items: CartItem[]) {
+  localStorage.setItem(getGuestKey(), JSON.stringify(items))
 }
 
 function calcSubtotal(items: CartItem[]): number {
@@ -57,73 +56,73 @@ export function CartProvider({ children, userId }: { children: ReactNode; userId
   const [discount, setDiscount] = useState(0)
   const [mounted, setMounted] = useState(false)
 
-  const storageKey = getStorageKey(userId)
-
   useEffect(() => {
     setMounted(true)
-    const guestItems = loadCart("kamerinos_guest_cart")
-
     if (userId) {
-      const userItems = loadCart(storageKey)
-      const merged = [...userItems]
-      for (const gi of guestItems) {
-        const existing = merged.find((i) => i.productId === gi.productId)
-        if (existing) {
-          existing.quantity += gi.quantity
+      cartApi.get().then((serverItems) => {
+        const mapped: CartItem[] = serverItems.map((si) => ({
+          productId: si.productId,
+          name: si.product?.name || "",
+          price: si.product?.price || 0,
+          mainImage: si.product?.mainImage || null,
+          quantity: si.quantity,
+        }))
+        const guestItems = loadGuestCart()
+        if (guestItems.length > 0) {
+          const merged = [...mapped]
+          for (const gi of guestItems) {
+            const existing = merged.find((m) => m.productId === gi.productId)
+            if (existing) { existing.quantity += gi.quantity }
+            else { merged.push(gi) }
+          }
+          setItems(merged)
+          cartApi.merge(guestItems.map((gi) => ({ productId: gi.productId, quantity: gi.quantity }))).catch(() => {})
+          localStorage.removeItem(getGuestKey())
         } else {
-          merged.push(gi)
+          setItems(mapped)
         }
-      }
-      setItems(merged)
-      saveCart(storageKey, merged)
-      localStorage.removeItem("kamerinos_guest_cart")
+      }).catch(() => {
+        setItems(loadGuestCart())
+      })
     } else {
-      setItems(guestItems)
+      setItems(loadGuestCart())
     }
-  }, [userId, storageKey])
+  }, [userId])
 
   useEffect(() => {
-    if (mounted) saveCart(storageKey, items)
-  }, [items, storageKey, mounted])
+    if (mounted && !userId) saveGuestCart(items)
+  }, [items, userId, mounted])
 
   const subtotal = calcSubtotal(items)
-  const total = Math.round((subtotal - discount) * 100) / 100
+  const total = Math.round(Math.max(0, (subtotal - discount)) * 100) / 100
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0)
 
   const addItem = useCallback((product: Product) => {
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === product.id)
       if (existing) {
-        return prev.map((i) =>
-          i.productId === product.id ? { ...i, quantity: i.quantity + 1 } : i
-        )
+        const newQty = existing.quantity + 1
+        if (userId) cartApi.addItem(product.id, newQty).catch(() => {})
+        return prev.map((i) => i.productId === product.id ? { ...i, quantity: newQty } : i)
       }
-      return [
-        ...prev,
-        {
-          productId: product.id,
-          name: product.name,
-          price: product.price,
-          mainImage: product.mainImage,
-          quantity: 1,
-        },
-      ]
+      if (userId) cartApi.addItem(product.id, 1).catch(() => {})
+      return [...prev, { productId: product.id, name: product.name, price: product.price, mainImage: product.mainImage, quantity: 1 }]
     })
-  }, [])
+  }, [userId])
 
   const removeItem = useCallback((productId: string) => {
     setItems((prev) => prev.filter((i) => i.productId !== productId))
-  }, [])
+    if (userId) cartApi.removeItem(productId).catch(() => {})
+  }, [userId])
 
   const updateQuantity = useCallback((productId: string, quantity: number) => {
     if (quantity <= 0) {
-      setItems((prev) => prev.filter((i) => i.productId !== productId))
+      removeItem(productId)
       return
     }
-    setItems((prev) =>
-      prev.map((i) => (i.productId === productId ? { ...i, quantity } : i))
-    )
-  }, [])
+    setItems((prev) => prev.map((i) => i.productId === productId ? { ...i, quantity } : i))
+    if (userId) cartApi.updateQuantity(productId, quantity).catch(() => {})
+  }, [userId, removeItem])
 
   const applyCoupon = useCallback((code: string, id: string, discountPercent: number) => {
     setCouponCode(code)
@@ -142,27 +141,12 @@ export function CartProvider({ children, userId }: { children: ReactNode; userId
     setCouponCode(null)
     setCouponId(null)
     setDiscount(0)
-    localStorage.removeItem(storageKey)
-  }, [storageKey])
+    localStorage.removeItem(getGuestKey())
+    if (userId) cartApi.clear().catch(() => {})
+  }, [userId])
 
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        subtotal,
-        discount,
-        total,
-        couponCode,
-        couponId,
-        itemCount,
-        addItem,
-        removeItem,
-        updateQuantity,
-        applyCoupon,
-        removeCoupon,
-        clearCart,
-      }}
-    >
+    <CartContext.Provider value={{ items, subtotal, discount, total, couponCode, couponId, itemCount, addItem, removeItem, updateQuantity, applyCoupon, removeCoupon, clearCart }}>
       {children}
     </CartContext.Provider>
   )

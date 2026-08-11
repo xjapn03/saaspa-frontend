@@ -39,6 +39,12 @@ export const ENDPOINTS = {
     VALIDATE: `${API_PREFIX}/coupons/validate`,
     USE: (id: string) => `${API_PREFIX}/coupons/${id}/use`,
   },
+  PRODUCTS: {
+    LIST: `${API_PREFIX}/products`,
+    ADMIN: `${API_PREFIX}/products/admin/all`,
+    BY_SLUG: (slug: string) => `${API_PREFIX}/products/${slug}`,
+    BY_ID: (id: string) => `${API_PREFIX}/products/${id}`,
+  },
 } as const
 
 export const TOKEN_KEYS = {

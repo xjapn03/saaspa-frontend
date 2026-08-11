@@ -45,6 +45,12 @@ export const ENDPOINTS = {
     BY_SLUG: (slug: string) => `${API_PREFIX}/products/${slug}`,
     BY_ID: (id: string) => `${API_PREFIX}/products/${id}`,
   },
+  CART: {
+    LIST: `${API_PREFIX}/cart`,
+    ITEMS: `${API_PREFIX}/cart/items`,
+    ITEM: (productId: string) => `${API_PREFIX}/cart/items/${productId}`,
+    MERGE: `${API_PREFIX}/cart/merge`,
+  },
 } as const
 
 export const TOKEN_KEYS = {

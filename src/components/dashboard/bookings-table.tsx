@@ -1,12 +1,14 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Loader2, Check, X, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react"
+import { Loader2, Check, X, ChevronLeft, ChevronRight, RefreshCw, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { bookingsApi } from "@/lib/bookings-api"
+import { paymentsApi } from "@/lib/payments-api"
 import { SlotPicker } from "@/components/booking/slot-picker"
 import type { Booking, BookingStatus } from "@/types/booking"
+import type { BalanceResponse } from "@/types/payment"
 
 const STATUS_LABELS: Record<BookingStatus, string> = {
   PENDIENTE_PAGO: "Pendiente",
@@ -26,6 +28,16 @@ const STATUS_VARIANTS: Record<BookingStatus, "default" | "secondary" | "outline"
 
 const ITEMS_PER_PAGE = 10
 
+function PaymentBadge({ balance }: { balance: BalanceResponse | null; isLoading: boolean }) {
+  if (!balance) return <Badge variant="outline">—</Badge>
+
+  const { total, paid, remaining } = balance
+  if (remaining <= 0 && paid > 0) return <Badge variant="default">Pagado</Badge>
+  if (paid > 0 && remaining > 0) return <Badge variant="secondary">Falta ${remaining.toLocaleString("es-CO")}</Badge>
+  if (paid === 0 && total > 0) return <Badge variant="outline">Sin abono</Badge>
+  return <Badge variant="outline">—</Badge>
+}
+
 export function BookingsTable() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -37,6 +49,9 @@ export function BookingsTable() {
   const [rescheduleTime, setRescheduleTime] = useState("")
   const [rescheduleError, setRescheduleError] = useState("")
   const [rescheduling, setRescheduling] = useState(false)
+  const [balances, setBalances] = useState<Record<string, BalanceResponse | null>>({})
+  const [loadingBalances, setLoadingBalances] = useState<Set<string>>(new Set())
+  const [payingRemaining, setPayingRemaining] = useState<Set<string>>(new Set())
 
   const fetchBookings = useCallback(async () => {
     setIsLoading(true)
@@ -57,6 +72,32 @@ export function BookingsTable() {
 
   useEffect(() => { fetchBookings() }, [fetchBookings])
 
+  const fetchBalance = useCallback(async (bookingId: string) => {
+    setLoadingBalances((prev) => new Set(prev).add(bookingId))
+    try {
+      const balance = await bookingsApi.getBalance(bookingId)
+      setBalances((prev) => ({ ...prev, [bookingId]: balance }))
+    } catch {
+      setBalances((prev) => ({ ...prev, [bookingId]: null }))
+    } finally {
+      setLoadingBalances((prev) => {
+        const next = new Set(prev)
+        next.delete(bookingId)
+        return next
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (bookings.length > 0) {
+      bookings.forEach((b) => {
+        if (!balances[b.id]) {
+          fetchBalance(b.id)
+        }
+      })
+    }
+  }, [bookings, balances, fetchBalance])
+
   async function handleAction(id: string, action: "confirm" | "cancel" | "complete") {
     setActionId(id)
     try {
@@ -72,6 +113,37 @@ export function BookingsTable() {
       alert(String(msg))
     } finally {
       setActionId(null)
+    }
+  }
+
+  async function handlePayRemaining(bookingId: string) {
+    setPayingRemaining((prev) => new Set(prev).add(bookingId))
+    try {
+      const config = await paymentsApi.init(bookingId, "SALDO")
+      const widget = new window.WidgetCheckout({
+        public_key: config.publicKey,
+        currency: config.currency,
+        amount_in_cents: config.amountInCents,
+        reference: config.reference,
+        signature: { integrity: config.signature },
+      })
+      widget.open(async (result: unknown) => {
+        const transaction = (result as Record<string, unknown>)?.transaction as Record<string, string> | undefined
+        if (transaction?.status === "APPROVED") {
+          await fetchBalance(bookingId)
+        }
+      })
+    } catch (err: unknown) {
+      const msg = err && typeof err === "object" && "message" in err
+        ? Array.isArray((err as Record<string, unknown>).message) ? ((err as Record<string, unknown>).message as string[])[0] : (err as Record<string, unknown>).message
+        : "Error al iniciar pago"
+      alert(String(msg))
+    } finally {
+      setPayingRemaining((prev) => {
+        const next = new Set(prev)
+        next.delete(bookingId)
+        return next
+      })
     }
   }
 
@@ -170,6 +242,7 @@ export function BookingsTable() {
               <th className="hidden px-4 py-3 font-medium text-muted-foreground sm:table-cell">Fecha</th>
               <th className="hidden px-4 py-3 font-medium text-muted-foreground md:table-cell">Hora</th>
               <th className="px-4 py-3 font-medium text-muted-foreground">Estado</th>
+              <th className="px-4 py-3 font-medium text-muted-foreground">Pago</th>
               <th className="px-4 py-3 text-right font-medium text-muted-foreground">Acciones</th>
             </tr>
           </thead>
@@ -195,6 +268,9 @@ export function BookingsTable() {
                     {STATUS_LABELS[b.status]}
                   </Badge>
                 </td>
+                <td className="px-4 py-3">
+                  <PaymentBadge balance={balances[b.id] ?? null} isLoading={loadingBalances.has(b.id)} />
+                </td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-1">
                     {b.status === "PENDIENTE_PAGO" && (
@@ -212,18 +288,35 @@ export function BookingsTable() {
                       </Button>
                     )}
                     {b.status === "CONFIRMADA" && (
-                      <Button
-                        variant="ghost" size="icon-sm"
-                        disabled={actionId === b.id}
-                        onClick={() => handleAction(b.id, "complete")}
-                        title="Completar"
-                      >
-                        {actionId === b.id ? (
-                          <Loader2 className="size-4 animate-spin" />
-                        ) : (
-                          <Check className="size-4" strokeWidth={1.5} />
+                      <>
+                        <Button
+                          variant="ghost" size="icon-sm"
+                          disabled={actionId === b.id}
+                          onClick={() => handleAction(b.id, "complete")}
+                          title="Completar"
+                        >
+                          {actionId === b.id ? (
+                            <Loader2 className="size-4 animate-spin" />
+                          ) : (
+                            <Check className="size-4" strokeWidth={1.5} />
+                          )}
+                        </Button>
+                        {balances[b.id] && balances[b.id]!.remaining > 0 && (
+                          <Button
+                            variant="ghost" size="sm"
+                            disabled={payingRemaining.has(b.id)}
+                            onClick={() => handlePayRemaining(b.id)}
+                            title={`Cobrar saldo: $${balances[b.id]!.remaining.toLocaleString("es-CO")}`}
+                          >
+                            {payingRemaining.has(b.id) ? (
+                              <Loader2 className="mr-1 size-3 animate-spin" />
+                            ) : (
+                              <CreditCard className="mr-1 size-3" strokeWidth={1.5} />
+                            )}
+                            Cobrar
+                          </Button>
                         )}
-                      </Button>
+                      </>
                     )}
                     {b.status !== "CANCELADA" && b.status !== "COMPLETADA" && (
                       <>
@@ -248,6 +341,21 @@ export function BookingsTable() {
                           )}
                         </Button>
                       </>
+                    )}
+                    {b.status === "COMPLETADA" && balances[b.id] && balances[b.id]!.remaining > 0 && (
+                      <Button
+                        variant="ghost" size="sm"
+                        disabled={payingRemaining.has(b.id)}
+                        onClick={() => handlePayRemaining(b.id)}
+                        title={`Cobrar saldo: $${balances[b.id]!.remaining.toLocaleString("es-CO")}`}
+                      >
+                        {payingRemaining.has(b.id) ? (
+                          <Loader2 className="mr-1 size-3 animate-spin" />
+                        ) : (
+                          <CreditCard className="mr-1 size-3" strokeWidth={1.5} />
+                        )}
+                        Cobrar
+                      </Button>
                     )}
                   </div>
                 </td>

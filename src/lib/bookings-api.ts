@@ -1,4 +1,5 @@
 import type { Booking } from "@/types/booking"
+import type { BalanceResponse } from "@/types/payment"
 import { api } from "./api"
 import { ENDPOINTS } from "./constants"
 
@@ -13,6 +14,10 @@ export const bookingsApi = {
 
   async getById(id: string): Promise<Booking> {
     return api.get<Booking>(ENDPOINTS.BOOKINGS.BY_ID(id))
+  },
+
+  async getBalance(id: string): Promise<BalanceResponse> {
+    return api.get<BalanceResponse>(ENDPOINTS.BOOKINGS.BALANCE(id))
   },
 
   async getSlots(serviceId: string, date: string): Promise<string[]> {

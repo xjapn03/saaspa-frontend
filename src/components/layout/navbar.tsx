@@ -12,6 +12,7 @@ import { NavbarMobileAuth } from "./navbar-mobile-auth"
 const navLinks = [
   { href: "/", label: "Inicio" },
   { href: "/servicios", label: "Servicios" },
+  { href: "/shop", label: "Shop" },
   { href: "/politicas", label: "Políticas" },
 ]
 

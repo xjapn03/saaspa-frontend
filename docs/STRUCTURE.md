@@ -9,6 +9,9 @@ src/
 │   │   ├── servicios/
 │   │   │   ├── page.tsx        # Listado completo de servicios
 │   │   │   └── [slug]/page.tsx # Detalle individual de servicio
+│   │   ├── shop/
+│   │   │   ├── page.tsx        # Tienda online — listado con filtros por categoría
+│   │   │   └── [slug]/page.tsx # Detalle de producto con galería
 │   │   ├── agendar/page.tsx    # Flujo de agendamiento (placeholder)
 │   │   └── politicas/page.tsx  # Políticas de cancelación y abono
 │   │
@@ -24,6 +27,7 @@ src/
 │   │   ├── clientes/page.tsx   # Listado de clientes (placeholder, solo ADMIN)
 │   │   ├── servicios/page.tsx  # CRUD servicios (placeholder, solo ADMIN)
 │   │   ├── cupones/page.tsx    # Gestión de cupones (placeholder, solo ADMIN)
+│   │   ├── productos/page.tsx  # Gestión de productos (Shop, solo ADMIN)
 │   │   └── configuracion/page.tsx # Ajustes de cuenta (placeholder)
 │   │
 │   ├── layout.tsx              # Root layout: fonts, metadata, ClientProviders

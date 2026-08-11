@@ -10,4 +10,8 @@ export const paymentsApi = {
   async getStatus(bookingId: string): Promise<BalanceResponse> {
     return api.get<BalanceResponse>(ENDPOINTS.BOOKINGS.BALANCE(bookingId))
   },
+
+  async initCart(items: { productId: string; name: string; price: number; quantity: number }[], couponCode?: string, couponId?: string): Promise<PaymentInitResponse> {
+    return api.post<PaymentInitResponse>("/api/payments/init-cart", { items, couponCode, couponId })
+  },
 }

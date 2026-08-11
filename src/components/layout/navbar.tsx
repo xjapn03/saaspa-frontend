@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { CartIcon } from "./cart-icon"
 import { NavbarAuthButtons } from "./navbar-auth-buttons"
 import { NavbarMobileAuth } from "./navbar-mobile-auth"
 
@@ -66,6 +67,7 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <CartIcon />
           <NavbarAuthButtons />
 
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>

@@ -17,19 +17,3 @@ export interface Product {
   updatedAt: string
   category?: { id: string; name: string; slug: string } | null
 }
-
-export interface CreateProductRequest {
-  name: string
-  slug: string
-  description?: string
-  price: number
-  compareAtPrice?: number
-  stock?: number
-  sku?: string
-  mainImage?: string
-  carouselImages?: string[]
-  sponsor?: string
-  isActive?: boolean
-  isFeatured?: boolean
-  categoryId?: string
-}

@@ -12,6 +12,7 @@ Plataforma web de Kamerinos SPA Bogotá — centro de estética y bienestar. Sit
 | Tailwind CSS | v4 | Estilos (CSS-first, `@theme`) |
 | shadcn/ui | v4 (Maia) | Componentes base (Base UI) |
 | Lucide React | latest | Iconografía line |
+| GSAP | latest | Animaciones (ScrollTrigger, timelines) |
 | Vitest | 3.x | Tests |
 | MSW | 2.x | Mock de API en tests |
 

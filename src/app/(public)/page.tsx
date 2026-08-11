@@ -4,6 +4,7 @@ import { ServiceCard } from "@/components/marketing/service-card"
 import { TeamSection } from "@/components/marketing/team-card"
 import { TestimonialsSection } from "@/components/marketing/testimonial-card"
 import { CtaSection } from "@/components/marketing/cta-section"
+import { FeaturedProducts } from "@/components/marketing/featured-products"
 import { AnimatedGrid } from "@/components/layout/animated-grid"
 import type { Service } from "@/types/service"
 
@@ -71,6 +72,8 @@ export default async function Home() {
           )}
         </div>
       </section>
+
+      <FeaturedProducts />
 
       <TeamSection />
 

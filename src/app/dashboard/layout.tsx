@@ -8,6 +8,7 @@ import {
   Calendar,
   Users,
   Sparkles,
+  ShoppingBag,
   Ticket,
   Settings,
   LogOut,
@@ -71,6 +72,12 @@ export default function DashboardLayout({
       href: "/dashboard/servicios",
       label: "Servicios",
       icon: Sparkles,
+      roles: ["ADMIN"],
+    },
+    {
+      href: "/dashboard/productos",
+      label: "Productos",
+      icon: ShoppingBag,
       roles: ["ADMIN"],
     },
     {

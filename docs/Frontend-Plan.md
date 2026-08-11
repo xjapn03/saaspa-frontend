@@ -51,6 +51,8 @@
 | 23 | **Recuperar contraseña** | Completo | `/recuperar` + `/recuperar/[token]` — flujo self-service con SendGrid |
 | 24 | **Animaciones GSAP** | Completo | `animations.ts` + `animated-grid.tsx` — scroll reveal, hero timeline, parallax, countUp |
 
+| 22 | **Admin products** | Completo | `products-table.tsx` + dashboard page — CRUD de productos |
+
 ## 3. Pendiente (orden de prioridad)
 
 | # | Tarea | Dependencias |

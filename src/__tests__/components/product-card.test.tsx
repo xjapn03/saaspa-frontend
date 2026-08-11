@@ -25,22 +25,22 @@ const mockProduct = {
 describe("ProductCard", () => {
   it("should render product name", () => {
     render(<ProductCard product={mockProduct} />)
-    expect(screen.getByText("Crema Hidratante")).toBeDefined()
+    expect(screen.getByText("Crema Hidratante")).toBeInTheDocument()
   })
 
   it("should render sponsor brand", () => {
     render(<ProductCard product={mockProduct} />)
-    expect(screen.getByText("Loreal")).toBeDefined()
+    expect(screen.getByText("Loreal")).toBeInTheDocument()
   })
 
   it("should render category badge", () => {
     render(<ProductCard product={mockProduct} />)
-    expect(screen.getByText("Cremas")).toBeDefined()
+    expect(screen.getByText("Cremas")).toBeInTheDocument()
   })
 
   it("should show compareAtPrice as strikethrough", () => {
     render(<ProductCard product={mockProduct} />)
-    const priceEl = screen.getByText("$120.000")
+    const priceEl = screen.getByText(/120\.000/)
     expect(priceEl.className).toContain("line-through")
   })
 

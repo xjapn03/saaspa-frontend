@@ -1,8 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest"
 import { server } from "@/test/mocks/server"
 
-beforeAll(() => server.listen({ onUnhandledRequest: "bypass" }))
-afterEach(() => server.resetHandlers())
+beforeAll(() => server.listen({ onUnhandledRequest: "warn" }))
+afterEach(() => {
+  server.resetHandlers()
+  localStorage.clear()
+})
 afterAll(() => server.close())
 
 describe("ApiClient", () => {

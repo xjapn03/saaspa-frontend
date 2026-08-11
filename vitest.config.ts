@@ -9,6 +9,8 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     globals: true,
     css: true,
+    pool: "forks",
+    maxConcurrency: 2,
   },
   resolve: {
     alias: {

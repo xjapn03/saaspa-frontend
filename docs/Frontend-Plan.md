@@ -1,6 +1,6 @@
 # Plan de Estructura & Diseño — Kamerinos SPA Frontend
 
-> **Estado actual:** Agosto 2026 — Layout público, auth, dashboard, Wompi, Google Calendar, Cupones, Meta Pixel, Animaciones GSAP, Toast/Modal system, Mobile sidebar, Client dashboard, Admin booking, Recuperación de contraseña — completos.
+> **Estado actual:** Agosto 2026 — Layout público, auth, dashboard completo, Wompi real, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking, Recuperar contraseña — todos completos y mergeados.
 > **Próximo paso:** WhatsApp bot + IA agent.
 
 ---
@@ -19,6 +19,8 @@
 | Geist | Google Fonts | Body/UI (sans-serif) |
 | Vitest | 3.x | Tests unitarios/integración |
 | MSW | 2.x | Mock de API en tests |
+| GSAP | latest | Animaciones scroll/hover (ScrollTrigger, timelines) |
+| @gsap/react | latest | Hook useGSAP para React lifecycle |
 
 ## 2. Módulos implementados
 
@@ -43,10 +45,10 @@
 | 17 | **Dashboard stats** | Completo | Citas hoy, Clientes activos, Ingresos del mes con datos reales |
 | 18 | **Cupones admin** | Completo | `coupons-table.tsx` + `create-coupon-dialog.tsx` — CRUD de cupones |
 | 19 | **Meta Pixel + CAPI** | Completo | `meta-pixel-script.tsx` — Pixel en <head> + captura ctwa_clid. `meta-pixel.ts` — helpers track(). CAPI server-side en backend |
-| 20 | **Toast + Modal system** | Completo | `toast.tsx` + `modal.tsx` — feedback de errores elegante, modales centrados |
-| 21 | **Mobile sidebar + Client dashboard** | Completo | Menú hamburguesa en mobile. Métricas personales para clientes. |
+| 20 | **Toast + Modal system** | Completo | `toast.tsx` + `modal.tsx` — feedback de errores, modales centrados con GSAP |
+| 21 | **Mobile sidebar + Client dashboard** | Completo | Menú hamburguesa con Sheet. Métricas personales para clientes. |
 | 22 | **Admin create booking** | Completo | `admin-create-booking.tsx` — crear citas para clientes desde mostrador |
-| 23 | **Recuperar contraseña** | Completo | `/recuperar` + `/recuperar/[token]` — flujo self-service |
+| 23 | **Recuperar contraseña** | Completo | `/recuperar` + `/recuperar/[token]` — flujo self-service con SendGrid |
 | 24 | **Animaciones GSAP** | Completo | `animations.ts` + `animated-grid.tsx` — scroll reveal, hero timeline, parallax, countUp |
 
 ## 3. Pendiente (orden de prioridad)
@@ -78,7 +80,10 @@ src/
 │   ├── constants.ts            ← API_BASE_URL, ENDPOINTS, TOKEN_KEYS
 │   ├── utils.ts                ← cn()
 │   ├── fonts.ts                ← Fraunces + Geist
-│   └── services.ts             ← Datos placeholder (temporal)
+│   ├── animations.ts           ← GSAP helpers (scrollReveal, countUp, fadeInUp)
+│   ├── meta-pixel.ts           ← Meta Pixel helpers (track, pageView)
+│   ├── coupons-api.ts          ← Cupones API client
+│   └── bookings-api.ts         ← Bookings API client
 ├── context/                    ← AuthProvider + useAuth
 ├── hooks/                      ← Custom hooks
 ├── types/                      ← TypeScript types

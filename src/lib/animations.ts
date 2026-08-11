@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 
 try {
   gsap.registerPlugin(ScrollTrigger)
-} catch { /* SSR / test environment — ScrollTrigger not available */ }
+} catch { /* SSR/test environment */ }
 
 export function useReducedMotion(): boolean {
   if (typeof window === "undefined") return false

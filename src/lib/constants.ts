@@ -26,6 +26,7 @@ export const ENDPOINTS = {
     LIST: `${API_PREFIX}/bookings`,
     SLOTS: `${API_PREFIX}/bookings/slots`,
     BY_ID: (id: string) => `${API_PREFIX}/bookings/${id}`,
+    BALANCE: (id: string) => `${API_PREFIX}/bookings/${id}/balance`,
     CANCEL: (id: string) => `${API_PREFIX}/bookings/${id}/cancel`,
     CONFIRM: (id: string) => `${API_PREFIX}/bookings/${id}/confirm`,
     COMPLETE: (id: string) => `${API_PREFIX}/bookings/${id}/complete`,

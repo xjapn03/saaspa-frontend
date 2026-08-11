@@ -35,7 +35,7 @@ npm run dev          # Dev server (:3000)
 npm run build        # Build de producción
 npm run start        # Servir build
 npm run lint         # ESLint
-npm run test         # Vitest (~25 tests, 7 suites)
+npm run test         # Vitest (61 tests, 15 suites)
 npm run test:watch   # Vitest en modo watch
 npm run test:coverage # Cobertura de tests
 ```

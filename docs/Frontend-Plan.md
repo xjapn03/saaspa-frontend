@@ -1,7 +1,7 @@
 # Plan de Estructura & Diseño — Kamerinos SPA Frontend
 
-> **Estado actual:** Agosto 2026 — Layout público, auth, dashboard completo, Wompi real, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking, Recuperar contraseña — todos completos y mergeados.
-> **Próximo paso:** WhatsApp bot + IA agent.
+> **Estado actual:** Agosto 2026 — Layout público, auth, dashboard completo, Wompi real, Shop + Carrito + Checkout, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking + products, Recuperar contraseña, 61 tests (15 suites) — todos completos y mergeados.
+> **Próximo paso:** Release v1.0.0 → main. Luego WhatsApp bot + IA agent.
 
 ---
 
@@ -38,7 +38,7 @@
 | 10 | **Dashboard admin** | Completo | `dashboard/layout.tsx` — sidebar con RBAC. Vistas reales: clientes (CRUD), servicios (CRUD), citas (tabla + reagendar), stats reales |
 | 11 | **Navbar auth dinámico** | Completo | Botones "Iniciar sesión" / "Dashboard + nombre" según estado, desktop y mobile |
 | 12 | **CORS + Envs** | Completo | `.env.example` + `.env.local`, CORS multi-origin en backend |
-| 13 | **Tests** | Completo (18 tests) | `vitest` + `@testing-library/react` + `msw`. 4 archivos |
+| 13 | **Tests** | Completo (61 tests, 15 suites) | `vitest` + `@testing-library/react` + `msw`. 15 archivos. Ver `docs-general/TEST-COVERAGE.md` |
 | 14 | **Docker** | Completo | `Dockerfile`, `docker-compose.yml` raíz, Nginx reverse proxy |
 | 15 | **Documentación** | Completo | `docs/STRUCTURE.md`, `docs/Frontend-Plan.md`, `docs-general/` |
 | 16 | **Reagendar citas** | Completo | `bookings-table.tsx` — modal con SlotPicker para reagendar desde admin |
@@ -50,16 +50,19 @@
 | 22 | **Admin create booking** | Completo | `admin-create-booking.tsx` — crear citas para clientes desde mostrador |
 | 23 | **Recuperar contraseña** | Completo | `/recuperar` + `/recuperar/[token]` — flujo self-service con SendGrid |
 | 24 | **Animaciones GSAP** | Completo | `animations.ts` + `animated-grid.tsx` — scroll reveal, hero timeline, parallax, countUp |
-
-| 22 | **Admin products** | Completo | `products-table.tsx` + dashboard page — CRUD de productos |
+| 25 | **Admin products** | Completo | `products-table.tsx` + dashboard page — CRUD de productos |
+| 26 | **Shop e-commerce** | Completo | `/shop` (listing + filtros), `/shop/[slug]` (detalle + galería), `ProductCard`, `FeaturedProducts` |
+| 27 | **Carrito de compras** | Completo | `CartContext`, `CartProviderWithAuth`, `CartIcon`, `CartSheet`, `AddToCartButton`, `CouponInput`, `CartItemRow` |
+| 28 | **Checkout Wompi** | Completo | `initCartPayment`, widget Wompi en CartSheet, success/error states, carrito local + server-side sync |
 
 ## 3. Pendiente (orden de prioridad)
 
 | # | Tarea | Dependencias |
 |---|-------|-------------|
-| 1 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
-| 2 | SSL/Certbot con Nginx en producción | VPS + dominio |
-| 3 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
+| 1 | Release v1.0.0 (merge a main) | — |
+| 2 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
+| 3 | SSL/Certbot con Nginx en producción | VPS + dominio |
+| 4 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
 
 ## 4. Arquitectura de carpetas
 

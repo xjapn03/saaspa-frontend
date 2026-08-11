@@ -9,6 +9,8 @@ export const ENDPOINTS = {
     REGISTER: `${API_PREFIX}/auth/register`,
     REFRESH: `${API_PREFIX}/auth/refresh`,
     LOGOUT: `${API_PREFIX}/auth/logout`,
+    FORGOT_PASSWORD: `${API_PREFIX}/auth/forgot-password`,
+    RESET_PASSWORD: `${API_PREFIX}/auth/reset-password`,
   },
   USERS: {
     ME: `${API_PREFIX}/users/me`,
@@ -28,6 +30,7 @@ export const ENDPOINTS = {
     CONFIRM: (id: string) => `${API_PREFIX}/bookings/${id}/confirm`,
     COMPLETE: (id: string) => `${API_PREFIX}/bookings/${id}/complete`,
     RESCHEDULE: (id: string) => `${API_PREFIX}/bookings/${id}/reschedule`,
+    ADMIN_CREATE: `${API_PREFIX}/bookings/admin`,
   },
   COUPONS: {
     LIST: `${API_PREFIX}/coupons`,

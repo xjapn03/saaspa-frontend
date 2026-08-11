@@ -30,7 +30,7 @@ export function ClientBookingCalendar() {
     setError("")
     try {
       const data = await bookingsApi.list()
-      setBookings(data)
+      setBookings(data.filter((b) => b.status === "CONFIRMADA"))
     } catch (err: unknown) {
       const msg = err && typeof err === "object" && "message" in err
         ? Array.isArray(err.message) ? err.message[0] : err.message
@@ -134,7 +134,7 @@ export function ClientBookingCalendar() {
           <p className="mb-3 text-sm font-medium text-foreground">Próximas citas</p>
           <div className="space-y-2">
             {bookings
-              .filter((b) => b.status !== "CANCELADA" && b.status !== "COMPLETADA")
+              .filter((b) => b.status === "CONFIRMADA")
               .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
               .slice(0, 5)
               .map((b) => (

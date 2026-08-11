@@ -69,15 +69,13 @@ export function NavbarMobileAuth({ onClose }: NavbarMobileAuthProps) {
           }
         />
       )}
-      <Button
-        className="w-full"
-        nativeButton={false}
-        render={
-          <Link href="/agendar" onClick={onClose}>
-            Agendar ahora
-          </Link>
-        }
-      />
+      {!isAuthenticated && (
+        <Button
+          className="w-full"
+          nativeButton={false}
+          render={<Link href="/agendar" onClick={onClose}>Agendar ahora</Link>}
+        />
+      )}
     </div>
   )
 }

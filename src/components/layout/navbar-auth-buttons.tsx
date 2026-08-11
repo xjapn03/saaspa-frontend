@@ -26,7 +26,7 @@ export function NavbarAuthButtons() {
       {isAuthenticated && (
         <div className="hidden items-center gap-2 md:flex">
           <Button className="inline-flex" size="sm" nativeButton={false} render={<Link href="/dashboard"><LayoutDashboard data-slot="icon" data-icon="inline-start" className="size-4" strokeWidth={1.5} />{user?.firstName || "Dashboard"}</Link>} />
-          <Button variant="ghost" size="icon-sm" onClick={handleLogout} title="Cerrar sesión"><LogOut className="size-4" strokeWidth={1.5} /></Button>
+          <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="size-4" strokeWidth={1.5} />Salir</Button>
         </div>
       )}
     </>

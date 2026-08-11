@@ -151,6 +151,11 @@ function LoginForm() {
             Regístrate aquí
           </Link>
         </p>
+        <p className="mt-2 text-center text-sm text-muted-foreground">
+          <Link href="/recuperar" className="font-medium text-primary hover:underline">
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </p>
       </CardContent>
     </Card>
   )

@@ -3,8 +3,13 @@ import { api } from "./api"
 import { ENDPOINTS } from "./constants"
 
 export const users = {
-  async list(): Promise<User[]> {
-    return api.get<User[]>(ENDPOINTS.USERS.LIST)
+  async list(params?: { role?: string; sortBy?: string; order?: string }): Promise<User[]> {
+    const qs = new URLSearchParams()
+    if (params?.role) qs.set("role", params.role)
+    if (params?.sortBy) qs.set("sortBy", params.sortBy)
+    if (params?.order) qs.set("order", params.order)
+    const query = qs.toString()
+    return api.get<User[]>(`${ENDPOINTS.USERS.LIST}${query ? `?${query}` : ""}`)
   },
 
   async getById(id: string): Promise<User> {

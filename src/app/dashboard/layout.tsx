@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Calendar,
   Users,
+  UserCog,
   Sparkles,
   Ticket,
   Settings,
@@ -65,6 +66,12 @@ export default function DashboardLayout({
       href: "/dashboard/clientes",
       label: "Clientes",
       icon: Users,
+      roles: ["ADMIN"],
+    },
+    {
+      href: "/dashboard/empleados",
+      label: "Empleados",
+      icon: UserCog,
       roles: ["ADMIN"],
     },
     {

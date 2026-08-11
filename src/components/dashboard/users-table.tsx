@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Pencil, Trash2, Search, Loader2, ChevronLeft, ChevronRight } from "lucide-react"
+import { Pencil, Trash2, Search, Loader2, ChevronLeft, ChevronRight, Eye, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { users as usersApi } from "@/lib/users"
@@ -23,10 +23,13 @@ const USERS_PER_PAGE = 10
 
 interface UsersTableProps {
   onEdit: (user: User) => void
+  onView?: (user: User) => void
+  onAdd?: () => void
   refreshKey: number
+  roleFilter?: string
 }
 
-export function UsersTable({ onEdit, refreshKey }: UsersTableProps) {
+export function UsersTable({ onEdit, onView, onAdd, refreshKey, roleFilter }: UsersTableProps) {
   const [users, setUsers] = useState<User[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
@@ -38,7 +41,7 @@ export function UsersTable({ onEdit, refreshKey }: UsersTableProps) {
     setIsLoading(true)
     setError("")
     try {
-      const data = await usersApi.list()
+      const data = await usersApi.list({ role: roleFilter, sortBy: "firstName", order: "asc" })
       setUsers(data)
     } catch (err: unknown) {
       const msg =
@@ -124,6 +127,11 @@ export function UsersTable({ onEdit, refreshKey }: UsersTableProps) {
             className="w-full rounded-xl border border-border bg-background py-2 pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
         </div>
+        {onAdd && (
+          <Button size="sm" onClick={onAdd}>
+            <Plus className="mr-1 size-4" /> Añadir
+          </Button>
+        )}
       </div>
 
       {paged.length === 0 ? (
@@ -186,6 +194,11 @@ export function UsersTable({ onEdit, refreshKey }: UsersTableProps) {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
+                        {onView && (
+                          <Button variant="ghost" size="icon-sm" onClick={() => onView(user)} title="Ver detalle">
+                            <Eye className="size-4" strokeWidth={1.5} />
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="icon-sm"

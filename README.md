@@ -35,7 +35,7 @@ npm run dev          # Dev server (:3000)
 npm run build        # Build de producción
 npm run start        # Servir build
 npm run lint         # ESLint
-npm run test         # Vitest (18 tests, 4 suites)
+npm run test         # Vitest (~25 tests, 7 suites)
 npm run test:watch   # Vitest en modo watch
 npm run test:coverage # Cobertura de tests
 ```
@@ -47,11 +47,11 @@ La guía completa de arquitectura de carpetas está en [`docs/STRUCTURE.md`](./d
 ```
 src/
 ├── app/            # App Router — (public), (auth), dashboard
-├── components/     # ui/ (shadcn), layout/, marketing/, dashboard/
-├── lib/            # api.ts, auth.ts, constants.ts, fonts.ts, utils.ts
-├── context/        # AuthProvider + useAuth
+├── components/     # ui/ (shadcn), layout/, marketing/, dashboard/, shop/
+├── lib/            # api.ts, auth.ts, constants.ts, fonts.ts, utils.ts, products-api.ts, bookings-api.ts, payments-api.ts, coupons-api.ts, meta-pixel.ts, animations.ts
+├── context/        # AuthProvider, CartProvider, CartProviderWithAuth
 ├── hooks/          # Custom hooks
-├── types/          # Tipos compartidos
+├── types/          # Tipos compartidos (auth, booking, service, payment, coupon, product)
 ├── test/           # Mocks MSW + fixtures
 └── __tests__/      # Tests unitarios e integración
 ```

@@ -54,15 +54,24 @@
 | 26 | **Shop e-commerce** | Completo | `/shop` (listing + filtros), `/shop/[slug]` (detalle + galería), `ProductCard`, `FeaturedProducts` |
 | 27 | **Carrito de compras** | Completo | `CartContext`, `CartProviderWithAuth`, `CartIcon`, `CartSheet`, `AddToCartButton`, `CouponInput`, `CartItemRow` |
 | 28 | **Checkout Wompi** | Completo | `initCartPayment`, widget Wompi en CartSheet, success/error states, carrito local + server-side sync |
+| 29 | **Admin categories CRUD** | Completo | `categories-table.tsx` + `category-form-drawer.tsx` + `/dashboard/categorias` con sidebar |
+| 30 | **Checkout page** | Completo | `/checkout` — 2 steps: facturación/envío + resumen + pago Wompi full-page |
+| 31 | **Stock validation** | Completo | `CartItem.maxQuantity`, límites en `AddToCartButton` y `CartItemRow` |
+| 32 | **CategorySelect** | Completo | `category-select.tsx` — dropdown con búsqueda inline e indentación de subcategorías |
+| 33 | **Payment fallback** | Completo | WhatsApp button en `PaymentWidget` si Wompi no responde + mensaje de reserva temporal |
+| 34 | **Toast notifications** | Completo | `ToastProvider` + `useToast()` hook + `toastEmitter` + integrado en client-providers |
 
 ## 3. Pendiente (orden de prioridad)
 
 | # | Tarea | Dependencias |
 |---|-------|-------------|
 | 1 | Release v1.0.0 (merge a main) | — |
-| 2 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
-| 3 | SSL/Certbot con Nginx en producción | VPS + dominio |
-| 4 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
+| 2 | Wompi scroll fix (cleanup useEffect) | — |
+| 3 | Cart modal close on checkout navigation | — |
+| 4 | Orders/Pedidos entity + admin gestión + cliente tracking | Backend + Frontend |
+| 5 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
+| 6 | SSL/Certbot con Nginx en producción | VPS + dominio |
+| 7 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
 
 ## 4. Arquitectura de carpetas
 
@@ -115,6 +124,6 @@ src/
 npm run dev          # Next.js dev server (:3000)
 npm run build        # Build de producción
 npm run lint         # ESLint
-npm run test         # Vitest (18 tests, 4 suites)
+npm run test         # Vitest (61 tests, 15 suites)
 npm run test:watch   # Vitest en modo watch
 ```

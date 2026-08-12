@@ -106,13 +106,15 @@ export function BookingsTable() {
     }
   }, [bookings, balances, fetchBalance])
 
-  async function handleAction(id: string, action: "confirm" | "cancel" | "complete") {
+  async function handleAction(id: string, action: "confirm" | "cancel" | "complete" | "reopen") {
     setActionId(id)
     try {
       if (action === "confirm") await bookingsApi.confirm(id)
       else if (action === "cancel") await bookingsApi.cancel(id)
-      else await bookingsApi.complete(id)
+      else if (action === "complete") await bookingsApi.complete(id)
+      else await bookingsApi.reopen(id)
       await fetchBookings()
+      await fetchBalance(id)
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err
@@ -319,9 +321,13 @@ export function BookingsTable() {
                       <>
                         <Button
                           variant="ghost" size="icon-sm"
-                          disabled={actionId === b.id}
+                          disabled={actionId === b.id || (balances[b.id] ? balances[b.id]!.remaining > 0 : false)}
                           onClick={() => handleAction(b.id, "complete")}
-                          title="Completar"
+                          title={
+                            balances[b.id] && balances[b.id]!.remaining > 0
+                              ? `Cobra el saldo pendiente antes de completar`
+                              : "Completar"
+                          }
                         >
                           {actionId === b.id ? (
                             <Loader2 className="size-4 animate-spin" />
@@ -393,6 +399,20 @@ export function BookingsTable() {
                           <CreditCard className="mr-1 size-3" strokeWidth={1.5} />
                         )}
                         Cobrar
+                      </Button>
+                    )}
+                    {(b.status === "COMPLETADA" || b.status === "NO_ASISTIO") && (
+                      <Button
+                        variant="ghost" size="icon-sm"
+                        disabled={actionId === b.id}
+                        onClick={() => handleAction(b.id, "reopen")}
+                        title="Revertir a confirmada"
+                      >
+                        {actionId === b.id ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          <RefreshCw className="size-4" strokeWidth={1.5} />
+                        )}
                       </Button>
                     )}
                   </div>

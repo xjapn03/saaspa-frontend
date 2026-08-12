@@ -44,6 +44,10 @@ export const bookingsApi = {
     return api.patch<Booking>(ENDPOINTS.BOOKINGS.COMPLETE(id))
   },
 
+  async reopen(id: string): Promise<Booking> {
+    return api.patch<Booking>(ENDPOINTS.BOOKINGS.REOPEN(id))
+  },
+
   async reschedule(id: string, startTime: string): Promise<Booking> {
     return api.patch<Booking>(ENDPOINTS.BOOKINGS.RESCHEDULE(id), { startTime })
   },

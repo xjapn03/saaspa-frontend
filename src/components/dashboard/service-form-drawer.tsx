@@ -36,7 +36,7 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     if (service) {
       setForm({
         name: service.name, description: service.description || "", price: service.price,
-        duration: service.duration, category: service.category || "", categoryId: (service as any).categoryId || "",
+        duration: service.duration, category: service.category || "", categoryId: service.categoryId || "",
         imageUrl: service.imageUrl || "", isActive: service.isActive,
       })
     } else {
@@ -55,6 +55,7 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     setIsSaving(true)
     try {
       const data: any = { ...form }
+      if (!data.categoryId) data.categoryId = null
       if (isEditing && service) await servicesApi.update(service.id, data)
       else await servicesApi.create(data as CreateServiceRequest)
       onSaved()

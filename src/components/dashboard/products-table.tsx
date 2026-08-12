@@ -4,7 +4,9 @@ import { useState, useEffect, useCallback } from "react"
 import { Pencil, Trash2, Search, Loader2, ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Modal } from "@/components/ui/modal"
 import { productsApi } from "@/lib/products-api"
+import { useToast } from "@/context/toast-provider"
 import type { Product } from "@/types/product"
 
 const ITEMS_PER_PAGE = 10
@@ -16,12 +18,14 @@ interface ProductsTableProps {
 }
 
 export function ProductsTable({ onEdit, onNew, refreshKey }: ProductsTableProps) {
+  const { error: showError, success: showSuccess } = useToast()
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<Product | null>(null)
 
   const fetchProducts = useCallback(async () => {
     setIsLoading(true)
@@ -39,13 +43,13 @@ export function ProductsTable({ onEdit, onNew, refreshKey }: ProductsTableProps)
   useEffect(() => { fetchProducts() }, [fetchProducts, refreshKey])
 
   async function handleDelete(id: string, name: string) {
-    if (!confirm(`¿Desactivar "${name}"?`)) return
     setDeletingId(id)
     try {
       await productsApi.remove(id)
+      showSuccess(`Producto "${name}" desactivado`)
       await fetchProducts()
     } catch {
-      alert("Error al desactivar producto")
+      showError("Error al desactivar producto")
     } finally {
       setDeletingId(null)
     }
@@ -118,7 +122,7 @@ export function ProductsTable({ onEdit, onNew, refreshKey }: ProductsTableProps)
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Button variant="ghost" size="icon-sm" onClick={() => onEdit(p)} title="Editar"><Pencil className="size-4" strokeWidth={1.5} /></Button>
-                        <Button variant="ghost" size="icon-sm" disabled={deletingId === p.id} onClick={() => handleDelete(p.id, p.name)} title="Desactivar">
+                        <Button variant="ghost" size="icon-sm" disabled={deletingId === p.id} onClick={() => setConfirmDelete(p)} title="Desactivar">
                           {deletingId === p.id ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" strokeWidth={1.5} />}
                         </Button>
                       </div>
@@ -140,6 +144,33 @@ export function ProductsTable({ onEdit, onNew, refreshKey }: ProductsTableProps)
           )}
         </>
       )}
+
+      <Modal
+        open={!!confirmDelete}
+        onOpenChange={(open) => { if (!open) setConfirmDelete(null) }}
+        title="Desactivar producto"
+        description={`¿Seguro que deseas desactivar "${confirmDelete?.name}"? Dejará de ser visible en la tienda.`}
+      >
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" size="sm" onClick={() => setConfirmDelete(null)}>
+            Cancelar
+          </Button>
+          <Button
+            size="sm"
+            disabled={deletingId === confirmDelete?.id}
+            onClick={() => {
+              if (confirmDelete) {
+                const p = confirmDelete
+                setConfirmDelete(null)
+                handleDelete(p.id, p.name)
+              }
+            }}
+          >
+            {deletingId === confirmDelete?.id ? <Loader2 className="mr-1 size-3 animate-spin" /> : null}
+            Desactivar
+          </Button>
+        </div>
+      </Modal>
     </div>
   )
 }

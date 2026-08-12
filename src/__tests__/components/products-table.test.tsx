@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react"
 import { ProductsTable } from "@/components/dashboard/products-table"
 import type { Product } from "@/types/product"
 
+vi.mock("@/context/toast-provider", () => ({
+  useToast: () => ({ toast: vi.fn(), success: vi.fn(), error: vi.fn(), info: vi.fn() }),
+}))
+
 vi.mock("@/lib/products-api", () => ({
   productsApi: { list: vi.fn(), remove: vi.fn() },
 }))

@@ -13,7 +13,9 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Modal } from "@/components/ui/modal"
 import { servicesApi } from "@/lib/services-api"
+import { useToast } from "@/context/toast-provider"
 import type { Service } from "@/types/service"
 
 const ITEMS_PER_PAGE = 8
@@ -29,12 +31,14 @@ export function ServicesTable({
   onNew,
   refreshKey,
 }: ServicesTableProps) {
+  const { error: showError, success: showSuccess } = useToast()
   const [services, setServices] = useState<Service[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [togglingId, setTogglingId] = useState<string | null>(null)
+  const [confirmToggle, setConfirmToggle] = useState<Service | null>(null)
 
   const fetchServices = useCallback(async () => {
     setIsLoading(true)
@@ -63,6 +67,7 @@ export function ServicesTable({
     setTogglingId(service.id)
     try {
       await servicesApi.update(service.id, { isActive: !service.isActive })
+      showSuccess(service.isActive ? "Servicio desactivado" : "Servicio activado")
       await fetchServices()
     } catch (err: unknown) {
       const msg =
@@ -71,7 +76,7 @@ export function ServicesTable({
             ? err.message[0]
             : err.message
           : "Error al cambiar estado"
-      alert(String(msg))
+      showError(String(msg))
     } finally {
       setTogglingId(null)
     }
@@ -86,9 +91,10 @@ export function ServicesTable({
 
   const filtered = services.filter((s) => {
     const q = search.toLowerCase()
+    const categoryName = s.categoryRel?.name || s.category || ""
     return (
       s.name.toLowerCase().includes(q) ||
-      (s.category && s.category.toLowerCase().includes(q)) ||
+      categoryName.toLowerCase().includes(q) ||
       (s.description && s.description.toLowerCase().includes(q))
     )
   })
@@ -188,12 +194,12 @@ export function ServicesTable({
                     <td className="px-4 py-3">
                       <p className="font-medium text-foreground">{svc.name}</p>
                       <p className="text-xs text-muted-foreground sm:hidden">
-                        {svc.category || "Sin categoría"}
+                        {svc.categoryRel?.name || svc.category || "Sin categoría"}
                       </p>
                     </td>
                     <td className="hidden px-4 py-3 sm:table-cell">
                       <Badge variant="secondary">
-                        {svc.category || "Sin categoría"}
+                        {svc.categoryRel?.name || svc.category || "Sin categoría"}
                       </Badge>
                     </td>
                     <td className="hidden px-4 py-3 text-muted-foreground md:table-cell">
@@ -226,7 +232,7 @@ export function ServicesTable({
                           variant="ghost"
                           size="icon-sm"
                           disabled={togglingId === svc.id}
-                          onClick={() => handleToggle(svc)}
+                          onClick={() => setConfirmToggle(svc)}
                           title={
                             svc.isActive ? "Desactivar" : "Activar"
                           }
@@ -275,6 +281,39 @@ export function ServicesTable({
           )}
         </>
       )}
+
+      <Modal
+        open={!!confirmToggle}
+        onOpenChange={(open) => { if (!open) setConfirmToggle(null) }}
+        title={confirmToggle?.isActive ? "Desactivar servicio" : "Activar servicio"}
+        description={
+          confirmToggle?.isActive
+            ? `¿Seguro que deseas desactivar "${confirmToggle?.name}"? Dejará de ser visible para los clientes.`
+            : `¿Deseas volver a activar "${confirmToggle?.name}"?`
+        }
+      >
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" size="sm" onClick={() => setConfirmToggle(null)}>
+            Cancelar
+          </Button>
+          <Button
+            size="sm"
+            disabled={togglingId === confirmToggle?.id}
+            onClick={() => {
+              if (confirmToggle) {
+                const svc = confirmToggle
+                setConfirmToggle(null)
+                handleToggle(svc)
+              }
+            }}
+          >
+            {togglingId === confirmToggle?.id ? (
+              <Loader2 className="mr-1 size-3 animate-spin" />
+            ) : null}
+            {confirmToggle?.isActive ? "Desactivar" : "Activar"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   )
 }

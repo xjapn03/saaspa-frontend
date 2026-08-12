@@ -150,6 +150,7 @@ export function PaymentsTable() {
                     </td>
                     <td className="px-4 py-3">
                       <p className="text-foreground text-xs">{getConcept(p)}</p>
+                      {p.bookingId && <p className="text-[10px] text-muted-foreground font-mono">Cita #{p.bookingId.slice(0, 8)}</p>}
                     </td>
                     <td className="px-4 py-3">
                       <Badge variant={p.type === "ABONO" ? "default" : "secondary"}>{PAYMENT_TYPE_LABELS[p.type] || p.type}</Badge>

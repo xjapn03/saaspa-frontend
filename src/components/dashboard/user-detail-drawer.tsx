@@ -22,8 +22,8 @@ export function UserDetailDrawer({ user, open, onOpenChange }: UserDetailDrawerP
   useEffect(() => {
     if (user && open) {
       setLoading(true)
-      bookingsApi.list().then((all) => {
-        setBookings(all.filter((b) => b.userId === user.id).slice(0, 10))
+      bookingsApi.list({ status: undefined, limit: 100 }).then((result) => {
+        setBookings(result.data.filter((b) => b.userId === user.id).slice(0, 10))
       }).catch(() => {}).finally(() => setLoading(false))
     }
   }, [user, open])

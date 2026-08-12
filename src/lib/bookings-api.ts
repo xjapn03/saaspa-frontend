@@ -3,13 +3,23 @@ import type { BalanceResponse } from "@/types/payment"
 import { api } from "./api"
 import { ENDPOINTS } from "./constants"
 
+export interface PaginatedBookingResult {
+  data: Booking[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
 export const bookingsApi = {
-  async list(params?: { date?: string; status?: string }): Promise<Booking[]> {
+  async list(params?: { date?: string; status?: string; page?: number; limit?: number }): Promise<PaginatedBookingResult> {
     const qs = new URLSearchParams()
     if (params?.date) qs.set("date", params.date)
     if (params?.status) qs.set("status", params.status)
+    if (params?.page) qs.set("page", String(params.page))
+    if (params?.limit) qs.set("limit", String(params.limit))
     const query = qs.toString()
-    return api.get<Booking[]>(`${ENDPOINTS.BOOKINGS.LIST}${query ? `?${query}` : ""}`)
+    return api.get<PaginatedBookingResult>(`${ENDPOINTS.BOOKINGS.LIST}${query ? `?${query}` : ""}`)
   },
 
   async getById(id: string): Promise<Booking> {

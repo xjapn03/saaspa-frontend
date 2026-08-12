@@ -6,7 +6,7 @@ import { Loader2, ChevronLeft, ChevronRight, MessageCircle, CalendarDays, Credit
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Modal } from "@/components/ui/modal"
-import { bookingsApi } from "@/lib/bookings-api"
+import { bookingsApi, type PaginatedBookingResult } from "@/lib/bookings-api"
 import { paymentsApi } from "@/lib/payments-api"
 import type { Booking, BookingStatus } from "@/types/booking"
 import type { BalanceResponse } from "@/types/payment"
@@ -33,13 +33,17 @@ export function ClientBookingCalendar() {
   const [scriptReady, setScriptReady] = useState(false)
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const [historyBookings, setHistoryBookings] = useState<Booking[]>([])
+  const [historyPage, setHistoryPage] = useState(1)
+  const [historyTotalPages, setHistoryTotalPages] = useState(1)
+  const [historyLoading, setHistoryLoading] = useState(false)
 
   const fetchBookings = useCallback(async () => {
     setIsLoading(true)
     setError("")
     try {
-      const data = await bookingsApi.list()
-      setBookings(data.filter((b) => b.status !== "CANCELADA" && b.status !== "COMPLETADA"))
+      const result = await bookingsApi.list({ limit: 100 })
+      setBookings(result.data.filter((b) => b.status !== "CANCELADA" && b.status !== "COMPLETADA"))
     } catch (err: unknown) {
       const msg = err && typeof err === "object" && "message" in err
         ? Array.isArray(err.message) ? err.message[0] : err.message
@@ -50,7 +54,18 @@ export function ClientBookingCalendar() {
     }
   }, [])
 
-  useEffect(() => { fetchBookings() }, [fetchBookings])
+  const fetchHistory = useCallback(async (page: number) => {
+    setHistoryLoading(true)
+    try {
+      const result = await bookingsApi.list({ limit: 10, page })
+      setHistoryBookings(result.data.filter((b) => b.status === "COMPLETADA" || b.status === "CANCELADA" || b.status === "NO_ASISTIO"))
+      setHistoryTotalPages(result.totalPages)
+    } catch {} finally {
+      setHistoryLoading(false)
+    }
+  }, [])
+
+  useEffect(() => { fetchBookings(); fetchHistory(1) }, [fetchBookings, fetchHistory])
 
   useEffect(() => {
     bookings.forEach((b) => {
@@ -244,6 +259,44 @@ export function ClientBookingCalendar() {
                 </div>
               ))}
           </div>
+        </div>
+      )}
+
+      {historyBookings.length > 0 && (
+        <div className="mt-10">
+          <button
+            onClick={() => { if (historyBookings.length === 0) fetchHistory(1) }}
+            className="mb-3 flex items-center gap-2 text-sm font-medium text-foreground"
+          >
+            <CalendarDays className="size-4" />
+            Historial de citas
+          </button>
+          <div className="space-y-2">
+            {historyBookings.map((b) => (
+              <div key={b.id} className="flex items-center justify-between rounded-xl border border-border bg-muted/30 p-3 text-sm">
+                <div>
+                  <p className="font-medium text-muted-foreground">{b.service?.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(b.startTime).toLocaleDateString("es-CO", { day: "numeric", month: "short", year: "numeric" })} · {formatTime(b.startTime)}
+                  </p>
+                </div>
+                <Badge variant={STATUS_VARIANTS[b.status]}>
+                  {b.status === "COMPLETADA" ? "Completada" : b.status === "CANCELADA" ? "Cancelada" : b.status}
+                </Badge>
+              </div>
+            ))}
+          </div>
+          {historyTotalPages > 1 && (
+            <div className="mt-3 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <Button variant="outline" size="icon-sm" disabled={historyPage <= 1} onClick={() => { setHistoryPage(p => p - 1); fetchHistory(historyPage - 1) }}>
+                <ChevronLeft className="size-4" />
+              </Button>
+              <span>{historyPage} de {historyTotalPages}</span>
+              <Button variant="outline" size="icon-sm" disabled={historyPage >= historyTotalPages} onClick={() => { setHistoryPage(p => p + 1); fetchHistory(historyPage + 1) }}>
+                <ChevronRight className="size-4" />
+              </Button>
+            </div>
+          )}
         </div>
       )}
 

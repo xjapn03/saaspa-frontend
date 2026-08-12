@@ -64,8 +64,10 @@
 | 36 | **Tips wellness** | Completo | `TipsCard` — 18 tips de bienestar rotativos cada 10s con GSAP en dashboard cliente |
 | 37 | **Calendario interactivo** | Completo | `ClientBookingCalendar` — click en día abre modal con detalle de citas, acciones (pagar saldo, WhatsApp) |
 | 38 | **Facturación admin** | Completo | `PaymentsTable` + `/dashboard/facturas` — trazabilidad completa de pagos/abonos/compras con filtros |
-| 39 | **CI/CD** | Completo | GitHub Actions: backend (lint+typecheck+tests) + frontend (tests+build) |
+| 39 | **CI/CD** | Completo | GitHub Actions: pipelines separados por repo (back: lint+typecheck+tests, front: tests+build) |
 | 40 | **SEO + Preloader** | Completo | metadata OG/twitter, JSON-LD (LocalBusiness, WebSite, Organization), sitemap, robots.txt, metadata en páginas públicas, Speculation Rules (prerender nativo), Preloader con fade-out + curtain |
+| 41 | **Revenue + Pago local** | Completo | KPI ingresos del mes con revenue real (todos los pagos aprobados), botón pago en local (efectivo/transferencia) en admin bookings, balance visible en calendario cliente, columna método de pago en facturación |
+| 42 | **Type fixes build** | Completo | Correcciones de tipo en tests, service types, cart item y booking types — `npm run build` pasa sin errores |
 
 ## 3. Pendiente (orden de prioridad)
 

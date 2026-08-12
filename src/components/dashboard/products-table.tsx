@@ -23,6 +23,7 @@ export function ProductsTable({ onEdit, onNew, refreshKey }: ProductsTableProps)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all")
   const [page, setPage] = useState(1)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<Product | null>(null)
@@ -31,7 +32,7 @@ export function ProductsTable({ onEdit, onNew, refreshKey }: ProductsTableProps)
     setIsLoading(true)
     setError("")
     try {
-      const result = await productsApi.list({ limit: 100 })
+      const result = await productsApi.listAdmin({ limit: 100 })
       setProducts(result.data)
     } catch (err: unknown) {
       setError("Error al cargar productos")
@@ -60,7 +61,10 @@ export function ProductsTable({ onEdit, onNew, refreshKey }: ProductsTableProps)
 
   const filtered = products.filter((p) => {
     const q = search.toLowerCase()
-    return p.name.toLowerCase().includes(q) || (p.sponsor && p.sponsor.toLowerCase().includes(q)) || (p.sku && p.sku.toLowerCase().includes(q))
+    const matchesSearch = p.name.toLowerCase().includes(q) || (p.sponsor && p.sponsor.toLowerCase().includes(q)) || (p.sku && p.sku.toLowerCase().includes(q))
+    if (statusFilter === "active") return matchesSearch && p.isActive
+    if (statusFilter === "inactive") return matchesSearch && !p.isActive
+    return matchesSearch
   })
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE))
@@ -76,6 +80,15 @@ export function ProductsTable({ onEdit, onNew, refreshKey }: ProductsTableProps)
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input type="text" placeholder="Buscar por nombre, marca o SKU..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} className="w-full rounded-xl border border-border bg-background py-2 pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20" />
         </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => { setStatusFilter(e.target.value as "all" | "active" | "inactive"); setPage(1) }}
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
+        >
+          <option value="all">Todos</option>
+          <option value="active">Activos</option>
+          <option value="inactive">Inactivos</option>
+        </select>
         <Button size="sm" onClick={onNew}>
           <Plus className="mr-1 size-4" /> Nuevo
         </Button>

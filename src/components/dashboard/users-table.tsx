@@ -34,6 +34,7 @@ export function UsersTable({ onEdit, onView, onAdd, refreshKey, roleFilter }: Us
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("active")
   const [page, setPage] = useState(1)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
@@ -41,7 +42,7 @@ export function UsersTable({ onEdit, onView, onAdd, refreshKey, roleFilter }: Us
     setIsLoading(true)
     setError("")
     try {
-      const result = await usersApi.list({ role: roleFilter, sortBy: "firstName", order: "asc" })
+      const result = await usersApi.list({ role: roleFilter, sortBy: "firstName", order: "asc", includeInactive: statusFilter !== "active" })
       setUsers(result.data)
     } catch (err: unknown) {
       const msg =
@@ -54,7 +55,7 @@ export function UsersTable({ onEdit, onView, onAdd, refreshKey, roleFilter }: Us
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [roleFilter, statusFilter])
 
   useEffect(() => {
     fetchUsers()
@@ -73,6 +74,24 @@ export function UsersTable({ onEdit, onView, onAdd, refreshKey, roleFilter }: Us
             ? err.message[0]
             : err.message
           : "Error al desactivar usuario"
+      alert(String(msg))
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
+  async function handleReactivate(userId: string) {
+    setDeletingId(userId)
+    try {
+      await usersApi.update(userId, { isActive: true })
+      await fetchUsers()
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === "object" && "message" in err
+          ? Array.isArray(err.message)
+            ? err.message[0]
+            : err.message
+          : "Error al activar usuario"
       alert(String(msg))
     } finally {
       setDeletingId(null)
@@ -127,6 +146,15 @@ export function UsersTable({ onEdit, onView, onAdd, refreshKey, roleFilter }: Us
             className="w-full rounded-xl border border-border bg-background py-2 pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
         </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => { setStatusFilter(e.target.value as "all" | "active" | "inactive"); setPage(1) }}
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
+        >
+          <option value="active">Activos</option>
+          <option value="inactive">Inactivos</option>
+          <option value="all">Todos</option>
+        </select>
         {onAdd && (
           <Button size="sm" onClick={onAdd}>
             <Plus className="mr-1 size-4" /> Añadir
@@ -210,14 +238,13 @@ export function UsersTable({ onEdit, onView, onAdd, refreshKey, roleFilter }: Us
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          disabled={deletingId === user.id || !user.isActive}
+                          disabled={deletingId === user.id}
                           onClick={() =>
-                            handleDelete(
-                              user.id,
-                              `${user.firstName} ${user.lastName}`
-                            )
+                            user.isActive
+                              ? handleDelete(user.id, `${user.firstName} ${user.lastName}`)
+                              : handleReactivate(user.id)
                           }
-                          title="Desactivar usuario"
+                          title={user.isActive ? "Desactivar usuario" : "Activar usuario"}
                         >
                           {deletingId === user.id ? (
                             <Loader2 className="size-4 animate-spin" />

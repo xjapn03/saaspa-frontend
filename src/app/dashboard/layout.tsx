@@ -17,6 +17,7 @@ import {
   LogOut,
   Menu,
   Receipt,
+  ShieldCheck,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -106,6 +107,12 @@ export default function DashboardLayout({
       href: "/dashboard/facturas",
       label: "Facturación",
       icon: Receipt,
+      roles: ["ADMIN"],
+    },
+    {
+      href: "/dashboard/auditoria",
+      label: "Auditoría",
+      icon: ShieldCheck,
       roles: ["ADMIN"],
     },
     {

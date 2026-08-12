@@ -34,7 +34,8 @@ src/
 │   │   ├── productos/page.tsx  # CRUD productos con ProductFormDrawer
 │   │   ├── categorias/page.tsx # CRUD categorías con subcategorías
 │   │   ├── cupones/page.tsx    # Gestión de cupones de descuento
-│   │   ├── pedidos/page.tsx    # Gestión de pedidos — transiciones de estado (Admin)
+│   │   ├── pedidos/page.tsx    # Gestión de pedidos (Admin: filtros + transiciones. Cliente: MyOrders) |
+│   │   ├── facturas/page.tsx   # Trazabilidad de pagos/abonos/compras (solo ADMIN) |
 │   │   └── configuracion/page.tsx # Ajustes de cuenta del usuario
 │   │
 │   ├── layout.tsx              # Root layout: fonts, metadata, ClientProviders, MetaPixel
@@ -85,7 +86,7 @@ src/
 │   ├── dashboard/              # Componentes del panel admin/cliente
 │   │   ├── stats-card.tsx      # Tarjeta de métrica (título, valor, ícono) con GSAP
 │   │   ├── bookings-table.tsx  # Tabla de citas con acciones (confirmar, cancelar, cobrar, reagendar)
-│   │   ├── client-booking-calendar.tsx # Calendario mensual de citas del cliente + botón pagar
+│   │   ├── client-booking-calendar.tsx # Calendario mensual de citas + click día → modal detalle
 │   │   ├── admin-create-booking.tsx # Modal para admin crear cita a nombre de cliente
 │   │   ├── users-table.tsx     # Tabla CRUD usuarios con búsqueda, sort, paginación
 │   │   ├── edit-user-drawer.tsx # Modal crear/editar usuario con email, contraseña, rol
@@ -98,8 +99,10 @@ src/
 │   │   ├── category-form-drawer.tsx # Modal crear/editar categoría con parentId
 │   │   ├── coupons-table.tsx   # Tabla CRUD cupones
 │   │   ├── create-coupon-dialog.tsx # Modal crear cupón
-│   │   ├── orders-table.tsx    # Tabla de pedidos con transiciones de estado (Admin)
+│   │   ├── orders-table.tsx    # Tabla de pedidos con filtros y transiciones de estado (Admin)
 │   │   ├── my-orders.tsx       # Sección "Mis pedidos" del cliente
+│   │   ├── tips-card.tsx       # Card de tips de bienestar rotativos con GSAP (cliente)
+│   │   ├── payments-table.tsx  # Tabla de transacciones con filtros — facturación (Admin)
 │   │
 │   └── shop/                   # Componentes de tienda
 │       ├── add-to-cart-button.tsx # Botón agregar con validación stock + feedback
@@ -117,10 +120,10 @@ src/
 │   ├── products-api.ts         # Productos API client (list, getBySlug, create, update, remove)
 │   ├── categories-api.ts       # Categorías API client (list, tree, create, update, remove)
 │   ├── bookings-api.ts         # Citas API client (list, slots, create, confirm, cancel, complete, reschedule, getBalance)
-│   ├── payments-api.ts         # Pagos API client (init, getStatus, initCart)
+│   ├── payments-api.ts         # Pagos API client (init, getStatus, initCart, listTransactions)
 │   ├── coupons-api.ts          # Cupones API client (list, create, validate, use, update, remove)
 │   ├── cart-api.ts             # Carrito API client (get, addItem, updateQuantity, removeItem, clear, merge)
-│   ├── orders-api.ts           # Pedidos API client (list, listMy, getById, updateStatus)
+│   ├── orders-api.ts           # Pedidos API client (list con filtros, listMy, getById, updateStatus)
 │   └── users.ts                # Usuarios API client (list, create, getById, update, remove, getProfile)
 │
 ├── context/                    # React Context Providers

@@ -68,6 +68,14 @@ export default function CheckoutPage() {
         items.map((i) => ({ productId: i.productId, name: i.name, price: i.price, quantity: i.quantity })),
         couponCode || undefined,
         couponId || undefined,
+        {
+          shippingName: info.name,
+          shippingEmail: info.email,
+          shippingPhone: info.phone,
+          shippingAddress: info.address,
+          shippingCity: info.city,
+          shippingNotes: info.notes || undefined,
+        },
       )
       setWompiConfig(config)
       setStep("payment")
@@ -98,8 +106,8 @@ export default function CheckoutPage() {
           <p className="mt-4 font-heading text-2xl font-semibold">¡Pago exitoso!</p>
           <p className="mt-2 text-sm text-muted-foreground">Gracias por tu compra. Recibirás un comprobante por correo.</p>
           <div className="mt-8 flex flex-col gap-3">
-            <Button size="lg" onClick={() => router.push("/shop")}>Seguir comprando</Button>
-            <Button variant="outline" size="lg" onClick={() => router.push("/dashboard/citas")}>Ir a mis citas</Button>
+            <Button size="lg" onClick={() => router.push("/dashboard")}>Ver mis pedidos</Button>
+            <Button variant="outline" size="lg" onClick={() => router.push("/shop")}>Seguir comprando</Button>
           </div>
         </div>
       </section>

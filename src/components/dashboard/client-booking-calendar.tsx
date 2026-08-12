@@ -5,6 +5,7 @@ import Script from "next/script"
 import { Loader2, ChevronLeft, ChevronRight, MessageCircle, CalendarDays, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Modal } from "@/components/ui/modal"
 import { bookingsApi } from "@/lib/bookings-api"
 import { paymentsApi } from "@/lib/payments-api"
 import type { Booking, BookingStatus } from "@/types/booking"
@@ -30,6 +31,8 @@ export function ClientBookingCalendar() {
   const [balances, setBalances] = useState<Record<string, BalanceResponse | null>>({})
   const [payingId, setPayingId] = useState<string | null>(null)
   const [scriptReady, setScriptReady] = useState(false)
+  const [selectedDay, setSelectedDay] = useState<number | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
 
   const fetchBookings = useCallback(async () => {
     setIsLoading(true)
@@ -144,8 +147,18 @@ export function ClientBookingCalendar() {
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1
           const dayBookings = bookingsByDay.get(day) || []
+          const hasBookings = dayBookings.length > 0
           return (
-            <div key={day} className="bg-card px-1 py-2 min-h-[54px] text-center">
+            <div
+              key={day}
+              className={`bg-card px-1 py-2 min-h-[54px] text-center ${hasBookings ? "cursor-pointer hover:bg-primary/5 transition-colors" : ""}`}
+              onClick={() => {
+                if (hasBookings) {
+                  setSelectedDay(day)
+                  setModalOpen(true)
+                }
+              }}
+            >
               <p className="text-xs font-medium text-foreground mb-0.5">{day}</p>
               {dayBookings.slice(0, 2).map((b) => (
                 <div key={b.id} className="mb-0.5 truncate rounded px-1 py-px text-[9px]" title={`${b.service?.name} ${formatTime(b.startTime)}`}>
@@ -225,6 +238,62 @@ export function ClientBookingCalendar() {
           </div>
         </div>
       )}
+
+      <Modal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        title={selectedDay ? `Citas del ${selectedDay} de ${monthLabel}` : ""}
+        description="Detalle de las citas agendadas para este día"
+      >
+        {selectedDay && bookingsByDay.has(selectedDay) && (
+          <div className="space-y-3">
+            {bookingsByDay.get(selectedDay)!.map((b) => (
+              <div key={b.id} className="rounded-xl border border-border bg-muted/30 p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <p className="font-medium text-foreground">{b.service?.name || "Servicio"}</p>
+                    <p className="text-sm text-muted-foreground">{formatTime(b.startTime)} · {b.service?.duration} min</p>
+                  </div>
+                  <Badge variant={STATUS_VARIANTS[b.status]}>
+                    {b.status === "PENDIENTE_PAGO" ? "Pendiente" : b.status === "CONFIRMADA" ? "Confirmada" : b.status}
+                  </Badge>
+                </div>
+                {b.service?.price && (
+                  <p className="text-sm text-muted-foreground">
+                    Precio: ${Number(b.service.price).toLocaleString("es-CO")}
+                  </p>
+                )}
+                {b.notes && <p className="text-sm text-muted-foreground mt-1">Notas: {b.notes}</p>}
+                <div className="mt-3 flex items-center gap-2">
+                  {b.status === "CONFIRMADA" && balances[b.id] && balances[b.id]!.remaining > 0 && (
+                    <Button
+                      size="sm"
+                      disabled={payingId === b.id || !scriptReady}
+                      onClick={() => { setModalOpen(false); handlePayRemaining(b.id) }}
+                    >
+                      {payingId === b.id ? <Loader2 className="size-3 animate-spin" /> : <CreditCard className="size-3" />}
+                      <span className="ml-1">Pagar saldo</span>
+                    </Button>
+                  )}
+                  {b.status !== "CANCELADA" && b.status !== "COMPLETADA" && (
+                    <Button variant="outline" size="sm" nativeButton={false}
+                      render={
+                        <a href={`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(`Hola, quiero gestionar mi cita del ${new Date(b.startTime).toLocaleDateString("es-CO")} a las ${formatTime(b.startTime)}`)}`} target="_blank" rel="noopener noreferrer">
+                          <MessageCircle className="size-3" />
+                          <span className="ml-1">WhatsApp</span>
+                        </a>
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {selectedDay && !bookingsByDay.has(selectedDay) && (
+          <p className="py-4 text-center text-sm text-muted-foreground">No hay citas para este día.</p>
+        )}
+      </Modal>
     </div>
   )
 }

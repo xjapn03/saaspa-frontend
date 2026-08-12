@@ -66,6 +66,7 @@ export const ENDPOINTS = {
   PAYMENTS: {
     INIT: `${API_PREFIX}/payments/init`,
     INIT_CART: `${API_PREFIX}/payments/init-cart`,
+    TRANSACTIONS: `${API_PREFIX}/payments/transactions`,
   },
 } as const
 

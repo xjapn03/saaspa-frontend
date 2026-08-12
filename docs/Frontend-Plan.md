@@ -60,19 +60,20 @@
 | 32 | **CategorySelect** | Completo | `category-select.tsx` — dropdown con búsqueda inline e indentación de subcategorías |
 | 33 | **Payment fallback** | Completo | WhatsApp button en `PaymentWidget` si Wompi no responde + mensaje de reserva temporal |
 | 34 | **Toast notifications** | Completo | `ToastProvider` + `useToast()` hook + `toastEmitter` + integrado en client-providers |
-| 35 | **Orders/Pedidos** | Completo | `OrdersTable` (admin, transiciones estado), `MyOrders` (cliente), `/dashboard/pedidos`, sidebar Package, auto-create desde webhook |
+| 35 | **Orders/Pedidos** | Completo | `OrdersTable` (admin, con filtros search/status/date + transiciones estado), `MyOrders` (cliente), `/dashboard/pedidos` role-aware, sidebar Package |
+| 36 | **Tips wellness** | Completo | `TipsCard` — 18 tips de bienestar rotativos cada 10s con GSAP en dashboard cliente |
+| 37 | **Calendario interactivo** | Completo | `ClientBookingCalendar` — click en día abre modal con detalle de citas, acciones (pagar saldo, WhatsApp) |
+| 38 | **Facturación admin** | Completo | `PaymentsTable` + `/dashboard/facturas` — trazabilidad completa de pagos/abonos/compras con filtros |
+| 39 | **CI/CD** | Completo | GitHub Actions: backend (lint+typecheck+tests) + frontend (tests+build) |
 
 ## 3. Pendiente (orden de prioridad)
 
 | # | Tarea | Dependencias |
 |---|-------|-------------|
 | 1 | Release v1.0.0 (merge a main) | — |
-| 2 | Wompi scroll fix (cleanup useEffect) | ✅ Completado |
-| 3 | Cart modal close on checkout navigation | ✅ Completado |
-| 4 | Orders/Pedidos entity + admin gestión + cliente tracking | ✅ Completado |
-| 5 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
-| 6 | SSL/Certbot con Nginx en producción | VPS + dominio |
-| 7 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
+| 2 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
+| 3 | SSL/Certbot con Nginx en producción | VPS + dominio |
+| 4 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
 
 ## 4. Arquitectura de carpetas
 

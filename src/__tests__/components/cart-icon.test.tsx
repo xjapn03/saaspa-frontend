@@ -2,6 +2,10 @@ import { describe, it, expect, beforeEach, vi } from "vitest"
 import { render, screen } from "@testing-library/react"
 import { CartIcon } from "@/components/layout/cart-icon"
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
+}))
+
 const mockUseCart = vi.fn()
 const mockUseAuth = vi.fn()
 
@@ -11,10 +15,6 @@ vi.mock("@/context/cart-provider", () => ({
 
 vi.mock("@/context/auth-provider", () => ({
   useAuth: () => mockUseAuth(),
-}))
-
-vi.mock("@/lib/payments-api", () => ({
-  paymentsApi: { initCart: vi.fn() },
 }))
 
 describe("CartIcon", () => {

@@ -46,14 +46,14 @@ La guía completa de arquitectura de carpetas está en [`docs/STRUCTURE.md`](./d
 
 ```
 src/
-├── app/            # App Router — (public), (auth), dashboard
-├── components/     # ui/ (shadcn), layout/, marketing/, dashboard/, shop/
-├── lib/            # api.ts, auth.ts, constants.ts, fonts.ts, utils.ts, products-api.ts, bookings-api.ts, payments-api.ts, coupons-api.ts, meta-pixel.ts, animations.ts
-├── context/        # AuthProvider, CartProvider, CartProviderWithAuth
+├── app/            # App Router — (public) con /checkout, (auth), dashboard
+├── components/     # ui/ (shadcn + CategorySelect), layout/, marketing/, booking/, dashboard/, shop/
+├── lib/            # api.ts, auth.ts, constants.ts, fonts.ts, utils.ts, *-api.ts (9 clients), meta-pixel.ts, animations.ts
+├── context/        # AuthProvider, CartProvider, CartProviderWithAuth, ToastProvider
 ├── hooks/          # Custom hooks
 ├── types/          # Tipos compartidos (auth, booking, service, payment, coupon, product)
 ├── test/           # Mocks MSW + fixtures
-└── __tests__/      # Tests unitarios e integración
+└── __tests__/      # Tests unitarios e integración (15 suites, 61 tests)
 ```
 
 ## Puertos

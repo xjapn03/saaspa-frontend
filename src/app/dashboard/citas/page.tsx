@@ -25,8 +25,8 @@ export default function CitasPage() {
     if (!isAdmin) return
     try {
       const [u, s] = await Promise.all([usersApi.list(), servicesApi.list()])
-      setUsers(u)
-      setServices(s)
+      setUsers(u.data)
+      setServices(s.data)
     } catch { /* graceful */ }
   }, [isAdmin])
 

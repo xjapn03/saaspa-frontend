@@ -20,7 +20,7 @@ export function ServicePicker({ onSelect, selectedId }: ServicePickerProps) {
   const fetchServices = useCallback(async () => {
     try {
       const data = await servicesApi.listPublic()
-      setServices(data)
+      setServices(data.data)
     } catch (err: unknown) {
       setError("Error al cargar servicios")
     } finally {

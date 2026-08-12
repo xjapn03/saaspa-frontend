@@ -48,13 +48,13 @@ describe("BookingsTable", () => {
   })
 
   it("should show empty state when no bookings", async () => {
-    vi.mocked(bookingsApi.list).mockResolvedValue([])
+    vi.mocked(bookingsApi.list).mockResolvedValue({ data: [], total: 0, page: 1, limit: 10, totalPages: 0 })
     render(<BookingsTable />)
     await screen.findByText("Aún no tienes citas agendadas.")
   })
 
   it("should show status badges", async () => {
-    vi.mocked(bookingsApi.list).mockResolvedValue([pendiente, mockBooking])
+    vi.mocked(bookingsApi.list).mockResolvedValue({ data: [pendiente, mockBooking], total: 2, page: 1, limit: 10, totalPages: 1 })
     vi.mocked(bookingsApi.getBalance).mockResolvedValue(mockBalance)
     render(<BookingsTable />)
     await screen.findByText("Pendiente")

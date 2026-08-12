@@ -34,20 +34,21 @@ export default function DashboardPage() {
     async function fetchStats() {
       try {
         if (isClient) {
-          const allBookings = await bookingsApi.list()
+          const result = await bookingsApi.list()
+          const allBookings = result.data
           setCitasTotales(allBookings.length)
           const next = allBookings
             .filter(b => b.status === "CONFIRMADA" || b.status === "PENDIENTE_PAGO")
             .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0] || null
           setProximaCita(next)
         } else {
-          const [bookingsToday, allBookings, usersList, revenue] = await Promise.all([
+          const [todayResult, allResult, usersList, revenue] = await Promise.all([
             bookingsApi.list({ date: todayStr() }),
             bookingsApi.list(),
             usersApi.list(),
             paymentsApi.getRevenue(todayStr().slice(0, 7)),
           ])
-          setCitasHoy(bookingsToday.length)
+          setCitasHoy(todayResult.data.length)
           setClientesActivos(usersList.filter((u: User) => u.isActive).length)
           setIngresosMes(revenue.total)
         }

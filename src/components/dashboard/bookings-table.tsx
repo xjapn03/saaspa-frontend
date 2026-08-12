@@ -65,8 +65,8 @@ export function BookingsTable() {
     setIsLoading(true)
     setError("")
     try {
-      const data = await bookingsApi.list()
-      setBookings(data)
+      const result = await bookingsApi.list({ limit: 1000 })
+      setBookings(result.data)
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err

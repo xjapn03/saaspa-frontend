@@ -11,6 +11,7 @@ import {
   Sparkles,
   ShoppingBag,
   Ticket,
+  Tags,
   Settings,
   LogOut,
   Menu,
@@ -85,6 +86,12 @@ export default function DashboardLayout({
       href: "/dashboard/productos",
       label: "Productos",
       icon: ShoppingBag,
+      roles: ["ADMIN"],
+    },
+    {
+      href: "/dashboard/categorias",
+      label: "Categorías",
+      icon: Tags,
       roles: ["ADMIN"],
     },
     {

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import gsap from "gsap"
 import { Calendar, Clock, DollarSign, Sparkles, Users } from "lucide-react"
 import { StatsCard } from "@/components/dashboard/stats-card"
+import { TipsCard } from "@/components/dashboard/tips-card"
 import { MyOrders } from "@/components/dashboard/my-orders"
 import { bookingsApi } from "@/lib/bookings-api"
 import { users as usersApi } from "@/lib/users"
@@ -22,7 +23,6 @@ export default function DashboardPage() {
 
   const [citasTotales, setCitasTotales] = useState<number | null>(null)
   const [proximaCita, setProximaCita] = useState<Booking | null>(null)
-  const [totalInvertido, setTotalInvertido] = useState<number>(0)
   const [citasHoy, setCitasHoy] = useState<number | null>(null)
   const [clientesActivos, setClientesActivos] = useState<number | null>(null)
   const [ingresosMes, setIngresosMes] = useState<number | null>(null)
@@ -39,9 +39,6 @@ export default function DashboardPage() {
             .filter(b => b.status === "CONFIRMADA" || b.status === "PENDIENTE_PAGO")
             .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0] || null
           setProximaCita(next)
-          const completed = allBookings.filter(b => b.status === "COMPLETADA")
-          const invested = completed.reduce((sum, b) => sum + (b.service?.price || 0), 0)
-          setTotalInvertido(invested)
         } else {
           const [bookingsToday, allBookings, usersList] = await Promise.all([
             bookingsApi.list({ date: todayStr() }),
@@ -93,7 +90,7 @@ export default function DashboardPage() {
           <StatsCard title="Total de citas" value={isLoading ? "—" : String(citasTotales ?? "—")} subtitle="Desde tu registro" icon={Calendar} className="stats-card" />
           <StatsCard title="Próxima cita" value={isLoading ? "—" : proximaCita ? formatDate(proximaCita.startTime) : "—"} subtitle={proximaCita ? `${formatTime(proximaCita.startTime)} · ${proximaCita.service?.name || ""}` : "Sin citas pendientes"} icon={Clock} className="stats-card" />
           <StatsCard title="Citas completadas" value={isLoading ? "—" : String(citasTotales ?? "—")} subtitle="Rituales vividos" icon={Sparkles} className="stats-card" />
-          <StatsCard title="Total invertido" value={isLoading ? "—" : `$${totalInvertido.toLocaleString("es-CO")}`} subtitle="En bienestar" icon={DollarSign} className="stats-card" />
+          <TipsCard className="stats-card" />
         </div>
         <MyOrders />
       </div>

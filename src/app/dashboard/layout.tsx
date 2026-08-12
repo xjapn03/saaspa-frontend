@@ -99,7 +99,7 @@ export default function DashboardLayout({
       href: "/dashboard/pedidos",
       label: "Pedidos",
       icon: Package,
-      roles: ["ADMIN"],
+      roles: ["ADMIN", "CLIENTE"],
     },
     {
       href: "/dashboard/cupones",

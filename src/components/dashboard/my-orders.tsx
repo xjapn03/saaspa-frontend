@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ordersApi, type Order, ORDER_STATUS_LABELS, ORDER_STATUS_VARIANTS } from "@/lib/orders-api"
 
-export function MyOrders() {
+export function MyOrders({ showTitle = true }: { showTitle?: boolean }) {
   const [orders, setOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -25,8 +25,8 @@ export function MyOrders() {
   if (isLoading) return <div className="flex items-center justify-center py-12"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
 
   return (
-    <div className="mt-8">
-      <h2 className="font-heading text-lg font-semibold mb-4">Mis pedidos</h2>
+    <div className={showTitle ? "mt-8" : ""}>
+      {showTitle && <h2 className="font-heading text-lg font-semibold mb-4">Mis pedidos</h2>}
       {orders.length === 0 ? (
         <div className="rounded-2xl border border-border bg-card p-8 text-center">
           <Package className="mx-auto size-8 text-muted-foreground" strokeWidth={1.5} />

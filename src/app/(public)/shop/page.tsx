@@ -1,4 +1,5 @@
 import Link from "next/link"
+import type { Metadata } from "next"
 import { Search, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -22,6 +23,12 @@ async function getCategories(): Promise<{ id: string; name: string; slug: string
   const res = await fetch(`${baseUrl}/api/categories`, { cache: "no-store" })
   if (!res.ok) return []
   return res.json()
+}
+
+export const metadata: Metadata = {
+  title: "Tienda",
+  description:
+    "Explora nuestra selección de productos de cuidado personal: cremas, sérums, mascarillas y más para tu rutina de bienestar y belleza.",
 }
 
 interface ShopPageProps {

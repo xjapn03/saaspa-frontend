@@ -1,6 +1,13 @@
 import { ServiceCard } from "@/components/marketing/service-card"
 import { AnimatedGrid } from "@/components/layout/animated-grid"
 import type { Service } from "@/types/service"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Servicios",
+  description:
+    "Descubre nuestros tratamientos de bienestar y estética: faciales, corporales, capilares, masajes terapéuticos y más en Bogotá.",
+}
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 

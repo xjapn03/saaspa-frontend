@@ -1,5 +1,12 @@
 import Link from "next/link"
+import type { Metadata } from "next"
 import { ArrowRight } from "lucide-react"
+
+export const metadata: Metadata = {
+  title: "Políticas",
+  description:
+    "Conoce nuestras políticas de abono, cancelación y puntualidad para garantizar la mejor experiencia en Kamerinos SPA.",
+}
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 

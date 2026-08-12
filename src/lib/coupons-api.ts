@@ -20,10 +20,6 @@ export const couponsApi = {
     return api.post<ValidateCouponResponse>(ENDPOINTS.COUPONS.VALIDATE, { code })
   },
 
-  async markAsUsed(id: string): Promise<Coupon> {
-    return api.post<Coupon>(ENDPOINTS.COUPONS.USE(id))
-  },
-
   async remove(id: string): Promise<void> {
     return api.delete(ENDPOINTS.COUPONS.BY_ID(id))
   },

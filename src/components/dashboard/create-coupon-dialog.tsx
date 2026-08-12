@@ -15,6 +15,7 @@ export function CreateCouponDialog({ open, onOpenChange, onCreated }: CreateCoup
   const [code, setCode] = useState("")
   const [discount, setDiscount] = useState("")
   const [expiresAt, setExpiresAt] = useState("")
+  const [maxUses, setMaxUses] = useState("")
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -30,16 +31,24 @@ export function CreateCouponDialog({ open, onOpenChange, onCreated }: CreateCoup
       return
     }
 
+    const maxUsesNum = maxUses ? parseInt(maxUses, 10) : undefined
+    if (maxUses && (isNaN(maxUsesNum as number) || (maxUsesNum as number) < 1)) {
+      setError("El máximo de usos debe ser un número mayor a 0")
+      return
+    }
+
     setIsSubmitting(true)
     try {
       await couponsApi.create({
         code,
         discount: discountNum,
         expiresAt,
+        maxUses: maxUsesNum,
       })
       setCode("")
       setDiscount("")
       setExpiresAt("")
+      setMaxUses("")
       onOpenChange(false)
       onCreated()
     } catch (err: unknown) {
@@ -119,6 +128,20 @@ export function CreateCouponDialog({ open, onOpenChange, onCreated }: CreateCoup
               onChange={(e) => setExpiresAt(e.target.value)}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
               required
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-muted-foreground">
+              Máximo de usos (opcional)
+            </label>
+            <input
+              type="number"
+              value={maxUses}
+              onChange={(e) => setMaxUses(e.target.value)}
+              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
+              placeholder="Ilimitado si se deja vacío"
+              min={1}
             />
           </div>
 

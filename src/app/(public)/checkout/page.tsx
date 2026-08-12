@@ -250,7 +250,6 @@ export default function CheckoutPage() {
               size="lg"
               onClick={() => {
                 if (wompiConfig && scriptReady) {
-                  document.body.style.overflow = "hidden"
                   new window.WidgetCheckout({
                     currency: wompiConfig.currency,
                     amountInCents: wompiConfig.amountInCents,

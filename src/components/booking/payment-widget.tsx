@@ -60,6 +60,7 @@ export function PaymentWidget({
   useEffect(() => {
     if (!isAuthenticated || !wompiConfig || !scriptReady) return
 
+    const originalOverflow = document.body.style.overflow || ""
     const checkout = new window.WidgetCheckout({
       currency: wompiConfig.currency,
       amountInCents: wompiConfig.amountInCents,
@@ -68,9 +69,8 @@ export function PaymentWidget({
       signature: { integrity: wompiConfig.signature },
     })
 
-    document.body.style.overflow = "hidden"
     checkout.open(function (result: any) {
-      document.body.style.overflow = ""
+      document.body.style.overflow = originalOverflow
       const transaction = result?.transaction
       if (transaction?.status === "APPROVED") {
         setPaymentSuccess(true)
@@ -79,6 +79,13 @@ export function PaymentWidget({
       }
     })
   }, [isAuthenticated, wompiConfig, scriptReady])
+
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = ""
+      document.body.style.height = ""
+    }
+  }, [])
 
   async function handleStartPayment() {
     setError("")

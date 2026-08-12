@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -11,20 +12,24 @@ import { CouponInput } from "./coupon-input"
 
 export function CartIcon() {
   const router = useRouter()
+  const [open, setOpen] = useState(false)
   const { items, subtotal, discount, total, couponCode, couponId, itemCount, updateQuantity, removeItem, removeCoupon, applyCoupon, clearCart } = useCart()
   const { isAuthenticated } = useAuth()
   const formatPrice = (p: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(p)
 
   function handleCheckout() {
-    if (!isAuthenticated) {
-      router.push("/login?redirect=/checkout")
-      return
-    }
-    router.push("/checkout")
+    setOpen(false)
+    setTimeout(() => {
+      if (!isAuthenticated) {
+        router.push("/login?redirect=/checkout")
+        return
+      }
+      router.push("/checkout")
+    }, 150)
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger render={<Button variant="ghost" size="icon-sm" className="relative"><ShoppingBag className="size-5" strokeWidth={1.5} />{itemCount > 0 && <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">{itemCount > 9 ? "9+" : itemCount}</span>}<span className="sr-only">Carrito</span></Button>} />
 
       <SheetContent side="right" className="flex w-full max-w-md flex-col p-0">

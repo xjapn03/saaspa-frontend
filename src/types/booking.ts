@@ -11,6 +11,7 @@ export interface Booking {
   updatedAt: string
   user?: { firstName: string; lastName: string; email: string }
   service?: { name: string; duration: number; price: number }
+  payments?: { id: string; type: string; status: string; amount: number; paidAt: string | null }[]
 }
 
 export type BookingStatus =

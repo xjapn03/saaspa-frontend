@@ -17,6 +17,7 @@ export interface CreateServiceRequest {
   price: number
   duration: number
   category?: string
+  categoryId?: string | null
   imageUrl?: string
 }
 
@@ -26,6 +27,7 @@ export interface UpdateServiceRequest {
   price?: number
   duration?: number
   category?: string
+  categoryId?: string | null
   imageUrl?: string
   isActive?: boolean
 }

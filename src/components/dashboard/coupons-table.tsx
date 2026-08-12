@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Loader2, Trash2, Tag, Check } from "lucide-react"
+import { Loader2, Trash2, Tag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { couponsApi } from "@/lib/coupons-api"
@@ -50,21 +50,6 @@ export function CouponsTable() {
     }
   }
 
-  async function handleMarkUsed(id: string) {
-    setActionId(id)
-    try {
-      await couponsApi.markAsUsed(id)
-      await fetchCoupons()
-    } catch (err: unknown) {
-      const msg = err && typeof err === "object" && "message" in err
-        ? Array.isArray(err.message) ? err.message[0] : err.message
-        : "Error"
-      alert(String(msg))
-    } finally {
-      setActionId(null)
-    }
-  }
-
   function formatDate(iso: string) {
     return new Date(iso).toLocaleDateString("es-CO", {
       day: "numeric", month: "short", year: "numeric",
@@ -77,6 +62,10 @@ export function CouponsTable() {
 
   function isExpired(expiresAt: string) {
     return new Date(expiresAt) < new Date()
+  }
+
+  function isExhausted(c: Coupon) {
+    return c.maxUses !== null && c.usedCount >= c.maxUses
   }
 
   if (isLoading) {
@@ -127,6 +116,7 @@ export function CouponsTable() {
                 <th className="px-4 py-3 font-medium text-muted-foreground">Código</th>
                 <th className="px-4 py-3 font-medium text-muted-foreground">Descuento</th>
                 <th className="hidden px-4 py-3 font-medium text-muted-foreground sm:table-cell">Expira</th>
+                <th className="hidden px-4 py-3 font-medium text-muted-foreground md:table-cell">Usos</th>
                 <th className="px-4 py-3 font-medium text-muted-foreground">Estado</th>
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Acciones</th>
               </tr>
@@ -148,9 +138,14 @@ export function CouponsTable() {
                   <td className="hidden px-4 py-3 text-muted-foreground sm:table-cell">
                     {formatDate(c.expiresAt)}
                   </td>
+                  <td className="hidden px-4 py-3 text-muted-foreground md:table-cell">
+                    {c.usedCount}{c.maxUses !== null ? ` / ${c.maxUses}` : ""}
+                  </td>
                   <td className="px-4 py-3">
-                    {c.isUsed ? (
-                      <Badge variant="secondary">Usado</Badge>
+                    {!c.isActive ? (
+                      <Badge variant="secondary">Inactivo</Badge>
+                    ) : isExhausted(c) ? (
+                      <Badge variant="secondary">Agotado</Badge>
                     ) : isExpired(c.expiresAt) ? (
                       <Badge variant="destructive">Expirado</Badge>
                     ) : (
@@ -159,20 +154,6 @@ export function CouponsTable() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      {!c.isUsed && !isExpired(c.expiresAt) && (
-                        <Button
-                          variant="ghost" size="icon-sm"
-                          disabled={actionId === c.id}
-                          onClick={() => handleMarkUsed(c.id)}
-                          title="Marcar como usado"
-                        >
-                          {actionId === c.id ? (
-                            <Loader2 className="size-4 animate-spin" />
-                          ) : (
-                            <Check className="size-4" strokeWidth={1.5} />
-                          )}
-                        </Button>
-                      )}
                       <Button
                         variant="ghost" size="icon-sm"
                         disabled={actionId === c.id}

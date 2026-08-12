@@ -2,7 +2,10 @@ export interface Coupon {
   id: string
   code: string
   discount: number
-  isUsed: boolean
+  isActive: boolean
+  maxUses: number | null
+  usedCount: number
+  perUserLimit: number
   expiresAt: string
   userId: string | null
   createdAt: string
@@ -13,6 +16,8 @@ export interface CreateCouponRequest {
   code: string
   discount: number
   expiresAt: string
+  maxUses?: number
+  perUserLimit?: number
   userId?: string
 }
 

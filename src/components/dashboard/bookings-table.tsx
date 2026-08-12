@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { bookingsApi } from "@/lib/bookings-api"
 import { paymentsApi } from "@/lib/payments-api"
+import { useToast } from "@/context/toast-provider"
 import { SlotPicker } from "@/components/booking/slot-picker"
 import type { Booking, BookingStatus } from "@/types/booking"
 import type { BalanceResponse } from "@/types/payment"
@@ -40,6 +41,7 @@ function PaymentBadge({ balance }: { balance: BalanceResponse | null; isLoading:
 }
 
 export function BookingsTable() {
+  const { error: showError } = useToast()
   const [bookings, setBookings] = useState<Booking[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
@@ -112,7 +114,7 @@ export function BookingsTable() {
         err && typeof err === "object" && "message" in err
           ? Array.isArray(err.message) ? err.message[0] : err.message
           : "Error"
-      alert(String(msg))
+      showError(String(msg))
     } finally {
       setActionId(null)
     }
@@ -123,12 +125,12 @@ export function BookingsTable() {
     try {
       const config = await paymentsApi.init(bookingId, "SALDO")
       const widget = new window.WidgetCheckout({
-        public_key: config.publicKey,
+        publicKey: config.publicKey,
         currency: config.currency,
-        amount_in_cents: config.amountInCents,
+        amountInCents: config.amountInCents,
         reference: config.reference,
         signature: { integrity: config.signature },
-      })
+      } as any)
       widget.open(async (result: unknown) => {
         const transaction = (result as Record<string, unknown>)?.transaction as Record<string, string> | undefined
         if (transaction?.status === "APPROVED") {
@@ -139,7 +141,7 @@ export function BookingsTable() {
       const msg = err && typeof err === "object" && "message" in err
         ? Array.isArray((err as Record<string, unknown>).message) ? ((err as Record<string, unknown>).message as string[])[0] : (err as Record<string, unknown>).message
         : "Error al iniciar pago"
-      alert(String(msg))
+      showError(String(msg))
     } finally {
       setPayingRemaining((prev) => {
         const next = new Set(prev)

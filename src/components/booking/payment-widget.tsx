@@ -83,12 +83,16 @@ export function PaymentWidget({
     setIsLoading(true)
     setPaymentFailed(false)
     try {
-      const booking = await import("@/lib/bookings-api").then(m =>
-        m.bookingsApi.create({ serviceId, startTime })
-      )
-      setBookingId(booking.id)
+      let currentBookingId = bookingId
+      if (!currentBookingId) {
+        const booking = await import("@/lib/bookings-api").then(m =>
+          m.bookingsApi.create({ serviceId, startTime })
+        )
+        currentBookingId = booking.id
+        setBookingId(booking.id)
+      }
 
-      const config = await paymentsApi.init(booking.id)
+      const config = await paymentsApi.init(currentBookingId, "ABONO")
       setWompiConfig(config)
     } catch (err: unknown) {
       const msg = err && typeof err === "object" && "message" in err

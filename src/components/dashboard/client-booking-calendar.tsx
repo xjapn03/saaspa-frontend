@@ -65,9 +65,9 @@ export function ClientBookingCalendar() {
     try {
       const config = await paymentsApi.init(bookingId, "SALDO")
       const widget = new window.WidgetCheckout({
-        public_key: config.publicKey,
+        publicKey: config.publicKey,
         currency: config.currency,
-        amount_in_cents: config.amountInCents,
+        amountInCents: config.amountInCents,
         reference: config.reference,
         signature: { integrity: config.signature },
       } as any)

@@ -11,7 +11,7 @@ export const paymentsApi = {
     return api.get<BalanceResponse>(ENDPOINTS.BOOKINGS.BALANCE(bookingId))
   },
 
-  async initCart(items: { productId: string; name: string; price: number; quantity: number }[], couponCode?: string, couponId?: string): Promise<PaymentInitResponse> {
-    return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT_CART, { items, couponCode, couponId })
+  async initCart(items: { productId: string; name: string; price: number; quantity: number }[], couponCode?: string, couponId?: string, shipping?: { shippingName?: string; shippingEmail?: string; shippingPhone?: string; shippingAddress?: string; shippingCity?: string; shippingNotes?: string }): Promise<PaymentInitResponse> {
+    return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT_CART, { items, couponCode, couponId, ...shipping })
   },
 }

@@ -1,11 +1,14 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Loader2, ChevronLeft, ChevronRight, MessageCircle, CalendarDays } from "lucide-react"
+import Script from "next/script"
+import { Loader2, ChevronLeft, ChevronRight, MessageCircle, CalendarDays, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { bookingsApi } from "@/lib/bookings-api"
+import { paymentsApi } from "@/lib/payments-api"
 import type { Booking, BookingStatus } from "@/types/booking"
+import type { BalanceResponse } from "@/types/payment"
 
 const STATUS_VARIANTS: Record<BookingStatus, "default" | "secondary" | "outline" | "destructive"> = {
   PENDIENTE_PAGO: "secondary",
@@ -24,6 +27,9 @@ export function ClientBookingCalendar() {
   const today = new Date()
   const [year, setYear] = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth())
+  const [balances, setBalances] = useState<Record<string, BalanceResponse | null>>({})
+  const [payingId, setPayingId] = useState<string | null>(null)
+  const [scriptReady, setScriptReady] = useState(false)
 
   const fetchBookings = useCallback(async () => {
     setIsLoading(true)
@@ -42,6 +48,39 @@ export function ClientBookingCalendar() {
   }, [])
 
   useEffect(() => { fetchBookings() }, [fetchBookings])
+
+  useEffect(() => {
+    bookings.forEach((b) => {
+      if (b.status === "CONFIRMADA" && !balances[b.id]) {
+        bookingsApi.getBalance(b.id).then((bal) => {
+          setBalances((prev) => ({ ...prev, [b.id]: bal }))
+        }).catch(() => {})
+      }
+    })
+  }, [bookings, balances])
+
+  async function handlePayRemaining(bookingId: string) {
+    if (!scriptReady) return
+    setPayingId(bookingId)
+    try {
+      const config = await paymentsApi.init(bookingId, "SALDO")
+      const widget = new window.WidgetCheckout({
+        public_key: config.publicKey,
+        currency: config.currency,
+        amount_in_cents: config.amountInCents,
+        reference: config.reference,
+        signature: { integrity: config.signature },
+      } as any)
+      widget.open(async (result: unknown) => {
+        const tx = (result as any)?.transaction
+        if (tx?.status === "APPROVED") {
+          const bal = await bookingsApi.getBalance(bookingId)
+          setBalances((prev) => ({ ...prev, [bookingId]: bal }))
+        }
+      })
+    } catch { /* gracefully handled by widget */ }
+    finally { setPayingId(null) }
+  }
 
   const firstDay = new Date(year, month, 1)
   const lastDay = new Date(year, month + 1, 0)
@@ -83,6 +122,7 @@ export function ClientBookingCalendar() {
 
   return (
     <div>
+      <Script src="https://checkout.wompi.co/widget.js" onReady={() => setScriptReady(true)} />
       <div className="mb-4 flex items-center justify-between">
         <Button variant="outline" size="icon-sm" onClick={() => { setMonth(m => m === 0 ? (setYear(y => y - 1), 11) : m - 1) }}>
           <ChevronLeft className="size-4" strokeWidth={1.5} />
@@ -149,6 +189,18 @@ export function ClientBookingCalendar() {
                     <Badge variant={STATUS_VARIANTS[b.status]}>
                       {b.status === "PENDIENTE_PAGO" ? "Pendiente" : b.status === "CONFIRMADA" ? "Confirmada" : b.status}
                     </Badge>
+                    {b.status === "CONFIRMADA" && balances[b.id] && balances[b.id]!.remaining > 0 && (
+                      <Button
+                        variant="default"
+                        size="sm"
+                        disabled={payingId === b.id || !scriptReady}
+                        onClick={() => handlePayRemaining(b.id)}
+                        title={`Pagar saldo: $${balances[b.id]!.remaining.toLocaleString("es-CO")}`}
+                      >
+                        {payingId === b.id ? <Loader2 className="size-3 animate-spin" /> : <CreditCard className="size-3" />}
+                        <span className="ml-1 hidden sm:inline">Pagar</span>
+                      </Button>
+                    )}
                     {b.status !== "CANCELADA" && b.status !== "COMPLETADA" && (
                       <Button
                         variant="ghost"

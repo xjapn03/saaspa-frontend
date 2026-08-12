@@ -55,7 +55,8 @@ export default function DashboardPage() {
             const d = new Date(b.startTime)
             return d >= monthStart && (b.status === "CONFIRMADA" || b.status === "COMPLETADA")
           })
-          setIngresosMes(monthBookings.reduce((sum, b) => sum + (b.service?.price || 0), 0))
+          const serviceRevenue = monthBookings.reduce((sum, b) => sum + (Number(b.service?.price) || 0), 0)
+          setIngresosMes(serviceRevenue)
         }
       } catch { /* graceful */ } finally { setIsLoading(false) }
     }

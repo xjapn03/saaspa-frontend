@@ -9,6 +9,7 @@ interface CartItemRowProps {
 }
 
 export function CartItemRow({ item, onUpdateQuantity, onRemove }: CartItemRowProps) {
+  const atMax = item.quantity >= (item.maxQuantity || 999)
   const formatPrice = (p: number) =>
     new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(p)
 
@@ -29,10 +30,11 @@ export function CartItemRow({ item, onUpdateQuantity, onRemove }: CartItemRowPro
             <Minus className="size-3" />
           </Button>
           <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-          <Button variant="outline" size="icon-xs" onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}>
+          <Button variant="outline" size="icon-xs" disabled={atMax} onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)} title={atMax ? `Máximo ${item.maxQuantity} disponibles` : "Aumentar cantidad"}>
             <Plus className="size-3" />
           </Button>
         </div>
+        {atMax && <p className="mt-1 text-[10px] text-muted-foreground">Stock máximo: {item.maxQuantity}</p>}
       </div>
       <Button variant="ghost" size="icon-xs" onClick={() => onRemove(item.productId)} title="Eliminar">
         <X className="size-3" />

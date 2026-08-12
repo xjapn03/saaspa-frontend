@@ -10,6 +10,7 @@ export interface CartItem {
   price: number
   mainImage: string | null
   quantity: number
+  maxQuantity: number
 }
 
 interface CartState {
@@ -101,12 +102,14 @@ export function CartProvider({ children, userId }: { children: ReactNode; userId
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === product.id)
       if (existing) {
+        const maxQty = product.stock
+        if (existing.quantity >= maxQty) return prev
         const newQty = existing.quantity + 1
         if (userId) cartApi.addItem(product.id, newQty).catch(() => {})
         return prev.map((i) => i.productId === product.id ? { ...i, quantity: newQty } : i)
       }
       if (userId) cartApi.addItem(product.id, 1).catch(() => {})
-      return [...prev, { productId: product.id, name: product.name, price: product.price, mainImage: product.mainImage, quantity: 1 }]
+      return [...prev, { productId: product.id, name: product.name, price: product.price, mainImage: product.mainImage, quantity: 1, maxQuantity: product.stock }]
     })
   }, [userId])
 
@@ -120,7 +123,11 @@ export function CartProvider({ children, userId }: { children: ReactNode; userId
       removeItem(productId)
       return
     }
-    setItems((prev) => prev.map((i) => i.productId === productId ? { ...i, quantity } : i))
+    setItems((prev) => prev.map((i) => {
+      if (i.productId !== productId) return i
+      const capped = Math.min(quantity, i.maxQuantity || 999)
+      return { ...i, quantity: capped }
+    }))
     if (userId) cartApi.updateQuantity(productId, quantity).catch(() => {})
   }, [userId, removeItem])
 

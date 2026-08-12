@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import Script from "next/script"
 import { Loader2, Check, X, ChevronLeft, ChevronRight, RefreshCw, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -52,6 +53,7 @@ export function BookingsTable() {
   const [balances, setBalances] = useState<Record<string, BalanceResponse | null>>({})
   const [loadingBalances, setLoadingBalances] = useState<Set<string>>(new Set())
   const [payingRemaining, setPayingRemaining] = useState<Set<string>>(new Set())
+  const [scriptReady, setScriptReady] = useState(false)
 
   const fetchBookings = useCallback(async () => {
     setIsLoading(true)
@@ -232,6 +234,7 @@ export function BookingsTable() {
 
   return (
     <>
+    <Script src="https://checkout.wompi.co/widget.js" onReady={() => setScriptReady(true)} />
     <div>
       <div className="overflow-x-auto rounded-2xl border border-border">
         <table className="w-full text-left text-sm">

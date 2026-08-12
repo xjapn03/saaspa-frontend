@@ -10,6 +10,8 @@ import {
   PAYMENT_STATUS_LABELS,
   PAYMENT_STATUS_VARIANTS,
   PAYMENT_TYPE_LABELS,
+  PAYMENT_METHOD_LABELS,
+  PAYMENT_METHOD_VARIANTS,
 } from "@/lib/payments-api"
 
 const ITEMS_PER_PAGE = 10
@@ -132,6 +134,7 @@ export function PaymentsTable() {
                   <th className="px-4 py-3 font-medium text-muted-foreground">Tipo</th>
                   <th className="px-4 py-3 font-medium text-muted-foreground">Monto</th>
                   <th className="px-4 py-3 font-medium text-muted-foreground">Estado</th>
+                  <th className="hidden px-4 py-3 font-medium text-muted-foreground sm:table-cell">Método</th>
                   <th className="hidden px-4 py-3 font-medium text-muted-foreground md:table-cell">Ref. Wompi</th>
                 </tr>
               </thead>
@@ -154,6 +157,11 @@ export function PaymentsTable() {
                     <td className="px-4 py-3 font-medium">{formatPrice(p.amount)}</td>
                     <td className="px-4 py-3">
                       <Badge variant={PAYMENT_STATUS_VARIANTS[p.status]}>{PAYMENT_STATUS_LABELS[p.status]}</Badge>
+                    </td>
+                    <td className="hidden px-4 py-3 sm:table-cell">
+                      <Badge variant={PAYMENT_METHOD_VARIANTS[p.paymentMethod || "WOMAPI"]}>
+                        {PAYMENT_METHOD_LABELS[p.paymentMethod || "WOMAPI"]}
+                      </Badge>
                     </td>
                     <td className="hidden px-4 py-3 md:table-cell">
                       <p className="font-mono text-xs text-muted-foreground">{p.wompiReference || "—"}</p>

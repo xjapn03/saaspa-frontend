@@ -8,6 +8,7 @@ import { TipsCard } from "@/components/dashboard/tips-card"
 import { MyOrders } from "@/components/dashboard/my-orders"
 import { bookingsApi } from "@/lib/bookings-api"
 import { users as usersApi } from "@/lib/users"
+import { paymentsApi } from "@/lib/payments-api"
 import { useAuth } from "@/context/auth-provider"
 import type { User } from "@/types/auth"
 import type { Booking } from "@/types/booking"
@@ -40,21 +41,15 @@ export default function DashboardPage() {
             .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0] || null
           setProximaCita(next)
         } else {
-          const [bookingsToday, allBookings, usersList] = await Promise.all([
+          const [bookingsToday, allBookings, usersList, revenue] = await Promise.all([
             bookingsApi.list({ date: todayStr() }),
             bookingsApi.list(),
             usersApi.list(),
+            paymentsApi.getRevenue(todayStr().slice(0, 7)),
           ])
           setCitasHoy(bookingsToday.length)
           setClientesActivos(usersList.filter((u: User) => u.isActive).length)
-          const now = new Date()
-          const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
-          const monthBookings = allBookings.filter(b => {
-            const d = new Date(b.startTime)
-            return d >= monthStart && (b.status === "CONFIRMADA" || b.status === "COMPLETADA")
-          })
-          const serviceRevenue = monthBookings.reduce((sum, b) => sum + (Number(b.service?.price) || 0), 0)
-          setIngresosMes(serviceRevenue)
+          setIngresosMes(revenue.total)
         }
       } catch { /* graceful */ } finally { setIsLoading(false) }
     }
@@ -109,7 +104,7 @@ export default function DashboardPage() {
         <StatsCard title="Citas hoy" value={isLoading ? "—" : String(citasHoy ?? "—")} subtitle="Agendadas para hoy" icon={Calendar} className="stats-card" />
         <StatsCard title="Clientes activos" value={isLoading ? "—" : String(clientesActivos ?? "—")} subtitle="Registrados en la plataforma" icon={Users} className="stats-card" />
         <StatsCard title="Servicios" value="6" subtitle="Activos" icon={Sparkles} className="stats-card" />
-        <StatsCard title="Ingresos del mes" value={isLoading ? "—" : ingresosMes != null ? `$${ingresosMes.toLocaleString("es-CO")}` : "—"} subtitle="Confirmados / completados" icon={DollarSign} className="stats-card" />
+        <StatsCard title="Ingresos del mes" value={isLoading ? "—" : ingresosMes != null ? `$${ingresosMes.toLocaleString("es-CO")}` : "—"} subtitle="Pagos netos recibidos" icon={DollarSign} className="stats-card" />
       </div>
     </div>
   )

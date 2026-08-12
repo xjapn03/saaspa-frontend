@@ -198,6 +198,14 @@ export function ClientBookingCalendar() {
                     <p className="text-xs text-muted-foreground">
                       {new Date(b.startTime).toLocaleDateString("es-CO", { day: "numeric", month: "short" })} · {formatTime(b.startTime)}
                     </p>
+                    {b.status === "CONFIRMADA" && balances[b.id] && (
+                      <p className="text-xs mt-0.5">
+                        {balances[b.id]!.remaining > 0
+                          ? <span className="text-destructive">Falta: ${balances[b.id]!.remaining.toLocaleString("es-CO")}</span>
+                          : <span className="text-primary font-medium">Pagado</span>
+                        }
+                      </p>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant={STATUS_VARIANTS[b.status]}>
@@ -261,6 +269,14 @@ export function ClientBookingCalendar() {
                 {b.service?.price && (
                   <p className="text-sm text-muted-foreground">
                     Precio: ${Number(b.service.price).toLocaleString("es-CO")}
+                  </p>
+                )}
+                {b.status === "CONFIRMADA" && balances[b.id] && (
+                  <p className="text-sm mt-0.5">
+                    {balances[b.id]!.remaining > 0
+                      ? <span className="text-destructive font-medium">Saldo pendiente: ${balances[b.id]!.remaining.toLocaleString("es-CO")}</span>
+                      : <span className="text-primary font-medium">Totalmente pagado</span>
+                    }
                   </p>
                 )}
                 {b.notes && <p className="text-sm text-muted-foreground mt-1">Notas: {b.notes}</p>}

@@ -20,6 +20,10 @@ export const servicesApi = {
     return api.get<Service>(ENDPOINTS.SERVICES.BY_ID(id))
   },
 
+  async getBySlug(slug: string): Promise<Service> {
+    return api.get<Service>(ENDPOINTS.SERVICES.PUBLIC_SLUG(slug))
+  },
+
   async create(data: CreateServiceRequest): Promise<Service> {
     return api.post<Service>(ENDPOINTS.SERVICES.LIST, data)
   },

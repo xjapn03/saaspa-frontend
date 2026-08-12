@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Loader2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { couponsApi } from "@/lib/coupons-api"
+import { useToast } from "@/context/toast-provider"
 
 interface CreateCouponDialogProps {
   open: boolean
@@ -12,6 +13,7 @@ interface CreateCouponDialogProps {
 }
 
 export function CreateCouponDialog({ open, onOpenChange, onCreated }: CreateCouponDialogProps) {
+  const { success: showSuccess, error: showError } = useToast()
   const [code, setCode] = useState("")
   const [discount, setDiscount] = useState("")
   const [expiresAt, setExpiresAt] = useState("")
@@ -51,12 +53,14 @@ export function CreateCouponDialog({ open, onOpenChange, onCreated }: CreateCoup
       setMaxUses("")
       onOpenChange(false)
       onCreated()
+      showSuccess("Cupón creado")
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err
           ? Array.isArray(err.message) ? err.message[0] : err.message
           : "Error al crear cupón"
       setError(String(msg))
+      showError(String(msg))
     } finally {
       setIsSubmitting(false)
     }

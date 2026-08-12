@@ -19,6 +19,7 @@ export const ENDPOINTS = {
   },
   SERVICES: {
     PUBLIC: `${API_PREFIX}/services/public`,
+    PUBLIC_SLUG: (slug: string) => `${API_PREFIX}/services/public/${slug}`,
     LIST: `${API_PREFIX}/services`,
     BY_ID: (id: string) => `${API_PREFIX}/services/${id}`,
   },

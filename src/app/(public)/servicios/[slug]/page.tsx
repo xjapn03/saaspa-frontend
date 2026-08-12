@@ -8,22 +8,16 @@ import type { Service } from "@/types/service"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 
-async function getServices(): Promise<Service[]> {
+async function getServiceBySlug(slug: string): Promise<Service | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/services/public`, {
+    const res = await fetch(`${API_BASE}/api/services/public/${encodeURIComponent(slug)}`, {
       next: { revalidate: 60 },
     })
-    if (!res.ok) return []
-    const { data } = await res.json()
-    return data
+    if (!res.ok) return null
+    return await res.json()
   } catch {
-    return []
+    return null
   }
-}
-
-async function getServiceById(id: string): Promise<Service | null> {
-  const services = await getServices()
-  return services.find((s) => s.id === id) || null
 }
 
 interface Props {
@@ -32,7 +26,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params
-  const service = await getServiceById(slug)
+  const service = await getServiceBySlug(slug)
   if (!service) return { title: "Servicio no encontrado" }
   return {
     title: `${service.name} — Kamerinos SPA`,
@@ -42,7 +36,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ServicioDetallePage({ params }: Props) {
   const { slug } = await params
-  const service = await getServiceById(slug)
+  const service = await getServiceBySlug(slug)
 
   if (!service) notFound()
 

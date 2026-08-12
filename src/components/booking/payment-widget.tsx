@@ -68,7 +68,9 @@ export function PaymentWidget({
       signature: { integrity: wompiConfig.signature },
     })
 
+    document.body.style.overflow = "hidden"
     checkout.open(function (result: any) {
+      document.body.style.overflow = ""
       const transaction = result?.transaction
       if (transaction?.status === "APPROVED") {
         setPaymentSuccess(true)

@@ -79,7 +79,7 @@ export function ServicePicker({ onSelect, selectedId }: ServicePickerProps) {
             }`}
           >
             <Badge variant="secondary" className="mb-2">
-              {svc.category || "General"}
+              {svc.categoryRel?.name || "General"}
             </Badge>
             <p className="font-heading text-lg font-semibold">{svc.name}</p>
             <p className="mt-1 text-xs text-muted-foreground line-clamp-2">

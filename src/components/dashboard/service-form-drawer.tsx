@@ -20,7 +20,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: ServiceFormDrawerProps) {
   const isEditing = !!service
   const [form, setForm] = useState<CreateServiceRequest & { isActive?: boolean }>({
-    name: "", description: "", price: 0, duration: 60, category: "", categoryId: "", imageUrl: "", isActive: true,
+    name: "", description: "", price: 0, duration: 60, categoryId: "", imageUrl: "", isActive: true,
   })
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState("")
@@ -36,11 +36,11 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     if (service) {
       setForm({
         name: service.name, description: service.description || "", price: service.price,
-        duration: service.duration, category: service.category || "", categoryId: service.categoryId || "",
+        duration: service.duration, categoryId: service.categoryId || "",
         imageUrl: service.imageUrl || "", isActive: service.isActive,
       })
     } else {
-      setForm({ name: "", description: "", price: 0, duration: 60, category: "", categoryId: "", imageUrl: "", isActive: true })
+      setForm({ name: "", description: "", price: 0, duration: 60, categoryId: "", imageUrl: "", isActive: true })
     }
     setError("")
   }, [service, open])

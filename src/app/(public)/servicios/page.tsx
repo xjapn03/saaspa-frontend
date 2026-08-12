@@ -58,7 +58,7 @@ export default async function ServiciosPage() {
                 <ServiceCard
                   name={svc.name}
                   slug={svc.id}
-                  category={svc.category || "General"}
+                  category={svc.categoryRel?.name || "General"}
                   duration={`${svc.duration} min`}
                   description={svc.description || ""}
                   price={new Intl.NumberFormat("es-CO", {

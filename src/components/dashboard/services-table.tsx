@@ -91,7 +91,7 @@ export function ServicesTable({
 
   const filtered = services.filter((s) => {
     const q = search.toLowerCase()
-    const categoryName = s.categoryRel?.name || s.category || ""
+    const categoryName = s.categoryRel?.name || ""
     return (
       s.name.toLowerCase().includes(q) ||
       categoryName.toLowerCase().includes(q) ||
@@ -194,12 +194,12 @@ export function ServicesTable({
                     <td className="px-4 py-3">
                       <p className="font-medium text-foreground">{svc.name}</p>
                       <p className="text-xs text-muted-foreground sm:hidden">
-                        {svc.categoryRel?.name || svc.category || "Sin categoría"}
+                        {svc.categoryRel?.name || "Sin categoría"}
                       </p>
                     </td>
                     <td className="hidden px-4 py-3 sm:table-cell">
                       <Badge variant="secondary">
-                        {svc.categoryRel?.name || svc.category || "Sin categoría"}
+                        {svc.categoryRel?.name || "Sin categoría"}
                       </Badge>
                     </td>
                     <td className="hidden px-4 py-3 text-muted-foreground md:table-cell">

@@ -111,7 +111,7 @@ export function AdminCreateBooking({ open, onOpenChange, onCreated, users, servi
           {services.map(s => (
             <button key={s.id} onClick={() => { setSelectedService(s); setStep("slot") }}
               className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${selectedService?.id === s.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}>
-              <div className="flex items-center justify-between"><span className="font-medium text-sm">{s.name}</span><Badge variant="secondary">{s.category || "General"}</Badge></div>
+              <div className="flex items-center justify-between"><span className="font-medium text-sm">{s.name}</span><Badge variant="secondary">{s.categoryRel?.name || "General"}</Badge></div>
               <p className="mt-1 text-xs text-muted-foreground">{s.duration} min — ${s.price.toLocaleString("es-CO")}</p>
             </button>
           ))}

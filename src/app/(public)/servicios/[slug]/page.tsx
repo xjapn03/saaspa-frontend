@@ -65,7 +65,7 @@ export default async function ServicioDetallePage({ params }: Props) {
         </Link>
 
         <Badge variant="secondary" className="mb-4">
-          {service.category || "General"}
+          {service.categoryRel?.name || "General"}
         </Badge>
 
         <h1 className="mb-2 font-heading text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">

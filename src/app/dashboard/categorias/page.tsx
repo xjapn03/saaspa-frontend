@@ -11,7 +11,7 @@ export default function CategoriasPage() {
   const [allCategories, setAllCategories] = useState<Category[]>([])
   const [refresh, setRefresh] = useState(0)
 
-  useEffect(() => { categoriesApi.list().then(setAllCategories).catch(() => {}) }, [refresh])
+  useEffect(() => { categoriesApi.list().then(r => setAllCategories(r.data)).catch(() => {}) }, [refresh])
 
   const handleEdit = useCallback((c: Category) => { setEditingCategory(c); setDrawerOpen(true) }, [])
   const handleNew = useCallback(() => { setEditingCategory(null); setDrawerOpen(true) }, [])

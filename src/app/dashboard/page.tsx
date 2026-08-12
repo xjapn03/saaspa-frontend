@@ -49,7 +49,7 @@ export default function DashboardPage() {
             paymentsApi.getRevenue(todayStr().slice(0, 7)),
           ])
           setCitasHoy(todayResult.data.length)
-          setClientesActivos(usersList.filter((u: User) => u.isActive).length)
+          setClientesActivos(usersList.data.filter((u: User) => u.isActive).length)
           setIngresosMes(revenue.total)
         }
       } catch { /* graceful */ } finally { setIsLoading(false) }

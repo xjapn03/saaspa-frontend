@@ -92,7 +92,7 @@ src/
 │   ├── dashboard/              # Componentes del panel admin/cliente
 │   │   ├── stats-card.tsx      # Tarjeta de métrica (título, valor, ícono) con GSAP
 │   │   ├── bookings-table.tsx  # Tabla de citas con acciones (confirmar, cancelar, cobrar Wompi, pago en local, reagendar)
-│   │   ├── client-booking-calendar.tsx # Calendario mensual de citas + click día → modal detalle
+│   │   ├── client-booking-calendar.tsx # Calendario mensual de citas + click día → modal detalle + historial de citas paginado
 │   │   ├── admin-create-booking.tsx # Modal para admin crear cita a nombre de cliente
 │   │   ├── users-table.tsx     # Tabla CRUD usuarios con búsqueda, sort, paginación
 │   │   ├── edit-user-drawer.tsx # Modal crear/editar usuario con email, contraseña, rol
@@ -108,7 +108,7 @@ src/
 │   │   ├── orders-table.tsx    # Tabla de pedidos con filtros y transiciones de estado (Admin)
 │   │   ├── my-orders.tsx       # Sección "Mis pedidos" del cliente
 │   │   ├── tips-card.tsx       # Card de tips de bienestar rotativos con GSAP (cliente)
-│   │   ├── payments-table.tsx  # Tabla de transacciones con filtros + columna método de pago — facturación (Admin)
+│   │   ├── payments-table.tsx  # Tabla de transacciones con filtros + método de pago + trazabilidad de cita (Admin)
 │   │
 │   └── shop/                   # Componentes de tienda
 │       ├── add-to-cart-button.tsx # Botón agregar con validación stock + feedback
@@ -142,6 +142,7 @@ src/
 │   └── use-auth.ts             # Deprecado — re-export de auth-provider
 │
 ├── types/                      # Definiciones de tipos TypeScript
+│   ├── paginated.ts            # PaginatedResult<T> — tipo compartido de paginación
 │   ├── auth.ts                 # User, Role, LoginRequest, RegisterRequest, AuthResponse
 │   ├── booking.ts              # Booking, BookingStatus
 │   ├── service.ts              # Service, CreateServiceRequest

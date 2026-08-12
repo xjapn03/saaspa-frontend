@@ -15,14 +15,16 @@ async function getProducts(search?: string, categorySlug?: string): Promise<Prod
   params.set("limit", "50")
   const res = await fetch(`${baseUrl}/api/products?${params}`, { cache: "no-store" })
   if (!res.ok) return []
-  return res.json()
+  const { data } = await res.json()
+  return data
 }
 
 async function getCategories(): Promise<{ id: string; name: string; slug: string }[]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
   const res = await fetch(`${baseUrl}/api/categories`, { cache: "no-store" })
   if (!res.ok) return []
-  return res.json()
+  const { data } = await res.json()
+  return data
 }
 
 export const metadata: Metadata = {

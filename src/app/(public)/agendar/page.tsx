@@ -37,7 +37,7 @@ function AgendarContent() {
       return
     }
     servicesApi.listPublic().then((list) => {
-      const found = list.find((s) => s.id === preselectedServiceId)
+      const found = list.data.find((s) => s.id === preselectedServiceId)
       if (found) {
         setSelectedService(found)
         setStep("slot")

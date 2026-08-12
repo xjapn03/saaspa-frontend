@@ -16,7 +16,8 @@ async function getServices(): Promise<Service[]> {
       next: { revalidate: 60 },
     })
     if (!res.ok) return []
-    return res.json()
+    const { data } = await res.json()
+    return data
   } catch {
     return []
   }

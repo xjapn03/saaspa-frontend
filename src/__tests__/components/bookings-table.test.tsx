@@ -2,6 +2,10 @@ import { describe, it, expect, beforeEach, vi } from "vitest"
 import { render, screen } from "@testing-library/react"
 import { BookingsTable } from "@/components/dashboard/bookings-table"
 
+vi.mock("@/context/toast-provider", () => ({
+  useToast: () => ({ toast: vi.fn(), success: vi.fn(), error: vi.fn(), info: vi.fn() }),
+}))
+
 vi.mock("@/lib/bookings-api", () => ({
   bookingsApi: {
     list: vi.fn(),

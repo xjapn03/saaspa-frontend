@@ -30,6 +30,7 @@ export const ENDPOINTS = {
     CANCEL: (id: string) => `${API_PREFIX}/bookings/${id}/cancel`,
     CONFIRM: (id: string) => `${API_PREFIX}/bookings/${id}/confirm`,
     COMPLETE: (id: string) => `${API_PREFIX}/bookings/${id}/complete`,
+    REOPEN: (id: string) => `${API_PREFIX}/bookings/${id}/reopen`,
     RESCHEDULE: (id: string) => `${API_PREFIX}/bookings/${id}/reschedule`,
     ADMIN_CREATE: `${API_PREFIX}/bookings/admin`,
   },

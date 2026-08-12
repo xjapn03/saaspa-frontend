@@ -31,7 +31,6 @@ const mockBooking: Booking = {
   createdAt: "", updatedAt: "",
   user: { firstName: "María", lastName: "Gómez", email: "maria@test.com" },
   service: { name: "Facial Premium", duration: 60, price: 100000 },
-  payments: [],
 }
 
 const pendiente: Booking = { ...mockBooking, id: "booking-2", status: "PENDIENTE_PAGO" }

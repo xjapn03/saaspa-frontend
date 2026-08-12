@@ -10,7 +10,7 @@ export interface CartItem {
   price: number
   mainImage: string | null
   quantity: number
-  maxQuantity: number
+  maxQuantity?: number
 }
 
 interface CartState {

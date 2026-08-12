@@ -13,9 +13,9 @@ vi.mock("@/lib/users", () => ({
 import { users } from "@/lib/users"
 
 const mockUsers: User[] = [
-  { id: "1", firstName: "Ana", lastName: "López", email: "ana@test.com", phone: "3001112233", role: "CLIENTE", isActive: true, createdAt: "", updatedAt: "" },
-  { id: "2", firstName: "Carlos", lastName: "Ruiz", email: "carlos@test.com", phone: null, role: "EMPLEADO", isActive: true, createdAt: "", updatedAt: "" },
-  { id: "3", firstName: "Diana", lastName: "Pérez", email: "diana@test.com", phone: "3104445566", role: "ADMIN", isActive: false, createdAt: "", updatedAt: "" },
+  { id: "1", firstName: "Ana", lastName: "López", email: "ana@test.com", phone: "3001112233", role: "CLIENTE", isActive: true, createdAt: "", updatedAt: "", birthday: null, description: null },
+  { id: "2", firstName: "Carlos", lastName: "Ruiz", email: "carlos@test.com", phone: null, role: "EMPLEADO", isActive: true, createdAt: "", updatedAt: "", birthday: null, description: null },
+  { id: "3", firstName: "Diana", lastName: "Pérez", email: "diana@test.com", phone: "3104445566", role: "ADMIN", isActive: false, createdAt: "", updatedAt: "", birthday: null, description: null },
 ]
 
 describe("UsersTable", () => {

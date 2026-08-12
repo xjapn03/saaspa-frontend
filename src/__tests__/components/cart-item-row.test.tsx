@@ -4,7 +4,7 @@ import { CartItemRow } from "@/components/layout/cart-item-row"
 import type { CartItem } from "@/context/cart-provider"
 
 const mockItem: CartItem = {
-  productId: "prod-1", name: "Crema Hidratante", price: 50000, mainImage: null, quantity: 2,
+  productId: "prod-1", name: "Crema Hidratante", price: 50000, mainImage: null, quantity: 2, maxQuantity: 10,
 }
 
 describe("CartItemRow", () => {

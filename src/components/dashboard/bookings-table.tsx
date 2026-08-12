@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Script from "next/script"
-import { Loader2, Check, X, ChevronLeft, ChevronRight, RefreshCw, CreditCard } from "lucide-react"
+import { Loader2, Check, X, ChevronLeft, ChevronRight, RefreshCw, CreditCard, Banknote } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { bookingsApi } from "@/lib/bookings-api"
@@ -56,6 +56,10 @@ export function BookingsTable() {
   const [loadingBalances, setLoadingBalances] = useState<Set<string>>(new Set())
   const [payingRemaining, setPayingRemaining] = useState<Set<string>>(new Set())
   const [scriptReady, setScriptReady] = useState(false)
+  const [manualPayment, setManualPayment] = useState<Booking | null>(null)
+  const [manualMethod, setManualMethod] = useState("EFECTIVO")
+  const [manualLoading, setManualLoading] = useState(false)
+  const [manualError, setManualError] = useState("")
 
   const fetchBookings = useCallback(async () => {
     setIsLoading(true)
@@ -182,6 +186,24 @@ export function BookingsTable() {
       setRescheduleError(String(msg))
     } finally {
       setRescheduling(false)
+    }
+  }
+
+  async function handleManualPayment() {
+    if (!manualPayment) return
+    setManualLoading(true)
+    setManualError("")
+    try {
+      await paymentsApi.manual(manualPayment.id, manualMethod)
+      await fetchBalance(manualPayment.id)
+      setManualPayment(null)
+    } catch (err: unknown) {
+      const msg = err && typeof err === "object" && "message" in err
+        ? Array.isArray((err as any).message) ? (err as any).message[0] : (err as any).message
+        : "Error al registrar pago"
+      setManualError(String(msg))
+    } finally {
+      setManualLoading(false)
     }
   }
 
@@ -322,6 +344,16 @@ export function BookingsTable() {
                             Cobrar
                           </Button>
                         )}
+                        {balances[b.id] && balances[b.id]!.remaining > 0 && (
+                          <Button
+                            variant="ghost" size="sm"
+                            onClick={() => { setManualPayment(b); setManualMethod("EFECTIVO"); }}
+                            title={`Pago en local: $${balances[b.id]!.remaining.toLocaleString("es-CO")}`}
+                          >
+                            <Banknote className="mr-1 size-3" strokeWidth={1.5} />
+                            Local
+                          </Button>
+                        )}
                       </>
                     )}
                     {b.status !== "CANCELADA" && b.status !== "COMPLETADA" && (
@@ -432,6 +464,61 @@ export function BookingsTable() {
                 ) : (
                   "Confirmar reagendamiento"
                 )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {manualPayment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h3 className="font-heading text-lg font-semibold">Pago en local</h3>
+                <p className="text-sm text-muted-foreground">
+                  {manualPayment.user?.firstName} — {manualPayment.service?.name}
+                </p>
+              </div>
+              <Button variant="ghost" size="icon-sm" onClick={() => { setManualPayment(null); setManualError(""); }} title="Cerrar">
+                <X className="size-4" strokeWidth={1.5} />
+              </Button>
+            </div>
+
+            {manualError && (
+              <div className="mb-4 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+                {manualError}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <p className="text-2xl font-semibold">
+                  ${balances[manualPayment.id]?.remaining.toLocaleString("es-CO") || "—"}
+                </p>
+                <p className="text-xs text-muted-foreground">Saldo pendiente por cobrar</p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Método de pago</label>
+                <select
+                  value={manualMethod}
+                  onChange={(e) => setManualMethod(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+                >
+                  <option value="EFECTIVO">Efectivo</option>
+                  <option value="TRANSFERENCIA">Transferencia</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-2">
+              <Button variant="outline" size="sm" onClick={() => { setManualPayment(null); setManualError(""); }} disabled={manualLoading}>
+                Cancelar
+              </Button>
+              <Button size="sm" onClick={handleManualPayment} disabled={manualLoading}>
+                {manualLoading ? <Loader2 className="mr-1 size-3 animate-spin" /> : <Banknote className="mr-1 size-3" />}
+                Confirmar pago
               </Button>
             </div>
           </div>

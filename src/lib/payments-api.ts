@@ -11,6 +11,7 @@ export interface PaymentTransaction {
   status: "PENDIENTE" | "APROBADO" | "RECHAZADO" | "REEMBOLSADO"
   wompiPaymentId: string | null
   wompiReference: string | null
+  paymentMethod: string | null
   paidAt: string | null
   createdAt: string
   updatedAt: string
@@ -40,6 +41,14 @@ export const PAYMENT_TYPE_LABELS: Record<string, string> = {
   ABONO: "Abono", SALDO: "Saldo",
 }
 
+export const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  WOMAPI: "Wompi", EFECTIVO: "Efectivo", TRANSFERENCIA: "Transferencia",
+}
+
+export const PAYMENT_METHOD_VARIANTS: Record<string, "default" | "secondary" | "outline"> = {
+  WOMAPI: "default", EFECTIVO: "secondary", TRANSFERENCIA: "outline",
+}
+
 export const paymentsApi = {
   async init(bookingId: string, type: "ABONO" | "SALDO" = "ABONO"): Promise<PaymentInitResponse> {
     return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT, { bookingId, type })
@@ -62,5 +71,13 @@ export const paymentsApi = {
     if (filters?.dateTo) params.set("dateTo", filters.dateTo)
     const qs = params.toString()
     return api.get<PaymentTransaction[]>(ENDPOINTS.PAYMENTS.TRANSACTIONS + (qs ? `?${qs}` : ""))
+  },
+
+  async manual(bookingId: string, paymentMethod: string): Promise<{ success: boolean; amount: number; totalPaid: number }> {
+    return api.post<{ success: boolean; amount: number; totalPaid: number }>(ENDPOINTS.PAYMENTS.MANUAL, { bookingId, paymentMethod })
+  },
+
+  async getRevenue(month: string): Promise<{ total: number }> {
+    return api.get<{ total: number }>(`${ENDPOINTS.PAYMENTS.REVENUE}?month=${month}`)
   },
 }

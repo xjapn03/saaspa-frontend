@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import gsap from "gsap"
 import { Calendar, Clock, DollarSign, Sparkles, Users } from "lucide-react"
 import { StatsCard } from "@/components/dashboard/stats-card"
+import { MyOrders } from "@/components/dashboard/my-orders"
 import { bookingsApi } from "@/lib/bookings-api"
 import { users as usersApi } from "@/lib/users"
 import { useAuth } from "@/context/auth-provider"
@@ -94,6 +95,7 @@ export default function DashboardPage() {
           <StatsCard title="Citas completadas" value={isLoading ? "—" : String(citasTotales ?? "—")} subtitle="Rituales vividos" icon={Sparkles} className="stats-card" />
           <StatsCard title="Total invertido" value={isLoading ? "—" : `$${totalInvertido.toLocaleString("es-CO")}`} subtitle="En bienestar" icon={DollarSign} className="stats-card" />
         </div>
+        <MyOrders />
       </div>
     )
   }

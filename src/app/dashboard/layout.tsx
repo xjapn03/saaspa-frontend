@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   Ticket,
   Tags,
+  Package,
   Settings,
   LogOut,
   Menu,
@@ -92,6 +93,12 @@ export default function DashboardLayout({
       href: "/dashboard/categorias",
       label: "Categorías",
       icon: Tags,
+      roles: ["ADMIN"],
+    },
+    {
+      href: "/dashboard/pedidos",
+      label: "Pedidos",
+      icon: Package,
       roles: ["ADMIN"],
     },
     {

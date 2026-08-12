@@ -39,10 +39,10 @@ export const ORDER_STATUS_VARIANTS: Record<string, "default" | "secondary" | "ou
 }
 
 export const ordersApi = {
-  async list(): Promise<Order[]> { return api.get<Order[]>(`/api/orders`) },
-  async listMy(): Promise<Order[]> { return api.get<Order[]>(`/api/orders/my`) },
-  async getById(id: string): Promise<Order> { return api.get<Order>(`/api/orders/${id}`) },
+  async list(): Promise<Order[]> { return api.get<Order[]>(ENDPOINTS.ORDERS.LIST) },
+  async listMy(): Promise<Order[]> { return api.get<Order[]>(ENDPOINTS.ORDERS.MY) },
+  async getById(id: string): Promise<Order> { return api.get<Order>(ENDPOINTS.ORDERS.BY_ID(id)) },
   async updateStatus(id: string, status: string): Promise<Order> {
-    return api.patch<Order>(`/api/orders/${id}/status`, { status })
+    return api.patch<Order>(ENDPOINTS.ORDERS.STATUS(id), { status })
   },
 }

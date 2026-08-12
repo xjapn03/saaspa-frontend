@@ -48,7 +48,7 @@ La guía completa de arquitectura de carpetas está en [`docs/STRUCTURE.md`](./d
 src/
 ├── app/            # App Router — (public) con /checkout, (auth), dashboard
 ├── components/     # ui/ (shadcn + CategorySelect), layout/, marketing/, booking/, dashboard/, shop/
-├── lib/            # api.ts, auth.ts, constants.ts, fonts.ts, utils.ts, *-api.ts (9 clients), meta-pixel.ts, animations.ts
+├── lib/            # api.ts, auth.ts, constants.ts, fonts.ts, utils.ts, *-api.ts (10 clients), meta-pixel.ts, animations.ts
 ├── context/        # AuthProvider, CartProvider, CartProviderWithAuth, ToastProvider
 ├── hooks/          # Custom hooks
 ├── types/          # Tipos compartidos (auth, booking, service, payment, coupon, product)

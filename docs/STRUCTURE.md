@@ -34,6 +34,7 @@ src/
 │   │   ├── productos/page.tsx  # CRUD productos con ProductFormDrawer
 │   │   ├── categorias/page.tsx # CRUD categorías con subcategorías
 │   │   ├── cupones/page.tsx    # Gestión de cupones de descuento
+│   │   ├── pedidos/page.tsx    # Gestión de pedidos — transiciones de estado (Admin)
 │   │   └── configuracion/page.tsx # Ajustes de cuenta del usuario
 │   │
 │   ├── layout.tsx              # Root layout: fonts, metadata, ClientProviders, MetaPixel
@@ -96,7 +97,9 @@ src/
 │   │   ├── categories-table.tsx # Tabla CRUD categorías
 │   │   ├── category-form-drawer.tsx # Modal crear/editar categoría con parentId
 │   │   ├── coupons-table.tsx   # Tabla CRUD cupones
-│   │   └── create-coupon-dialog.tsx # Modal crear cupón
+│   │   ├── create-coupon-dialog.tsx # Modal crear cupón
+│   │   ├── orders-table.tsx    # Tabla de pedidos con transiciones de estado (Admin)
+│   │   ├── my-orders.tsx       # Sección "Mis pedidos" del cliente
 │   │
 │   └── shop/                   # Componentes de tienda
 │       ├── add-to-cart-button.tsx # Botón agregar con validación stock + feedback
@@ -117,6 +120,7 @@ src/
 │   ├── payments-api.ts         # Pagos API client (init, getStatus, initCart)
 │   ├── coupons-api.ts          # Cupones API client (list, create, validate, use, update, remove)
 │   ├── cart-api.ts             # Carrito API client (get, addItem, updateQuantity, removeItem, clear, merge)
+│   ├── orders-api.ts           # Pedidos API client (list, listMy, getById, updateStatus)
 │   └── users.ts                # Usuarios API client (list, create, getById, update, remove, getProfile)
 │
 ├── context/                    # React Context Providers

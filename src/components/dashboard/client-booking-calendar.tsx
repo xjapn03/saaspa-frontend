@@ -30,7 +30,7 @@ export function ClientBookingCalendar() {
     setError("")
     try {
       const data = await bookingsApi.list()
-      setBookings(data.filter((b) => b.status === "CONFIRMADA"))
+      setBookings(data.filter((b) => b.status !== "CANCELADA" && b.status !== "COMPLETADA"))
     } catch (err: unknown) {
       const msg = err && typeof err === "object" && "message" in err
         ? Array.isArray(err.message) ? err.message[0] : err.message
@@ -124,7 +124,7 @@ export function ClientBookingCalendar() {
       {bookings.length === 0 && (
         <div className="mt-8 rounded-2xl border border-border bg-card p-8 text-center">
           <CalendarDays className="mx-auto size-8 text-muted-foreground" strokeWidth={1.5} />
-          <p className="mt-3 text-sm text-muted-foreground">Aún no tienes citas agendadas.</p>
+          <p className="mt-3 text-sm text-muted-foreground">Aún no tienes citas activas.</p>
           <Button className="mt-4" size="sm" nativeButton={false} render={<a href="/agendar">Agendar mi primer ritual</a>} />
         </div>
       )}
@@ -134,7 +134,7 @@ export function ClientBookingCalendar() {
           <p className="mb-3 text-sm font-medium text-foreground">Próximas citas</p>
           <div className="space-y-2">
             {bookings
-              .filter((b) => b.status === "CONFIRMADA")
+              .filter((b) => b.status !== "CANCELADA" && b.status !== "COMPLETADA")
               .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
               .slice(0, 5)
               .map((b) => (

@@ -12,7 +12,7 @@ export const productsApi = {
     return api.get<Product[]>(`${ENDPOINTS.PRODUCTS.LIST}${query ? `?${query}` : ""}`)
   },
   async getBySlug(slug: string): Promise<Product> { return api.get<Product>(ENDPOINTS.PRODUCTS.BY_SLUG(slug)) },
-  async create(data: Record<string, unknown>): Promise<Product> { return api.post<Product>(ENDPOINTS.PRODUCTS.ADMIN, data) },
+  async create(data: Record<string, unknown>): Promise<Product> { return api.post<Product>(ENDPOINTS.PRODUCTS.LIST, data) },
   async update(id: string, data: Partial<Product>): Promise<Product> { return api.patch<Product>(ENDPOINTS.PRODUCTS.BY_ID(id), data) },
   async remove(id: string): Promise<void> { return api.delete<void>(ENDPOINTS.PRODUCTS.BY_ID(id)) },
 }

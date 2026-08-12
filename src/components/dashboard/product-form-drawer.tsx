@@ -5,6 +5,7 @@ import { Loader2, Upload, X, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { Separator } from "@/components/ui/separator"
+import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
 import { productsApi } from "@/lib/products-api"
 import { api } from "@/lib/api"
 import type { Product } from "@/types/product"
@@ -45,14 +46,14 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
   const [form, setForm] = useState({ ...EMPTY_FORM })
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState("")
-  const [categories, setCategories] = useState<Category[]>([])
+  const [categories, setCategories] = useState<CategoryOption[]>([])
   const [uploading, setUploading] = useState<"main" | "carousel" | null>(null)
   const mainFileRef = useRef<HTMLInputElement>(null)
   const carouselFileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (open) {
-      fetch(`${API_BASE}/api/categories`).then(r => r.json()).then(setCategories).catch(() => {})
+      fetch(`${API_BASE}/api/categories/tree`).then(r => r.json()).then(setCategories).catch(() => {})
     }
   }, [open])
 
@@ -205,7 +206,7 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
         <div className="grid grid-cols-3 gap-3">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio (COP) *</label>
-            <input name="price" type="number" value={form.price} onChange={handleChange} placeholder="85000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            <input name="price" type="number" min="0" value={form.price} onChange={handleChange} placeholder="85000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 [&::-webkit-inner-spin-button]:appearance-none" />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio anterior</label>
@@ -230,10 +231,7 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Categoría</label>
-          <select name="categoryId" value={form.categoryId} onChange={handleChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20">
-            <option value="">Sin categoría</option>
-            {categories.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
-          </select>
+          <CategorySelect value={form.categoryId} onChange={(v) => setForm(p => ({ ...p, categoryId: v }))} options={categories} placeholder="Sin categoría" />
         </div>
 
         <Separator />

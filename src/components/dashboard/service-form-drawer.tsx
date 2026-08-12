@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
+import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
 import { servicesApi } from "@/lib/services-api"
 import type { Service, CreateServiceRequest } from "@/types/service"
 
@@ -14,43 +15,37 @@ interface ServiceFormDrawerProps {
   onSaved: () => void
 }
 
-export function ServiceFormDrawer({
-  service,
-  open,
-  onOpenChange,
-  onSaved,
-}: ServiceFormDrawerProps) {
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+
+export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: ServiceFormDrawerProps) {
   const isEditing = !!service
   const [form, setForm] = useState<CreateServiceRequest & { isActive?: boolean }>({
-    name: "",
-    description: "",
-    price: 0,
-    duration: 60,
-    category: "",
-    imageUrl: "",
-    isActive: true,
+    name: "", description: "", price: 0, duration: 60, category: "", categoryId: "", imageUrl: "", isActive: true,
   })
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState("")
+  const [categories, setCategories] = useState<CategoryOption[]>([])
+
+  useEffect(() => {
+    if (open) {
+      fetch(`${API_BASE}/api/categories/tree`).then(r => r.json()).then(setCategories).catch(() => {})
+    }
+  }, [open])
 
   useEffect(() => {
     if (service) {
       setForm({
-        name: service.name,
-        description: service.description || "",
-        price: service.price,
-        duration: service.duration,
-        category: service.category || "",
-        imageUrl: service.imageUrl || "",
-        isActive: service.isActive,
+        name: service.name, description: service.description || "", price: service.price,
+        duration: service.duration, category: service.category || "", categoryId: (service as any).categoryId || "",
+        imageUrl: service.imageUrl || "", isActive: service.isActive,
       })
     } else {
-      setForm({ name: "", description: "", price: 0, duration: 60, category: "", imageUrl: "", isActive: true })
+      setForm({ name: "", description: "", price: 0, duration: 60, category: "", categoryId: "", imageUrl: "", isActive: true })
     }
     setError("")
   }, [service, open])
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value, type } = e.target
     setForm((prev) => ({ ...prev, [name]: type === "number" ? Number(value) : value }))
   }
@@ -59,8 +54,9 @@ export function ServiceFormDrawer({
     setError("")
     setIsSaving(true)
     try {
-      if (isEditing && service) await servicesApi.update(service.id, form)
-      else await servicesApi.create(form as CreateServiceRequest)
+      const data: any = { ...form }
+      if (isEditing && service) await servicesApi.update(service.id, data)
+      else await servicesApi.create(data as CreateServiceRequest)
       onSaved()
       onOpenChange(false)
     } catch (err: unknown) {
@@ -79,16 +75,16 @@ export function ServiceFormDrawer({
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Categoría</label>
-          <input name="category" value={form.category} onChange={handleChange} placeholder="Facial, Corporal, Capilar..." className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+          <CategorySelect value={form.categoryId || ""} onChange={(v) => setForm((p) => ({ ...p, categoryId: v }))} options={categories} placeholder="Seleccionar categoría..." />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio (COP)</label>
-            <input name="price" type="number" min={0} step={1000} value={form.price} onChange={handleChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            <input name="price" type="number" min={0} value={form.price} onChange={handleChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Duración (min)</label>
-            <input name="duration" type="number" min={1} step={5} value={form.duration} onChange={handleChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            <input name="duration" type="number" min={1} value={form.duration} onChange={handleChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
           </div>
         </div>
         <div className="space-y-2">

@@ -19,7 +19,8 @@ export default async function ServiciosPage() {
       next: { revalidate: 60 },
     })
     if (res.ok) {
-      services = await res.json()
+      const { data } = await res.json()
+      services = data
     }
   } catch {
     // fallback to empty list

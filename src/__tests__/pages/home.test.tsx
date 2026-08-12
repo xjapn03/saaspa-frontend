@@ -14,26 +14,15 @@ describe("Home page", () => {
   beforeEach(() => {
     server.use(
       http.get(`${API_URL}/api/services/public`, () => {
-        return HttpResponse.json([
-          {
-            id: "svc-1",
-            name: "Facial Premium",
-            description: "Test",
-            price: 180000,
-            duration: 75,
-            isActive: true,
-            category: "Facial",
-            imageUrl: null,
-            createdAt: "2024-01-01",
-            updatedAt: "2024-01-01",
-          },
-        ])
+        return HttpResponse.json({ data: [
+          { id: "svc-1", name: "Facial Premium", description: "Test", price: 180000, duration: 75, isActive: true, category: "Facial", imageUrl: null, createdAt: "2024-01-01", updatedAt: "2024-01-01" },
+        ], total: 1, page: 1, limit: 20, totalPages: 1 })
       }),
       http.get(`${API_URL}/api/products`, () => {
-        return HttpResponse.json([])
+        return HttpResponse.json({ data: [], total: 0, page: 1, limit: 20, totalPages: 0 })
       }),
       http.get(`${API_URL}/api/categories`, () => {
-        return HttpResponse.json([])
+        return HttpResponse.json({ data: [], total: 0, page: 1, limit: 20, totalPages: 0 })
       })
     )
   })

@@ -1,4 +1,5 @@
 import Link from "next/link"
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -12,6 +13,21 @@ async function getProduct(slug: string): Promise<Product | null> {
   const res = await fetch(`${baseUrl}/api/products/${slug}`, { next: { revalidate: 60 } })
   if (!res.ok) return null
   return res.json()
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const product = await getProduct(slug)
+  if (!product) return { title: "Producto no encontrado" }
+  return {
+    title: product.name,
+    description: product.description?.slice(0, 160) || `Compra ${product.name} en Kamerinos SPA. Productos de cuidado personal y bienestar.`,
+    openGraph: {
+      title: product.name,
+      description: product.description?.slice(0, 160) || `Compra ${product.name} en Kamerinos SPA.`,
+      images: product.mainImage ? [{ url: product.mainImage }] : [],
+    },
+  }
 }
 
 export default async function ProductDetail({ params }: { params: Promise<{ slug: string }> }) {

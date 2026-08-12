@@ -32,12 +32,23 @@ export default function AuditoriaPage() {
   const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
+  const [entityFilter, setEntityFilter] = useState("")
+  const [actionFilter, setActionFilter] = useState("")
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
 
   const fetchLogs = useCallback(async (p: number) => {
     setIsLoading(true)
     setError("")
     try {
-      const result = await auditApi.list({ page: p, limit: 50 })
+      const result = await auditApi.list({
+        page: p,
+        limit: 50,
+        entity: entityFilter || undefined,
+        action: actionFilter || undefined,
+        dateFrom: dateFrom || undefined,
+        dateTo: dateTo || undefined,
+      })
       setLogs(result.data)
       setTotal(result.total)
       setTotalPages(result.totalPages)
@@ -50,9 +61,22 @@ export default function AuditoriaPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [entityFilter, actionFilter, dateFrom, dateTo])
 
   useEffect(() => { fetchLogs(page) }, [fetchLogs, page])
+
+  function applyFilters() {
+    setPage(1)
+    fetchLogs(1)
+  }
+
+  function clearFilters() {
+    setEntityFilter("")
+    setActionFilter("")
+    setDateFrom("")
+    setDateTo("")
+    setPage(1)
+  }
 
   function formatDate(iso: string) {
     return new Date(iso).toLocaleString("es-CO", {
@@ -68,6 +92,56 @@ export default function AuditoriaPage() {
           <h1 className="font-heading text-xl font-semibold">Auditoría</h1>
           <p className="text-sm text-muted-foreground">Registro de acciones realizadas por admin y empleados.</p>
         </div>
+      </div>
+
+      <div className="mb-6 flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-card p-4">
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">Entidad</label>
+          <select
+            value={entityFilter}
+            onChange={(e) => setEntityFilter(e.target.value)}
+            className="rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
+          >
+            <option value="">Todas</option>
+            {Object.entries(ENTITY_LABELS).map(([k, v]) => (
+              <option key={k} value={k}>{v}</option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">Acción</label>
+          <select
+            value={actionFilter}
+            onChange={(e) => setActionFilter(e.target.value)}
+            className="rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
+          >
+            <option value="">Todas</option>
+            <option value="POST">POST</option>
+            <option value="PATCH">PATCH</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+          </select>
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">Desde</label>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">Hasta</label>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
+          />
+        </div>
+        <Button size="sm" onClick={applyFilters}>Filtrar</Button>
+        <Button variant="outline" size="sm" onClick={clearFilters}>Limpiar</Button>
       </div>
 
       {isLoading ? (

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { Separator } from "@/components/ui/separator"
 import { categoriesApi, type Category } from "@/lib/categories-api"
+import { useToast } from "@/context/toast-provider"
 
 interface CategoryFormDrawerProps {
   category: Category | null
@@ -26,6 +27,7 @@ const EMPTY_FORM = {
 
 export function CategoryFormDrawer({ category, allCategories, open, onOpenChange, onSaved }: CategoryFormDrawerProps) {
   const isCreating = !category
+  const { success: showSuccess, error: showError } = useToast()
   const [form, setForm] = useState({ ...EMPTY_FORM })
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState("")
@@ -90,11 +92,13 @@ export function CategoryFormDrawer({ category, allCategories, open, onOpenChange
       }
       onSaved()
       onOpenChange(false)
+      showSuccess(isCreating ? "Categoría creada" : "Categoría actualizada")
     } catch (err: unknown) {
       const msg = err && typeof err === "object" && "message" in err
         ? Array.isArray((err as any).message) ? (err as any).message[0] : (err as any).message
         : "Error al guardar categoría"
       setError(String(msg))
+      showError(String(msg))
     } finally {
       setIsSaving(false)
     }

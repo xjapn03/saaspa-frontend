@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
 import { servicesApi } from "@/lib/services-api"
+import { useToast } from "@/context/toast-provider"
 import type { Service, CreateServiceRequest } from "@/types/service"
 
 interface ServiceFormDrawerProps {
@@ -19,6 +20,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 
 export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: ServiceFormDrawerProps) {
   const isEditing = !!service
+  const { success: showSuccess, error: showError } = useToast()
   const [form, setForm] = useState<CreateServiceRequest & { isActive?: boolean }>({
     name: "", description: "", price: 0, duration: 60, categoryId: "", imageUrl: "", isActive: true,
   })
@@ -60,9 +62,11 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
       else await servicesApi.create(data as CreateServiceRequest)
       onSaved()
       onOpenChange(false)
+      showSuccess(isEditing ? "Servicio actualizado" : "Servicio creado")
     } catch (err: unknown) {
       const msg = err && typeof err === "object" && "message" in err ? (Array.isArray(err.message) ? err.message[0] : err.message) : "Error al guardar"
       setError(String(msg))
+      showError(String(msg))
     } finally { setIsSaving(false) }
   }
 

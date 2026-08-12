@@ -57,7 +57,7 @@ export default async function ServiciosPage() {
               <div key={svc.id} className="grid-card">
                 <ServiceCard
                   name={svc.name}
-                  slug={svc.id}
+                  slug={svc.slug}
                   category={svc.categoryRel?.name || "General"}
                   duration={`${svc.duration} min`}
                   description={svc.description || ""}

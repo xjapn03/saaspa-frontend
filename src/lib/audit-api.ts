@@ -13,9 +13,12 @@ export interface AuditLogEntry {
 }
 
 export const auditApi = {
-  async list(params?: { entity?: string; page?: number; limit?: number }): Promise<PaginatedResult<AuditLogEntry>> {
+  async list(params?: { entity?: string; action?: string; dateFrom?: string; dateTo?: string; page?: number; limit?: number }): Promise<PaginatedResult<AuditLogEntry>> {
     const qs = new URLSearchParams()
     if (params?.entity) qs.set("entity", params.entity)
+    if (params?.action) qs.set("action", params.action)
+    if (params?.dateFrom) qs.set("dateFrom", params.dateFrom)
+    if (params?.dateTo) qs.set("dateTo", params.dateTo)
     if (params?.page) qs.set("page", String(params.page))
     if (params?.limit) qs.set("limit", String(params.limit))
     const query = qs.toString()

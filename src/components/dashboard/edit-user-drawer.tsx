@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { Separator } from "@/components/ui/separator"
 import { users as usersApi } from "@/lib/users"
+import { useToast } from "@/context/toast-provider"
 import type { User, Role } from "@/types/auth"
 
 const ROLES: { value: Role; label: string }[] = [
@@ -44,6 +45,7 @@ export function EditUserDrawer({
   hideRole = false,
 }: EditUserDrawerProps) {
   const isCreating = !user
+  const { success: showSuccess, error: showError } = useToast()
   const [form, setForm] = useState({ ...EMPTY_FORM, role: defaultRole })
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState("")
@@ -104,6 +106,7 @@ export function EditUserDrawer({
       }
       onSaved()
       onOpenChange(false)
+      showSuccess(isCreating ? "Usuario creado" : "Usuario actualizado")
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err
@@ -112,6 +115,7 @@ export function EditUserDrawer({
             : err.message
           : "Error al guardar"
       setError(String(msg))
+      showError(String(msg))
     } finally {
       setIsSaving(false)
     }

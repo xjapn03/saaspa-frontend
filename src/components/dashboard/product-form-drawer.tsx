@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
 import { productsApi } from "@/lib/products-api"
 import { api } from "@/lib/api"
+import { useToast } from "@/context/toast-provider"
 import type { Product } from "@/types/product"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
@@ -43,6 +44,7 @@ interface Category {
 
 export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: ProductFormDrawerProps) {
   const isCreating = !product
+  const { success: showSuccess, error: showError } = useToast()
   const [form, setForm] = useState({ ...EMPTY_FORM })
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState("")
@@ -167,11 +169,13 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
       }
       onSaved()
       onOpenChange(false)
+      showSuccess(isCreating ? "Producto creado" : "Producto actualizado")
     } catch (err: unknown) {
       const msg = err && typeof err === "object" && "message" in err
         ? Array.isArray((err as any).message) ? (err as any).message[0] : (err as any).message
         : "Error al guardar producto"
       setError(String(msg))
+      showError(String(msg))
     } finally {
       setIsSaving(false)
     }

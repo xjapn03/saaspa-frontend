@@ -12,6 +12,10 @@ export const users = {
     return api.get<User[]>(`${ENDPOINTS.USERS.LIST}${query ? `?${query}` : ""}`)
   },
 
+  async create(data: { firstName: string; lastName: string; email: string; password: string; phone?: string; role?: string }): Promise<User> {
+    return api.post<User>(ENDPOINTS.USERS.LIST, data)
+  },
+
   async getById(id: string): Promise<User> {
     return api.get<User>(ENDPOINTS.USERS.BY_ID(id))
   },

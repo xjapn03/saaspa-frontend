@@ -45,7 +45,7 @@ export default function ClientesPage() {
 
       <UsersTable onEdit={handleEdit} onView={handleView} onAdd={handleAdd} refreshKey={refreshKey} />
 
-      <EditUserDrawer user={editingUser} open={drawerOpen} onOpenChange={setDrawerOpen} onSaved={handleSaved} />
+      <EditUserDrawer user={editingUser} open={drawerOpen} onOpenChange={setDrawerOpen} onSaved={handleSaved} defaultRole="CLIENTE" hideRole={true} />
       <UserDetailDrawer user={viewUser} open={viewOpen} onOpenChange={setViewOpen} />
     </div>
   )

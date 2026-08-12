@@ -12,6 +12,14 @@ export const productsApi = {
     const query = qs.toString()
     return api.get<PaginatedResult<Product>>(`${ENDPOINTS.PRODUCTS.LIST}${query ? `?${query}` : ""}`)
   },
+  async listAdmin(params?: Record<string, string | number | boolean>): Promise<PaginatedResult<Product>> {
+    const qs = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([k, v]) => { if (v !== undefined) qs.set(k, String(v)) })
+    }
+    const query = qs.toString()
+    return api.get<PaginatedResult<Product>>(`${ENDPOINTS.PRODUCTS.ADMIN}${query ? `?${query}` : ""}`)
+  },
   async getBySlug(slug: string): Promise<Product> { return api.get<Product>(ENDPOINTS.PRODUCTS.BY_SLUG(slug)) },
   async create(data: Record<string, unknown>): Promise<Product> { return api.post<Product>(ENDPOINTS.PRODUCTS.LIST, data) },
   async update(id: string, data: Partial<Product>): Promise<Product> { return api.patch<Product>(ENDPOINTS.PRODUCTS.BY_ID(id), data) },

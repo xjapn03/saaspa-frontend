@@ -8,7 +8,7 @@ vi.mock("@/context/toast-provider", () => ({
 }))
 
 vi.mock("@/lib/products-api", () => ({
-  productsApi: { list: vi.fn(), remove: vi.fn() },
+  productsApi: { list: vi.fn(), listAdmin: vi.fn(), remove: vi.fn() },
 }))
 
 import { productsApi } from "@/lib/products-api"
@@ -23,21 +23,21 @@ describe("ProductsTable", () => {
   const onNew = vi.fn()
 
   it("should render products with name and price", async () => {
-    vi.mocked(productsApi.list).mockResolvedValue({ data: mockProducts, total: 2, page: 1, limit: 20, totalPages: 1 })
+    vi.mocked(productsApi.listAdmin).mockResolvedValue({ data: mockProducts, total: 2, page: 1, limit: 20, totalPages: 1 })
     render(<ProductsTable onEdit={onEdit} onNew={onNew} refreshKey={0} />)
     await screen.findByText("Crema")
     expect(screen.getByText("Serum")).toBeInTheDocument()
   })
 
   it("should render active/inactive badges", async () => {
-    vi.mocked(productsApi.list).mockResolvedValue({ data: mockProducts, total: 2, page: 1, limit: 20, totalPages: 1 })
+    vi.mocked(productsApi.listAdmin).mockResolvedValue({ data: mockProducts, total: 2, page: 1, limit: 20, totalPages: 1 })
     render(<ProductsTable onEdit={onEdit} onNew={onNew} refreshKey={0} />)
     await screen.findByText("Activo")
     expect(screen.getByText("Inactivo")).toBeInTheDocument()
   })
 
   it("should show error state", async () => {
-    vi.mocked(productsApi.list).mockRejectedValue(new Error("Fail"))
+    vi.mocked(productsApi.listAdmin).mockRejectedValue(new Error("Fail"))
     render(<ProductsTable onEdit={onEdit} onNew={onNew} refreshKey={0} />)
     await screen.findByText("Error al cargar productos")
   })

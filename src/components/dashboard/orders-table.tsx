@@ -34,13 +34,13 @@ export function OrdersTable() {
   const fetchOrders = useCallback(async () => {
     setIsLoading(true); setError("")
     try {
-      const data = await ordersApi.list({
+      const result = await ordersApi.list({
         search: search || undefined,
         status: statusFilter || undefined,
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
       })
-      setOrders(data)
+      setOrders(result.data)
     } catch {
       setError("Error al cargar pedidos")
     } finally {

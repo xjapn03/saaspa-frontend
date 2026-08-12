@@ -6,7 +6,7 @@ import { Loader2, ChevronLeft, ChevronRight, MessageCircle, CalendarDays, Credit
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Modal } from "@/components/ui/modal"
-import { bookingsApi, type PaginatedBookingResult } from "@/lib/bookings-api"
+import { bookingsApi } from "@/lib/bookings-api"
 import { paymentsApi } from "@/lib/payments-api"
 import type { Booking, BookingStatus } from "@/types/booking"
 import type { BalanceResponse } from "@/types/payment"

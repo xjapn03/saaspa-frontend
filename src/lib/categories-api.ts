@@ -1,5 +1,6 @@
 import { api } from "./api"
 import { ENDPOINTS } from "./constants"
+import type { PaginatedResult } from "@/types/paginated"
 
 export interface Category {
   id: string
@@ -16,8 +17,8 @@ export interface Category {
 }
 
 export const categoriesApi = {
-  async list(): Promise<Category[]> {
-    return api.get<Category[]>(ENDPOINTS.CATEGORIES.LIST)
+  async list(): Promise<PaginatedResult<Category>> {
+    return api.get<PaginatedResult<Category>>(ENDPOINTS.CATEGORIES.LIST)
   },
   async tree(): Promise<Category[]> {
     return api.get<Category[]>(ENDPOINTS.CATEGORIES.TREE)

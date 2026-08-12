@@ -40,8 +40,8 @@ export function ServicesTable({
     setIsLoading(true)
     setError("")
     try {
-      const data = await servicesApi.list()
-      setServices(data)
+      const result = await servicesApi.list()
+      setServices(result.data)
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err

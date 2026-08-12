@@ -27,8 +27,8 @@ export function ProductsTable({ onEdit, onNew, refreshKey }: ProductsTableProps)
     setIsLoading(true)
     setError("")
     try {
-      const data = await productsApi.list({ limit: 100 })
-      setProducts(data)
+      const result = await productsApi.list({ limit: 100 })
+      setProducts(result.data)
     } catch (err: unknown) {
       setError("Error al cargar productos")
     } finally {

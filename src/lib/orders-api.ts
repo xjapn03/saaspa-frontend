@@ -1,5 +1,6 @@
 import { api } from "./api"
 import { ENDPOINTS } from "./constants"
+import type { PaginatedResult } from "@/types/paginated"
 
 export interface OrderItem {
   id: string
@@ -46,16 +47,16 @@ export interface OrderFilters {
 }
 
 export const ordersApi = {
-  async list(filters?: OrderFilters): Promise<Order[]> {
+  async list(filters?: OrderFilters): Promise<PaginatedResult<Order>> {
     const params = new URLSearchParams()
     if (filters?.search) params.set("search", filters.search)
     if (filters?.status) params.set("status", filters.status)
     if (filters?.dateFrom) params.set("dateFrom", filters.dateFrom)
     if (filters?.dateTo) params.set("dateTo", filters.dateTo)
     const qs = params.toString()
-    return api.get<Order[]>(ENDPOINTS.ORDERS.LIST + (qs ? `?${qs}` : ""))
+    return api.get<PaginatedResult<Order>>(ENDPOINTS.ORDERS.LIST + (qs ? `?${qs}` : ""))
   },
-  async listMy(): Promise<Order[]> { return api.get<Order[]>(ENDPOINTS.ORDERS.MY) },
+  async listMy(): Promise<PaginatedResult<Order>> { return api.get<PaginatedResult<Order>>(ENDPOINTS.ORDERS.MY) },
   async getById(id: string): Promise<Order> { return api.get<Order>(ENDPOINTS.ORDERS.BY_ID(id)) },
   async updateStatus(id: string, status: string): Promise<Order> {
     return api.patch<Order>(ENDPOINTS.ORDERS.STATUS(id), { status })

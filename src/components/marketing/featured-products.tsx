@@ -15,7 +15,7 @@ export function FeaturedProducts() {
 
   useEffect(() => {
     productsApi.list({ featured: true, limit: 4 })
-      .then(setProducts)
+      .then((result) => setProducts(result.data))
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])

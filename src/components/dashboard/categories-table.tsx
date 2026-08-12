@@ -25,8 +25,8 @@ export function CategoriesTable({ onEdit, onNew, refreshKey }: CategoriesTablePr
     setIsLoading(true)
     setError("")
     try {
-      const data = await categoriesApi.list()
-      setCategories(data)
+      const result = await categoriesApi.list()
+      setCategories(result.data)
     } catch {
       setError("Error al cargar categorías")
     } finally {

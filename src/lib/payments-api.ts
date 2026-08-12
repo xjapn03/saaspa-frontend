@@ -1,4 +1,5 @@
 import type { PaymentInitResponse, BalanceResponse } from "@/types/payment"
+import type { PaginatedResult } from "@/types/paginated"
 import { api } from "./api"
 import { ENDPOINTS } from "./constants"
 
@@ -62,7 +63,7 @@ export const paymentsApi = {
     return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT_CART, { items, couponCode, couponId, ...shipping })
   },
 
-  async listTransactions(filters?: PaymentTransactionFilters): Promise<PaymentTransaction[]> {
+  async listTransactions(filters?: PaymentTransactionFilters): Promise<PaginatedResult<PaymentTransaction>> {
     const params = new URLSearchParams()
     if (filters?.search) params.set("search", filters.search)
     if (filters?.type) params.set("type", filters.type)
@@ -70,7 +71,7 @@ export const paymentsApi = {
     if (filters?.dateFrom) params.set("dateFrom", filters.dateFrom)
     if (filters?.dateTo) params.set("dateTo", filters.dateTo)
     const qs = params.toString()
-    return api.get<PaymentTransaction[]>(ENDPOINTS.PAYMENTS.TRANSACTIONS + (qs ? `?${qs}` : ""))
+    return api.get<PaginatedResult<PaymentTransaction>>(ENDPOINTS.PAYMENTS.TRANSACTIONS + (qs ? `?${qs}` : ""))
   },
 
   async manual(bookingId: string, paymentMethod: string): Promise<{ success: boolean; amount: number; totalPaid: number }> {

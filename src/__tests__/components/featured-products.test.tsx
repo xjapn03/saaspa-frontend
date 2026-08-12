@@ -27,7 +27,7 @@ describe("FeaturedProducts", () => {
   })
 
   it("should render products after data loads", async () => {
-    vi.mocked(productsApi.list).mockResolvedValue(mockProducts)
+    vi.mocked(productsApi.list).mockResolvedValue({ data: mockProducts, total: 2, page: 1, limit: 20, totalPages: 1 })
     render(<FeaturedProducts />)
     await screen.findByText("Crema")
     expect(screen.getByText("Serum")).toBeInTheDocument()

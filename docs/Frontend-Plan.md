@@ -68,6 +68,8 @@
 | 40 | **SEO + Preloader** | Completo | metadata OG/twitter, JSON-LD (LocalBusiness, WebSite, Organization), sitemap, robots.txt, metadata en páginas públicas, Speculation Rules (prerender nativo), Preloader con fade-out + curtain |
 | 41 | **Revenue + Pago local** | Completo | KPI ingresos del mes con revenue real (todos los pagos aprobados), botón pago en local (efectivo/transferencia) en admin bookings, balance visible en calendario cliente, columna método de pago en facturación |
 | 42 | **Type fixes build** | Completo | Correcciones de tipo en tests, service types, cart item y booking types — `npm run build` pasa sin errores |
+| 43 | **Historial + Trazabilidad + Paginación inicial** | Completo | Historial de citas pasadas con paginación en calendario cliente, trazabilidad de pagos (columna Cita #id en facturación), índices DB, paginación server-side en bookings |
+| 44 | **Paginación universal** | Completo | Tipo `PaginatedResult<T>` compartido en frontend, todos los API clients y componentes de tabla adaptados al nuevo formato paginado |
 
 ## 3. Pendiente (orden de prioridad)
 

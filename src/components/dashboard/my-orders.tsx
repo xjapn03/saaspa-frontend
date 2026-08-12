@@ -12,7 +12,7 @@ export function MyOrders({ showTitle = true }: { showTitle?: boolean }) {
 
   const fetchOrders = useCallback(async () => {
     setIsLoading(true)
-    try { setOrders(await ordersApi.listMy()) }
+    try { setOrders((await ordersApi.listMy()).data) }
     catch {}
     finally { setIsLoading(false) }
   }, [])

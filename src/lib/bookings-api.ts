@@ -1,25 +1,18 @@
 import type { Booking } from "@/types/booking"
 import type { BalanceResponse } from "@/types/payment"
+import type { PaginatedResult } from "@/types/paginated"
 import { api } from "./api"
 import { ENDPOINTS } from "./constants"
 
-export interface PaginatedBookingResult {
-  data: Booking[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
-}
-
 export const bookingsApi = {
-  async list(params?: { date?: string; status?: string; page?: number; limit?: number }): Promise<PaginatedBookingResult> {
+  async list(params?: { date?: string; status?: string; page?: number; limit?: number }): Promise<PaginatedResult<Booking>> {
     const qs = new URLSearchParams()
     if (params?.date) qs.set("date", params.date)
     if (params?.status) qs.set("status", params.status)
     if (params?.page) qs.set("page", String(params.page))
     if (params?.limit) qs.set("limit", String(params.limit))
     const query = qs.toString()
-    return api.get<PaginatedBookingResult>(`${ENDPOINTS.BOOKINGS.LIST}${query ? `?${query}` : ""}`)
+    return api.get<PaginatedResult<Booking>>(`${ENDPOINTS.BOOKINGS.LIST}${query ? `?${query}` : ""}`)
   },
 
   async getById(id: string): Promise<Booking> {

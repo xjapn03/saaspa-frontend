@@ -1,10 +1,11 @@
 import type { Coupon, CreateCouponRequest, ValidateCouponResponse } from "@/types/coupon"
+import type { PaginatedResult } from "@/types/paginated"
 import { api } from "./api"
 import { ENDPOINTS } from "./constants"
 
 export const couponsApi = {
-  async list(): Promise<Coupon[]> {
-    return api.get<Coupon[]>(ENDPOINTS.COUPONS.LIST)
+  async list(): Promise<PaginatedResult<Coupon>> {
+    return api.get<PaginatedResult<Coupon>>(ENDPOINTS.COUPONS.LIST)
   },
 
   async getById(id: string): Promise<Coupon> {

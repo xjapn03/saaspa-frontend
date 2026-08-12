@@ -27,7 +27,7 @@ describe("UsersTable", () => {
   })
 
   it("should show role badges", async () => {
-    vi.mocked(users.list).mockResolvedValue(mockUsers)
+    vi.mocked(users.list).mockResolvedValue({ data: mockUsers, total: 3, page: 1, limit: 20, totalPages: 1 })
     render(<UsersTable onEdit={onEdit} refreshKey={0} />)
     await screen.findByText("Administrador")
     expect(screen.getByText("Empleado")).toBeInTheDocument()
@@ -35,14 +35,14 @@ describe("UsersTable", () => {
   })
 
   it("should render Add button when onAdd provided", async () => {
-    vi.mocked(users.list).mockResolvedValue([])
+    vi.mocked(users.list).mockResolvedValue({ data: [], total: 0, page: 1, limit: 20, totalPages: 0 })
     render(<UsersTable onEdit={onEdit} onAdd={onAdd} refreshKey={0} />)
     await screen.findByText("Añadir")
     expect(screen.getByText("Añadir")).toBeInTheDocument()
   })
 
   it("should render search input", async () => {
-    vi.mocked(users.list).mockResolvedValue([])
+    vi.mocked(users.list).mockResolvedValue({ data: [], total: 0, page: 1, limit: 20, totalPages: 0 })
     render(<UsersTable onEdit={onEdit} refreshKey={0} />)
     await screen.findByPlaceholderText("Buscar por nombre, email o teléfono...")
   })

@@ -33,14 +33,14 @@ export function PaymentsTable() {
   const fetchTransactions = useCallback(async () => {
     setIsLoading(true); setError("")
     try {
-      const data = await paymentsApi.listTransactions({
+      const result = await paymentsApi.listTransactions({
         search: search || undefined,
         type: typeFilter || undefined,
         status: statusFilter || undefined,
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
       })
-      setTransactions(data)
+      setTransactions(result.data)
     } catch {
       setError("Error al cargar transacciones")
     } finally {

@@ -41,8 +41,8 @@ export function UsersTable({ onEdit, onView, onAdd, refreshKey, roleFilter }: Us
     setIsLoading(true)
     setError("")
     try {
-      const data = await usersApi.list({ role: roleFilter, sortBy: "firstName", order: "asc" })
-      setUsers(data)
+      const result = await usersApi.list({ role: roleFilter, sortBy: "firstName", order: "asc" })
+      setUsers(result.data)
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err

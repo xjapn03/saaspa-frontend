@@ -19,8 +19,8 @@ export function CouponsTable() {
     setIsLoading(true)
     setError("")
     try {
-      const data = await couponsApi.list()
-      setCoupons(data)
+      const result = await couponsApi.list()
+      setCoupons(result.data)
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err

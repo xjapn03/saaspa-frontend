@@ -38,10 +38,14 @@ src/
 │   │   ├── facturas/page.tsx   # Trazabilidad de pagos/abonos/compras (solo ADMIN) |
 │   │   └── configuracion/page.tsx # Ajustes de cuenta del usuario
 │   │
-│   ├── layout.tsx              # Root layout: fonts, metadata, ClientProviders, MetaPixel
+│   ├── layout.tsx              # Root layout: fonts, metadata (OG/twitter), JsonLd, ClientProviders, SpeculationRules, MetaPixel
+│   ├── sitemap.ts               # Sitemap dinámico (Next.js generateSitemaps)
+│   ├── robots.ts                # Robots.txt (Next.js Robots)
 │   └── globals.css             # Tokens de diseño (oklch) + estilos base Maia + number input fix
 │
 ├── components/
+│   ├── common/                  # Componentes compartidos
+│   │   └── SpeculationRules.tsx # Speculation Rules API (prerender nativo del navegador)
 │   ├── ui/                     # shadcn/ui (Base UI) — NO editar manual
 │   │   ├── button.tsx          # Base UI button con variantes Maia + cursor-pointer
 │   │   ├── card.tsx            # Card, CardHeader, CardContent, CardTitle, CardFooter
@@ -59,12 +63,14 @@ src/
 │   │   ├── navbar-mobile-auth.tsx   # Auth en menú mobile
 │   │   ├── footer.tsx          # Footer con filosofía, enlaces y contacto
 │   │   ├── whatsapp-float-button.tsx # Botón flotante WhatsApp con GSAP
-│   │   ├── client-providers.tsx # AuthProvider + CartProvider + ToastProvider + ToastContainer
+│   │   ├── client-providers.tsx # AuthProvider + CartProvider + ToastProvider + Preloader + ToastContainer
+│   │   ├── preloader.tsx        # Pantalla de carga con fade-out + slide-up curtain (GSAP)
 │   │   ├── toast-container.tsx # Render de toasts activos suscrito al event bus
 │   │   ├── cart-icon.tsx       # Ícono carrito + Sheet con items + coupon + navega a /checkout
 │   │   ├── cart-item-row.tsx   # Fila de item en carrito (imagen, nombre, ± cantidad, eliminar)
 │   │   ├── coupon-input.tsx    # Input + validación de cupón con couponsApi
 │   │   ├── meta-pixel-script.tsx # Meta Pixel injection + ctwa_clid capture
+│   │   ├── json-ld.tsx         # Structured data JSON-LD (LocalBusiness, WebSite, Organization)
 │   │   └── animated-grid.tsx   # Wrapper con GSAP stagger reveal para grids
 │   │
 │   ├── marketing/              # Secciones del sitio público

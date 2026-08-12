@@ -65,6 +65,7 @@
 | 37 | **Calendario interactivo** | Completo | `ClientBookingCalendar` — click en día abre modal con detalle de citas, acciones (pagar saldo, WhatsApp) |
 | 38 | **Facturación admin** | Completo | `PaymentsTable` + `/dashboard/facturas` — trazabilidad completa de pagos/abonos/compras con filtros |
 | 39 | **CI/CD** | Completo | GitHub Actions: backend (lint+typecheck+tests) + frontend (tests+build) |
+| 40 | **SEO + Preloader** | Completo | metadata OG/twitter, JSON-LD (LocalBusiness, WebSite, Organization), sitemap, robots.txt, metadata en páginas públicas, Speculation Rules (prerender nativo), Preloader con fade-out + curtain |
 
 ## 3. Pendiente (orden de prioridad)
 
@@ -74,6 +75,7 @@
 | 2 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
 | 3 | SSL/Certbot con Nginx en producción | VPS + dominio |
 | 4 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
+| 5 | Backups automatizados en VPS | Scripts ya creados, falta activar cron |
 
 ## 4. Arquitectura de carpetas
 

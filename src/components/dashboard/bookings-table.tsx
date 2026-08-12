@@ -131,7 +131,9 @@ export function BookingsTable() {
         reference: config.reference,
         signature: { integrity: config.signature },
       } as any)
+      document.body.style.overflow = "hidden"
       widget.open(async (result: unknown) => {
+        document.body.style.overflow = ""
         const transaction = (result as Record<string, unknown>)?.transaction as Record<string, string> | undefined
         if (transaction?.status === "APPROVED") {
           await fetchBalance(bookingId)

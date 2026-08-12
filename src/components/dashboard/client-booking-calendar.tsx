@@ -71,7 +71,9 @@ export function ClientBookingCalendar() {
         reference: config.reference,
         signature: { integrity: config.signature },
       } as any)
+      document.body.style.overflow = "hidden"
       widget.open(async (result: unknown) => {
+        document.body.style.overflow = ""
         const tx = (result as any)?.transaction
         if (tx?.status === "APPROVED") {
           const bal = await bookingsApi.getBalance(bookingId)

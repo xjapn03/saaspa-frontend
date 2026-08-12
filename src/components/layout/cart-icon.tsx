@@ -39,7 +39,9 @@ export function CartIcon() {
         publicKey: config.publicKey,
         signature: { integrity: config.signature },
       })
+      document.body.style.overflow = "hidden"
       widget.open((result: unknown) => {
+        document.body.style.overflow = ""
         const tx = (result as Record<string, unknown>)?.transaction as Record<string, string> | undefined
         if (tx?.status === "APPROVED") {
           setPaymentSuccess(true)

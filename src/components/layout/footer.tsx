@@ -17,6 +17,9 @@ const companyLinks = [
   { href: "/agendar", label: "Agendar cita" },
   { href: "/servicios", label: "Todos los servicios" },
   { href: "/politicas", label: "Políticas" },
+  { href: "/politica-de-privacidad", label: "Política de privacidad" },
+  { href: "/terminos-y-condiciones", label: "Términos y condiciones" },
+  { href: "/eliminar-datos", label: "Eliminación de datos" },
 ]
 
 export function Footer() {

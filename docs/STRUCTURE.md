@@ -36,6 +36,7 @@ src/
 │   │   ├── cupones/page.tsx    # Gestión de cupones de descuento
 │   │   ├── pedidos/page.tsx    # Gestión de pedidos (Admin: filtros + transiciones. Cliente: MyOrders) |
 │   │   ├── facturas/page.tsx   # Trazabilidad de pagos/abonos/compras (solo ADMIN) |
+│   │   ├── auditoria/page.tsx  # Registro de auditoría (solo ADMIN) — quién hizo qué |
 │   │   └── configuracion/page.tsx # Ajustes de cuenta del usuario
 │   │
 │   ├── layout.tsx              # Root layout: fonts, metadata (OG/twitter), JsonLd, ClientProviders, SpeculationRules, MetaPixel
@@ -122,14 +123,15 @@ src/
 │   ├── fonts.ts                # next/font (Fraunces heading + Geist body/mono)
 │   ├── animations.ts           # GSAP helpers (scrollReveal, countUp, fadeInUp, parallax, useReducedMotion)
 │   ├── meta-pixel.ts           # Meta Pixel helpers (track, pageView, trackSchedule, trackPurchase)
-│   ├── services-api.ts         # Servicios API client (listPublic, list, getById, create, update, remove)
+│   ├── services-api.ts         # Servicios API client (listPublic, list, getBySlug, getById, create, update, remove)
 │   ├── products-api.ts         # Productos API client (list, getBySlug, create, update, remove)
 │   ├── categories-api.ts       # Categorías API client (list, tree, create, update, remove)
-│   ├── bookings-api.ts         # Citas API client (list, slots, create, confirm, cancel, complete, reschedule, getBalance)
+│   ├── bookings-api.ts         # Citas API client (list, slots, create, confirm, cancel, complete, reopen, reschedule, getBalance)
 │   ├── payments-api.ts         # Pagos API client (init, getStatus, initCart, listTransactions)
-│   ├── coupons-api.ts          # Cupones API client (list, create, validate, use, update, remove)
+│   ├── coupons-api.ts          # Cupones API client (list, create, validate, remove)
 │   ├── cart-api.ts             # Carrito API client (get, addItem, updateQuantity, removeItem, clear, merge)
 │   ├── orders-api.ts           # Pedidos API client (list con filtros, listMy, getById, updateStatus)
+│   ├── audit-api.ts            # Auditoría API client (list con filtros entity/action/fecha)
 │   └── users.ts                # Usuarios API client (list, create, getById, update, remove, getProfile)
 │
 ├── context/                    # React Context Providers

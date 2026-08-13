@@ -8,10 +8,9 @@ import { Separator } from "@/components/ui/separator"
 import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
 import { productsApi } from "@/lib/products-api"
 import { api } from "@/lib/api"
+import { API_BASE_URL } from "@/lib/constants"
 import { useToast } from "@/context/toast-provider"
 import type { Product } from "@/types/product"
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 
 interface ProductFormDrawerProps {
   product: Product | null
@@ -55,7 +54,7 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
 
   useEffect(() => {
     if (open) {
-      fetch(`${API_BASE}/api/categories/tree`).then(r => r.json()).then(setCategories).catch(() => {})
+      fetch(`${API_BASE_URL}/api/categories/tree`).then(r => r.json()).then(setCategories).catch(() => {})
     }
   }, [open])
 
@@ -96,14 +95,16 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
     }
   }
 
-  async function uploadImage(file: File): Promise<string | null> {
+  async function uploadImage(file: File, type: "main" | "gallery"): Promise<string | null> {
+    const folderKey = form.slug || form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") || "producto"
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("folder", "products")
+    formData.append("folder", `products/${folderKey}`)
+    formData.append("imageType", type)
     try {
-      const res = await fetch(`${API_BASE}/api/upload`, {
+      const res = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${api["_accessToken"]}` },
+        headers: { Authorization: `Bearer ${api.accessToken}` },
         body: formData,
       })
       if (!res.ok) throw new Error("Upload failed")
@@ -119,7 +120,7 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
     const file = e.target.files?.[0]
     if (!file) return
     setUploading("main")
-    const url = await uploadImage(file)
+    const url = await uploadImage(file, "main")
     if (url) setForm(prev => ({ ...prev, mainImage: url }))
     setUploading(null)
   }
@@ -128,7 +129,7 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
     const file = e.target.files?.[0]
     if (!file) return
     setUploading("carousel")
-    const url = await uploadImage(file)
+    const url = await uploadImage(file, "gallery")
     if (url) setForm(prev => ({ ...prev, carouselImages: [...prev.carouselImages, url] }))
     setUploading(null)
   }

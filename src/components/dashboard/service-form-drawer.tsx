@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
 import { servicesApi } from "@/lib/services-api"
+import { API_BASE_URL } from "@/lib/constants"
 import { useToast } from "@/context/toast-provider"
 import type { Service, CreateServiceRequest } from "@/types/service"
 
@@ -15,8 +16,6 @@ interface ServiceFormDrawerProps {
   onOpenChange: (open: boolean) => void
   onSaved: () => void
 }
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 
 export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: ServiceFormDrawerProps) {
   const isEditing = !!service
@@ -30,7 +29,7 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
 
   useEffect(() => {
     if (open) {
-      fetch(`${API_BASE}/api/categories/tree`).then(r => r.json()).then(setCategories).catch(() => {})
+      fetch(`${API_BASE_URL}/api/categories/tree`).then(r => r.json()).then(setCategories).catch(() => {})
     }
   }, [open])
 

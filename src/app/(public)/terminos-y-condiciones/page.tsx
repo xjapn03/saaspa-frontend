@@ -167,9 +167,9 @@ export default function TermsPage() {
           body: (
             <p>
               Para cualquier consulta sobre estos términos, escríbenos a{" "}
-              <span className="text-foreground">contacto@sandrapinzonsaludybelleza.com.co</span>{" "}
+              <span className="text-foreground">Kamerinosg@gmail.com</span>{" "}
               o por WhatsApp al{" "}
-              <span className="text-foreground">+57 300 000 0000</span>.
+              <span className="text-foreground">+57 304 1338567</span>.
             </p>
           ),
         },

@@ -28,9 +28,9 @@ export default function PrivacyPolicyPage() {
               <p>
                 Para cualquier consulta relacionada con tus datos puedes
                 escribirnos a{" "}
-                <span className="text-foreground">contacto@sandrapinzonsaludybelleza.com.co</span>{" "}
+                <span className="text-foreground">Kamerinosg@gmail.com</span>{" "}
                 o escribirnos por WhatsApp al{" "}
-                <span className="text-foreground">+57 300 000 0000</span>.
+                <span className="text-foreground">+57 304 1338567</span>.
               </p>
             </div>
           ),
@@ -169,7 +169,7 @@ export default function PrivacyPolicyPage() {
               </p>
               <p>
                 Para ejercer estos derechos, escríbenos a{" "}
-                <span className="text-foreground">contacto@sandrapinzonsaludybelleza.com.co</span>{" "}
+                <span className="text-foreground">Kamerinosg@gmail.com</span>{" "}
                 con el asunto{" "}
                 <span className="text-foreground">&quot;Derechos Habeas Data&quot;</span>{" "}
                 indicando tu nombre y el correo registrado.
@@ -193,7 +193,7 @@ export default function PrivacyPolicyPage() {
             <p>
               Si tienes preguntas sobre esta política o el tratamiento de tus
               datos, contáctanos en{" "}
-              <span className="text-foreground">contacto@sandrapinzonsaludybelleza.com.co</span>{" "}
+              <span className="text-foreground">Kamerinosg@gmail.com</span>{" "}
               o visita nuestra página de{" "}
               <Link
                 href="/eliminar-datos"

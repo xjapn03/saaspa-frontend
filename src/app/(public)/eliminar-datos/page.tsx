@@ -21,9 +21,9 @@ export default function DataDeletionPage() {
             <div className="space-y-3">
               <p>
                 Envía tu solicitud por correo electrónico a{" "}
-                <span className="text-foreground">contacto@sandrapinzonsaludybelleza.com.co</span>{" "}
+                <span className="text-foreground">Kamerinosg@gmail.com</span>{" "}
                 o por WhatsApp al{" "}
-                <span className="text-foreground">+57 300 000 0000</span>, con el
+                <span className="text-foreground">+57 304 1338567</span>, con el
                 asunto{" "}
                 <span className="text-foreground">&quot;Solicitud de eliminación de datos&quot;</span>.
               </p>

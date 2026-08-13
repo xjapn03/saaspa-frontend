@@ -87,7 +87,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 size-4 shrink-0" strokeWidth={1.5} />
-                <span>+57 300 000 0000</span>
+                <span>+57 304 1338567</span>
               </li>
               <li className="flex items-start gap-3">
                 <Camera className="mt-0.5 size-4 shrink-0" strokeWidth={1.5} />

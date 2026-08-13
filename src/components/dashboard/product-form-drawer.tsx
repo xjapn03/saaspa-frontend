@@ -97,12 +97,11 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
 
   async function uploadImage(file: File, type: "main" | "gallery"): Promise<string | null> {
     const folderKey = form.slug || form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") || "producto"
+    const params = new URLSearchParams({ folder: `products/${folderKey}`, imageType: type })
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("folder", `products/${folderKey}`)
-    formData.append("imageType", type)
     try {
-      const res = await fetch(`${API_BASE_URL}/api/upload`, {
+      const res = await fetch(`${API_BASE_URL}/api/upload?${params.toString()}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${api.accessToken}` },
         body: formData,

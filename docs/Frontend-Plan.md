@@ -70,6 +70,12 @@
 | 42 | **Type fixes build** | Completo | Correcciones de tipo en tests, service types, cart item y booking types — `npm run build` pasa sin errores |
 | 43 | **Historial + Trazabilidad + Paginación inicial** | Completo | Historial de citas pasadas con paginación en calendario cliente, trazabilidad de pagos (columna Cita #id en facturación), índices DB, paginación server-side en bookings |
 | 44 | **Paginación universal** | Completo | Tipo `PaginatedResult<T>` compartido en frontend, todos los API clients y componentes de tabla adaptados al nuevo formato paginado |
+| 45 | **Auditoría + filtros** | Completo | Página `/dashboard/auditoria` (solo ADMIN) con paginación y filtros por entidad, acción y rango de fechas (`audit-api.ts`) |
+| 46 | **Filtros por estado admin** | Completo | Productos usan `GET /products/admin/all` (inactivos visibles), usuarios con `includeInactive`, activar/desactivar |
+| 47 | **Toasts en creación/edición** | Completo | `useToast().success/error` en usuarios, servicios, productos, categorías y cupones |
+| 48 | **Detalle de servicio por slug** | Completo | `/servicios/[slug]` consulta `GET /services/public/:slug`; cards usan `svc.slug` |
+| 49 | **Cupones con límites** | Completo | Tabla muestra `usedCount/maxUses` y estado (agotado/expirado/inactivo); diálogo con máximo de usos |
+| 50 | **Proxy de uploads** | Completo | `next.config.ts` rewrite `/uploads/*` → backend: las imágenes de productos cargan desde el frontend |
 
 ## 3. Pendiente (orden de prioridad)
 

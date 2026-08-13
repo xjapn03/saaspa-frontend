@@ -23,7 +23,7 @@ describe("ApiClient", () => {
     const { api } = await import("@/lib/api")
 
     server.use(
-      http.get("http://localhost:3001/api/users/me", () => {
+      http.get("/api/users/me", () => {
         return HttpResponse.json(
           { statusCode: 401, message: "No autorizado" },
           { status: 401 }

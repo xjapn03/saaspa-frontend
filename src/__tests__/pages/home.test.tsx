@@ -4,8 +4,6 @@ import { http, HttpResponse } from "msw"
 import { server } from "@/test/mocks/server"
 import Home from "@/app/(public)/page"
 
-const API_URL = "http://localhost:3001"
-
 beforeAll(() => server.listen({ onUnhandledRequest: "warn" }))
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
@@ -13,15 +11,20 @@ afterAll(() => server.close())
 describe("Home page", () => {
   beforeEach(() => {
     server.use(
-      http.get(`${API_URL}/api/services/public`, () => {
+      http.get("/api/services/public", () => {
         return HttpResponse.json({ data: [
           { id: "svc-1", name: "Facial Premium", description: "Test", price: 180000, duration: 75, isActive: true, category: "Facial", imageUrl: null, createdAt: "2024-01-01", updatedAt: "2024-01-01" },
         ], total: 1, page: 1, limit: 20, totalPages: 1 })
       }),
-      http.get(`${API_URL}/api/products`, () => {
+      http.get("http://localhost:3001/api/services/public", () => {
+        return HttpResponse.json({ data: [
+          { id: "svc-1", name: "Facial Premium", description: "Test", price: 180000, duration: 75, isActive: true, category: "Facial", imageUrl: null, createdAt: "2024-01-01", updatedAt: "2024-01-01" },
+        ], total: 1, page: 1, limit: 20, totalPages: 1 })
+      }),
+      http.get("/api/products", () => {
         return HttpResponse.json({ data: [], total: 0, page: 1, limit: 20, totalPages: 0 })
       }),
-      http.get(`${API_URL}/api/categories`, () => {
+      http.get("/api/categories", () => {
         return HttpResponse.json({ data: [], total: 0, page: 1, limit: 20, totalPages: 0 })
       })
     )

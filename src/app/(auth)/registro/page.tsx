@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
   ArrowRight,
@@ -17,7 +16,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/context/auth-provider"
 
 export default function RegistroPage() {
-  const router = useRouter()
   const { register } = useAuth()
 
   const [form, setForm] = useState({
@@ -31,6 +29,8 @@ export default function RegistroPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [registered, setRegistered] = useState(false)
+  const [registeredEmail, setRegisteredEmail] = useState("")
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -55,7 +55,8 @@ export default function RegistroPage() {
         password: form.password,
         phone: form.phone || undefined,
       })
-      router.push("/dashboard")
+      setRegisteredEmail(form.email)
+      setRegistered(true)
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err
@@ -86,6 +87,27 @@ export default function RegistroPage() {
         </p>
       </CardHeader>
       <CardContent>
+        {registered ? (
+          <div className="space-y-4 text-center">
+            <Mail className="mx-auto size-12 text-green-600" strokeWidth={1.5} />
+            <p className="text-sm text-muted-foreground">
+              Cuenta creada. Enviamos un enlace de verificación a{" "}
+              <span className="font-medium text-foreground">{registeredEmail}</span>. Revisa tu
+              correo para activar tu cuenta.
+            </p>
+            <Button
+              className="w-full"
+              size="lg"
+              nativeButton={false}
+              render={
+                <Link href="/login">
+                  Ir a iniciar sesión
+                  <ArrowRight data-slot="icon" data-icon="inline-end" className="size-4" strokeWidth={1.5} />
+                </Link>
+              }
+            />
+          </div>
+        ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div className="rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">
@@ -256,6 +278,7 @@ export default function RegistroPage() {
             )}
           </Button>
         </form>
+        )}
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           ¿Ya tienes cuenta?{" "}

@@ -10,6 +10,7 @@ export const ENDPOINTS = {
     LOGOUT: `${API_PREFIX}/auth/logout`,
     FORGOT_PASSWORD: `${API_PREFIX}/auth/forgot-password`,
     RESET_PASSWORD: `${API_PREFIX}/auth/reset-password`,
+    VERIFY_EMAIL: (token: string) => `${API_PREFIX}/auth/verify-email/${token}`,
   },
   USERS: {
     ME: `${API_PREFIX}/users/me`,

@@ -1,6 +1,6 @@
 # Plan de Estructura & Diseño — Kamerinos SPA Frontend
 
-> **Estado actual:** Agosto 2026 — Layout público, auth, dashboard completo, Wompi real, Shop + Carrito + Checkout, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking + products, Recuperar contraseña, 61 tests (15 suites) — todos completos y mergeados.
+> **Estado actual:** Agosto 2026 — Layout público, auth, dashboard completo, Wompi real, Shop + Carrito + Checkout, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking + products, Recuperar contraseña, Verificación de email, Páginas legales, 61 tests (15 suites) — todos completos y mergeados.
 > **Próximo paso:** Release v1.0.0 → main. Luego WhatsApp bot + IA agent.
 
 ---
@@ -49,6 +49,8 @@
 | 21 | **Mobile sidebar + Client dashboard** | Completo | Menú hamburguesa con Sheet. Métricas personales para clientes. |
 | 22 | **Admin create booking** | Completo | `admin-create-booking.tsx` — crear citas para clientes desde mostrador |
 | 23 | **Recuperar contraseña** | Completo | `/recuperar` + `/recuperar/[token]` — flujo self-service con SendGrid |
+| 51 | **Verificación de email** | Completo | `/verificar-email/[token]` (GET `/auth/verify-email/:token`) + aviso en registro tras crear la cuenta |
+| 52 | **Páginas legales** | Completo | `/politica-de-privacidad`, `/terminos-y-condiciones`, `/eliminar-datos` (para la Meta App) con animaciones GSAP |
 | 24 | **Animaciones GSAP** | Completo | `animations.ts` + `animated-grid.tsx` — scroll reveal, hero timeline, parallax, countUp |
 | 25 | **Admin products** | Completo | `products-table.tsx` + dashboard page — CRUD de productos |
 | 26 | **Shop e-commerce** | Completo | `/shop` (listing + filtros), `/shop/[slug]` (detalle + galería), `ProductCard`, `FeaturedProducts` |

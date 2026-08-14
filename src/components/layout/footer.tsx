@@ -1,6 +1,10 @@
+"use client"
+
+import { useEffect, useRef } from "react"
 import Link from "next/link"
 import { Phone, MapPin, Camera } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
+import { scrollReveal, useReducedMotion } from "@/lib/animations"
 
 const serviceLinks = [
   { href: "/servicios/facial-hidratante-premium", label: "Facial Hidratante Premium" },
@@ -13,14 +17,28 @@ const companyLinks = [
   { href: "/agendar", label: "Agendar cita" },
   { href: "/servicios", label: "Todos los servicios" },
   { href: "/politicas", label: "Políticas" },
+  { href: "/politica-de-privacidad", label: "Política de privacidad" },
+  { href: "/terminos-y-condiciones", label: "Términos y condiciones" },
+  { href: "/eliminar-datos", label: "Eliminación de datos" },
 ]
 
 export function Footer() {
+  const reduced = useReducedMotion()
+  const taglineRef = useRef<HTMLParagraphElement>(null)
+
+  useEffect(() => {
+    if (reduced) return
+    scrollReveal(taglineRef.current, { y: 40, duration: 1 })
+  }, [reduced])
+
   return (
     <footer className="bg-foreground text-background">
       <div className="mx-auto max-w-6xl px-6 py-24">
         <div className="mb-16 max-w-2xl">
-          <p className="font-heading text-3xl tracking-tight md:text-5xl lg:text-6xl">
+          <p
+            ref={taglineRef}
+            className="font-heading text-3xl tracking-tight md:text-5xl lg:text-6xl"
+          >
             El verdadero bienestar no es lo que compras — es el tiempo que{" "}
             <span className="italic text-primary">inviertes en ti mismo</span>.
           </p>
@@ -69,7 +87,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 size-4 shrink-0" strokeWidth={1.5} />
-                <span>+57 300 000 0000</span>
+                <span>+57 304 1338567</span>
               </li>
               <li className="flex items-start gap-3">
                 <Camera className="mt-0.5 size-4 shrink-0" strokeWidth={1.5} />

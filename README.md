@@ -12,6 +12,7 @@ Plataforma web de Kamerinos SPA Bogotá — centro de estética y bienestar. Sit
 | Tailwind CSS | v4 | Estilos (CSS-first, `@theme`) |
 | shadcn/ui | v4 (Maia) | Componentes base (Base UI) |
 | Lucide React | latest | Iconografía line |
+| GSAP | latest | Animaciones (ScrollTrigger, timelines) |
 | Vitest | 3.x | Tests |
 | MSW | 2.x | Mock de API en tests |
 
@@ -34,7 +35,7 @@ npm run dev          # Dev server (:3000)
 npm run build        # Build de producción
 npm run start        # Servir build
 npm run lint         # ESLint
-npm run test         # Vitest (18 tests, 4 suites)
+npm run test         # Vitest (61 tests, 15 suites)
 npm run test:watch   # Vitest en modo watch
 npm run test:coverage # Cobertura de tests
 ```
@@ -45,14 +46,14 @@ La guía completa de arquitectura de carpetas está en [`docs/STRUCTURE.md`](./d
 
 ```
 src/
-├── app/            # App Router — (public), (auth), dashboard
-├── components/     # ui/ (shadcn), layout/, marketing/, dashboard/
-├── lib/            # api.ts, auth.ts, constants.ts, fonts.ts, utils.ts
-├── context/        # AuthProvider + useAuth
+├── app/            # App Router — (public) con /checkout, (auth), dashboard
+├── components/     # ui/ (shadcn + CategorySelect), layout/, marketing/, booking/, dashboard/, shop/
+├── lib/            # api.ts, auth.ts, constants.ts, fonts.ts, utils.ts, *-api.ts (11 API clients), meta-pixel.ts, animations.ts
+├── context/        # AuthProvider, CartProvider, CartProviderWithAuth, ToastProvider
 ├── hooks/          # Custom hooks
-├── types/          # Tipos compartidos
+├── types/          # Tipos compartidos (auth, booking, service, payment, coupon, product)
 ├── test/           # Mocks MSW + fixtures
-└── __tests__/      # Tests unitarios e integración
+└── __tests__/      # Tests unitarios e integración (15 suites, 61 tests)
 ```
 
 ## Puertos
@@ -63,6 +64,12 @@ src/
 | Backend | `localhost:3001` |
 | PostgreSQL | `localhost:5432` |
 | Redis | `localhost:6379` |
+
+## Producción (un solo dominio)
+
+En producción todo se sirve bajo **un solo dominio**: `https://kamerinos.sandrapinzonsaludybelleza.com.co`.
+El frontend usa URLs relativas (`/api`) y el backend se alcanza vía proxy `/api/*` (Nginx en prod,
+rewrites de Next.js en dev). No hay subdominio `api.` separado.
 
 ## Flujo de trabajo (GitFlow)
 

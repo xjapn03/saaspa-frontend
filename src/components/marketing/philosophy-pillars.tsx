@@ -1,4 +1,8 @@
+"use client"
+
+import { useEffect, useRef } from "react"
 import { Sparkles, FlaskConical, Flower2 } from "lucide-react"
+import { scrollRevealStagger, useReducedMotion } from "@/lib/animations"
 
 const pillars = [
   {
@@ -22,8 +26,16 @@ const pillars = [
 ]
 
 export function PhilosophyPillars() {
+  const reduced = useReducedMotion()
+  const sectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (reduced) return
+    scrollRevealStagger(sectionRef.current, ".pillar-card", { stagger: 0.15, y: 32 })
+  }, [reduced])
+
   return (
-    <section className="py-24 md:py-32">
+    <section ref={sectionRef} className="py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-16 max-w-2xl">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
@@ -38,7 +50,7 @@ export function PhilosophyPillars() {
 
         <div className="grid gap-8 md:grid-cols-3">
           {pillars.map((pillar) => (
-            <div key={pillar.word} className="group">
+            <div key={pillar.word} className="pillar-card group">
               <div className="mb-6 flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                 <pillar.icon className="size-6" strokeWidth={1.5} />
               </div>

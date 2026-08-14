@@ -1,19 +1,85 @@
+"use client"
+
+import { useEffect, useRef } from "react"
 import Link from "next/link"
 import { ArrowRight, MessageCircle } from "lucide-react"
+import gsap from "gsap"
 import { Button } from "@/components/ui/button"
+import { useReducedMotion } from "@/lib/animations"
 
 export function CtaSection() {
-  const waPhone = "573000000000"
+  const reduced = useReducedMotion()
+  const sectionRef = useRef<HTMLElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const circle1Ref = useRef<HTMLDivElement>(null)
+  const circle2Ref = useRef<HTMLDivElement>(null)
+  const waPhone = "573041338567"
   const waMessage = encodeURIComponent("Hola, quiero agendar una cita")
 
+  useEffect(() => {
+    if (reduced) return
+
+    if (contentRef.current) {
+      gsap.fromTo(
+        contentRef.current,
+        { opacity: 0, y: 32 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 78%",
+            toggleActions: "play none none none",
+          },
+        }
+      )
+    }
+
+    if (circle1Ref.current) {
+      gsap.to(circle1Ref.current, {
+        y: -20,
+        x: 20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      })
+    }
+
+    if (circle2Ref.current) {
+      gsap.to(circle2Ref.current, {
+        y: 20,
+        x: -15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      })
+    }
+  }, [reduced])
+
   return (
-    <section className="py-24 md:py-32">
+    <section ref={sectionRef} className="py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-primary px-8 py-16 text-primary-foreground md:px-16 md:py-24">
-          <div className="absolute -right-20 -top-20 size-80 rounded-full bg-background/10" />
-          <div className="absolute -bottom-10 -left-10 size-48 rounded-full bg-background/10" />
+          <div
+            ref={circle1Ref}
+            className="absolute -right-20 -top-20 size-80 rounded-full bg-background/10"
+          />
+          <div
+            ref={circle2Ref}
+            className="absolute -bottom-10 -left-10 size-48 rounded-full bg-background/10"
+          />
 
-          <div className="relative max-w-2xl">
+          <div ref={contentRef} className="relative max-w-2xl">
             <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] opacity-70">
               Tu primera experiencia
             </p>

@@ -1,10 +1,13 @@
+"use client"
+
+import { useEffect, useRef } from "react"
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
+import { scrollRevealStagger, useReducedMotion } from "@/lib/animations"
 
 const testimonials = [
   {
@@ -28,6 +31,14 @@ const testimonials = [
 ]
 
 export function TestimonialsSection() {
+  const reduced = useReducedMotion()
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (reduced) return
+    scrollRevealStagger(gridRef.current, ".testimonial-card", { stagger: 0.15, y: 28 })
+  }, [reduced])
+
   return (
     <section className="py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
@@ -42,9 +53,9 @@ export function TestimonialsSection() {
           </h2>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div ref={gridRef} className="grid gap-6 md:grid-cols-3">
           {testimonials.map((t) => (
-            <Card key={t.name} className="flex flex-col">
+            <Card key={t.name} className="testimonial-card flex flex-col">
               <CardHeader>
                 <p className="font-heading text-5xl leading-none text-primary/30 select-none">
                   &ldquo;

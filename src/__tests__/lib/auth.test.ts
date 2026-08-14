@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest"
 import { server } from "@/test/mocks/server"
 import { mockUser } from "@/test/fixtures/user"
 
-beforeAll(() => server.listen({ onUnhandledRequest: "bypass" }))
+beforeAll(() => server.listen({ onUnhandledRequest: "warn" }))
 afterEach(() => {
   server.resetHandlers()
   localStorage.clear()

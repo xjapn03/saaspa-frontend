@@ -1,8 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest"
 import { server } from "@/test/mocks/server"
 
-beforeAll(() => server.listen({ onUnhandledRequest: "bypass" }))
-afterEach(() => server.resetHandlers())
+beforeAll(() => server.listen({ onUnhandledRequest: "warn" }))
+afterEach(() => {
+  server.resetHandlers()
+  localStorage.clear()
+})
 afterAll(() => server.close())
 
 describe("ApiClient", () => {
@@ -20,7 +23,7 @@ describe("ApiClient", () => {
     const { api } = await import("@/lib/api")
 
     server.use(
-      http.get("http://localhost:3001/api/users/me", () => {
+      http.get("/api/users/me", () => {
         return HttpResponse.json(
           { statusCode: 401, message: "No autorizado" },
           { status: 401 }

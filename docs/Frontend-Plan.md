@@ -124,7 +124,7 @@ src/
 | Entorno | Frontend | Backend | DB | Redis |
 |---------|----------|---------|-----|-------|
 | Dev | `localhost:3000` | `localhost:3001` | `:5432` | `:6379` |
-| Prod | `kamerinosspa.com` (Nginx) | mismo dominio `/api/*` proxy | interno | interno |
+| Prod | `kamerinos.sandrapinzonsaludybelleza.com.co` (Nginx) | mismo dominio `/api/*` proxy | interno | interno |
 
 ## 6. CORS
 

@@ -1,7 +1,7 @@
 # Plan de Estructura & Diseño — Kamerinos SPA Frontend
 
-> **Estado actual:** Agosto 2026 — Layout público, auth, dashboard completo, Wompi real, Shop + Carrito + Checkout, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking + products, Recuperar contraseña, Verificación de email, Páginas legales, 61 tests (15 suites) — todos completos y mergeados.
-> **Próximo paso:** Release v1.0.0 → main. Luego WhatsApp bot + IA agent.
+> **Estado actual:** Agosto 2026 — **v1.0.0 desplegada en producción** (`https://kamerinos.sandrapinzonsaludybelleza.com.co`). Layout público, auth, dashboard completo, Wompi real, Shop + Carrito + Checkout, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking + products, Recuperar contraseña, Verificación de email, Páginas legales, 61 tests (15 suites) — todos completos y mergeados.
+> **Próximo paso:** WhatsApp bot + IA agent.
 
 ---
 
@@ -77,17 +77,17 @@
 | 47 | **Toasts en creación/edición** | Completo | `useToast().success/error` en usuarios, servicios, productos, categorías y cupones |
 | 48 | **Detalle de servicio por slug** | Completo | `/servicios/[slug]` consulta `GET /services/public/:slug`; cards usan `svc.slug` |
 | 49 | **Cupones con límites** | Completo | Tabla muestra `usedCount/maxUses` y estado (agotado/expirado/inactivo); diálogo con máximo de usos |
-| 50 | **Proxy de uploads** | Completo | `next.config.ts` rewrite `/uploads/*` → backend: las imágenes de productos cargan desde el frontend |
+| 50 | **Proxy de uploads** | Completo | `next.config.ts` rewrite `/uploads/*` → backend en dev; en producción Nginx proxea `location /uploads/` → backend: las imágenes de productos cargan desde el dominio |
 
 ## 3. Pendiente (orden de prioridad)
 
 | # | Tarea | Dependencias |
 |---|-------|-------------|
-| 1 | Release v1.0.0 (merge a main) | — |
+| 1 | ~~Release v1.0.0 (merge a main)~~ ✅ Hecho y desplegado | — |
 | 2 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
-| 3 | SSL/Certbot con Nginx en producción | VPS + dominio |
+| 3 | ~~SSL/Certbot con Nginx en producción~~ ✅ Hecho (Cloudflare Origin Certificate + Full strict) | — |
 | 4 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
-| 5 | Backups automatizados en VPS | Scripts ya creados, falta activar cron |
+| 5 | Backups automatizados en VPS | Scripts ya creados, falta activar cron (`scripts/crontab.txt`) |
 
 ## 4. Arquitectura de carpetas
 

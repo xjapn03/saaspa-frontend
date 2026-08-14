@@ -65,6 +65,12 @@ src/
 | PostgreSQL | `localhost:5432` |
 | Redis | `localhost:6379` |
 
+## Producción (un solo dominio)
+
+En producción todo se sirve bajo **un solo dominio**: `https://kamerinos.sandrapinzonsaludybelleza.com.co`.
+El frontend usa URLs relativas (`/api`) y el backend se alcanza vía proxy `/api/*` (Nginx en prod,
+rewrites de Next.js en dev). No hay subdominio `api.` separado.
+
 ## Flujo de trabajo (GitFlow)
 
 - `main` — código estable

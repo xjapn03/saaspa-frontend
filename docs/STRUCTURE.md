@@ -219,4 +219,4 @@ src/
 | Entorno | Frontend | Backend | DB | Redis | IA Bot |
 |---------|----------|---------|-----|-------|--------|
 | Dev | `localhost:3000` | `localhost:3001` | `:5432` | `:6379` | `:8000` |
-| Prod | `kamerinosspa.com` | mismo dominio (Nginx `/api/*` proxy) | interno | interno | interno |
+| Prod | `kamerinos.sandrapinzonsaludybelleza.com.co` | mismo dominio (Nginx `/api/*` proxy) | interno | interno | interno |

@@ -67,6 +67,8 @@ src/
 
 ## Producción (un solo dominio)
 
+> **Estado: v1.0.0 desplegada** en `https://kamerinos.sandrapinzonsaludybelleza.com.co`.
+
 En producción todo se sirve bajo **un solo dominio**: `https://kamerinos.sandrapinzonsaludybelleza.com.co`.
 El frontend usa URLs relativas (`/api`) y el backend se alcanza vía proxy `/api/*` (Nginx en prod,
 rewrites de Next.js en dev). No hay subdominio `api.` separado.

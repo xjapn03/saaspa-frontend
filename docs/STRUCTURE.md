@@ -14,15 +14,20 @@ src/
 │   │   │   └── [slug]/page.tsx # Detalle de producto con galería
 │   │   ├── agendar/page.tsx    # Flujo de agendamiento (service → slot → payment)
 │   │   ├── checkout/page.tsx   # Checkout 2 pasos (facturación + pago Wompi)
-│   │   └── politicas/page.tsx  # Políticas de cancelación y abono
+│   │   ├── politicas/page.tsx  # Políticas de cancelación y abono
+│   │   ├── politica-de-privacidad/page.tsx   # Política de privacidad
+│   │   ├── terminos-y-condiciones/page.tsx   # Términos y condiciones
+│   │   └── eliminar-datos/page.tsx           # Instrucciones de eliminación de datos
 │   │
 │   ├── (auth)/                 # Grupo de rutas: autenticación
 │   │   ├── layout.tsx          # Layout centrado minimal (sin Navbar público)
 │   │   ├── login/page.tsx      # Formulario de inicio de sesión
-│   │   ├── registro/page.tsx   # Formulario de registro
-│   │   └── recuperar/
-│   │       ├── page.tsx        # Solicitar recuperación de contraseña
-│   │       └── [token]/page.tsx # Restablecer contraseña con token
+│   │   ├── registro/page.tsx   # Formulario de registro (envía email de verificación)
+│   │   ├── recuperar/
+│   │   │   ├── page.tsx        # Solicitar recuperación de contraseña
+│   │   │   └── [token]/page.tsx # Restablecer contraseña con token
+│   │   └── verificar-email/
+│   │       └── [token]/page.tsx # Verificación de cuenta con token
 │   │
 │   ├── dashboard/              # Panel protegido (admin/empleado/cliente)
 │   │   ├── layout.tsx          # Sidebar con RBAC + auth guard

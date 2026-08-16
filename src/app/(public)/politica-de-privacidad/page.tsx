@@ -5,7 +5,7 @@ import { LegalPage } from "@/components/legal/legal-page"
 export const metadata: Metadata = {
   title: "Política de Privacidad",
   description:
-    "Conoce cómo Kamerinos SPA recopila, usa y protege tus datos personales, conforme a la Ley 1581 de 2012 de Colombia.",
+    "Conoce cómo Kamerinos by Sandra Pinzon recopila, usa y protege tus datos personales, conforme a la Ley 1581 de 2012 de Colombia.",
 }
 
 export default function PrivacyPolicyPage() {
@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
     <LegalPage
       eyebrow="Privacidad"
       title="Política de Privacidad"
-      intro="En Kamerinos SPA nos comprometemos a proteger tu información personal y a tratarla con transparencia, de acuerdo con la Ley 1581 de 2012 y las normas sobre protección de datos personales en Colombia."
+      intro="En Kamerinos by Sandra Pinzon nos comprometemos a proteger tu información personal y a tratarla con transparencia, de acuerdo con la Ley 1581 de 2012 y las normas sobre protección de datos personales en Colombia."
       updatedAt="Agosto de 2026"
       sections={[
         {
@@ -22,7 +22,7 @@ export default function PrivacyPolicyPage() {
             <div className="space-y-3">
               <p>
                 El responsable del tratamiento de tus datos personales es
-                Kamerinos SPA, establecimiento de Sandra Pinzón Salud y Belleza,
+                Kamerinos by Sandra Pinzon, establecimiento de Sandra Pinzón Salud y Belleza,
                 ubicado en Bogotá (Usaquén), Colombia.
               </p>
               <p>

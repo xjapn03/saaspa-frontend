@@ -50,7 +50,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
             <p className="mb-3 font-heading text-2xl font-semibold">
-              Kamerinos SPA
+              Kamerinos by Sandra Pinzon
             </p>
             <p className="text-sm leading-relaxed text-background/60">
               Centro de bienestar y estética en Bogotá. Transformamos cada
@@ -106,7 +106,7 @@ export function Footer() {
       <div className="border-t border-background/10">
         <div className="mx-auto flex max-w-6xl flex-col justify-between gap-4 px-6 py-6 text-xs text-background/40 sm:flex-row">
           <span>
-            &copy; {new Date().getFullYear()} Kamerinos SPA. Todos los derechos
+            &copy; {new Date().getFullYear()} Kamerinos by Sandra Pinzon. Todos los derechos
             reservados.
           </span>
           <span>Hecho con cuidado en Bogotá, Colombia</span>

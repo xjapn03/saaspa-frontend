@@ -27,7 +27,7 @@ export default function PedidosPage() {
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-semibold text-foreground">Mis pedidos</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Historial de tus compras en Kamerinos SPA.
+          Historial de tus compras en Kamerinos by Sandra Pinzon.
         </p>
       </div>
       <MyOrders showTitle={false} />

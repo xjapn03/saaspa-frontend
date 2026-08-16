@@ -5,7 +5,7 @@ import { LegalPage } from "@/components/legal/legal-page"
 export const metadata: Metadata = {
   title: "Eliminación de Datos",
   description:
-    "Instrucciones para solicitar la eliminación de tus datos personales en Kamerinos SPA, conforme a la Ley 1581 de 2012 de Colombia.",
+    "Instrucciones para solicitar la eliminación de tus datos personales en Kamerinos by Sandra Pinzon, conforme a la Ley 1581 de 2012 de Colombia.",
 }
 
 export default function DataDeletionPage() {

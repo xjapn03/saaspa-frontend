@@ -78,7 +78,7 @@ export default function DashboardPage() {
             Hola, {user?.firstName}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Bienvenida a tu panel personal de Kamerinos SPA
+            Bienvenida a tu panel personal de Kamerinos by Sandra Pinzon
           </p>
         </div>
 
@@ -99,7 +99,7 @@ export default function DashboardPage() {
     <div>
       <div className="mb-8">
         <h1 className="font-heading text-2xl font-semibold tracking-tight">Resumen</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Bienvenida al panel de Kamerinos SPA</p>
+        <p className="mt-1 text-sm text-muted-foreground">Bienvenida al panel de Kamerinos by Sandra Pinzon</p>
       </div>
       <div ref={gridRef} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard title="Citas hoy" value={isLoading ? "—" : String(citasHoy ?? "—")} subtitle="Agendadas para hoy" icon={Calendar} className="stats-card" />

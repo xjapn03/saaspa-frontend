@@ -25,6 +25,14 @@ function generateFolderKey(): string {
   return `banner-${Date.now()}-${Math.round(Math.random() * 1e9)}`
 }
 
+function toLocalDateTimeInput(iso: string | null): string {
+  if (!iso) return ""
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ""
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: BannerFormDrawerProps) {
   const isEditing = !!banner
   const { success: showSuccess, error: showError } = useToast()
@@ -57,8 +65,8 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
         position: banner.position,
         sortOrder: String(banner.sortOrder),
         isActive: banner.isActive,
-        startsAt: banner.startsAt ? banner.startsAt.slice(0, 16) : "",
-        endsAt: banner.endsAt ? banner.endsAt.slice(0, 16) : "",
+        startsAt: toLocalDateTimeInput(banner.startsAt),
+        endsAt: toLocalDateTimeInput(banner.endsAt),
       })
       const match = (banner.imageUrl || "").match(/\/banners\/([^/]+)\//)
       setFolderKey(match ? match[1] : generateFolderKey())
@@ -71,11 +79,6 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
     }
     setError("")
   }, [banner, open])
-
-  function generateFolderKey(): string {
-    if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID()
-    return `banner-${Date.now()}-${Math.round(Math.random() * 1e9)}`
-  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target

@@ -1,4 +1,4 @@
-export type BannerPosition = "HERO" | "STRIP"
+export type BannerPosition = "HERO" | "STRIP" | "PORTRAIT"
 
 export interface Banner {
   id: string

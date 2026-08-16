@@ -95,7 +95,7 @@ export default function BannersAdminPage() {
               <div className="p-4">
                 <div className="mb-2 flex items-center gap-2">
                   <Badge variant={b.isActive ? "default" : "secondary"}>{b.isActive ? "Activo" : "Inactivo"}</Badge>
-                  <Badge variant="outline">{b.position === "HERO" ? "Hero" : "Banda"}</Badge>
+                  <Badge variant="outline">{b.position === "HERO" ? "Hero" : b.position === "STRIP" ? "Banda" : "Retrato"}</Badge>
                 </div>
                 <p className="font-medium text-foreground">{b.title || "Sin título"}</p>
                 {b.subtitle && <p className="line-clamp-1 text-xs text-muted-foreground">{b.subtitle}</p>}

@@ -14,7 +14,7 @@ const quickFacts = [
   { label: "Ubicación", value: "Bogotá · Usaquén" },
 ]
 
-export function Hero() {
+export function Hero({ portraitImage }: { portraitImage?: string }) {
   const reduced = useReducedMotion()
   const labelRef = useRef<HTMLParagraphElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -22,6 +22,8 @@ export function Hero() {
   const ctasRef = useRef<HTMLDivElement>(null)
   const factsRef = useRef<HTMLDivElement>(null)
   const cardRef = useRef<HTMLDivElement>(null)
+
+  const imageSrc = portraitImage || "/hero-portrait.webp"
 
   useEffect(() => {
     if (reduced) return
@@ -120,10 +122,13 @@ export function Hero() {
               "shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)]"
             )}
           >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <p className="font-heading text-6xl italic text-primary/30 select-none sm:text-8xl">
-                K
-              </p>
+            <div className="absolute inset-0">
+              <img
+                src={imageSrc}
+                alt="Kamerinos by Sandra Pinzon"
+                className="absolute inset-0 size-full object-cover"
+                loading="eager"
+              />
             </div>
           </div>
         </div>

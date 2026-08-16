@@ -185,6 +185,7 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
             <select name="position" value={form.position} onChange={handleChange} className={inputCls}>
               <option value="HERO">Hero (portada)</option>
               <option value="STRIP">Banda intermedia</option>
+              <option value="PORTRAIT">Retrato (home)</option>
             </select>
           </div>
           <div className="space-y-2">

@@ -69,7 +69,7 @@ export function scrollReveal(
   options?: { y?: number; duration?: number }
 ) {
   if (!element || !shouldAnimate()) return
-  gsap.fromTo(
+  const tween = gsap.fromTo(
     element,
     {
       opacity: 0,
@@ -87,6 +87,11 @@ export function scrollReveal(
       },
     }
   )
+  // Fallback: si el elemento ya está dentro del viewport al crearse (p. ej. tras
+  // navegar con posiciones de ScrollTrigger obsoletas), revelarlo de inmediato.
+  if (element.getBoundingClientRect().top < window.innerHeight) {
+    tween.progress(1)
+  }
 }
 
 export function scrollRevealStagger(
@@ -95,8 +100,9 @@ export function scrollRevealStagger(
   options?: { stagger?: number; duration?: number; y?: number; start?: string }
 ) {
   if (!container || !shouldAnimate()) return
-  gsap.fromTo(
-    container.querySelectorAll(childSelector),
+  const children = container.querySelectorAll(childSelector)
+  const tween = gsap.fromTo(
+    children,
     {
       opacity: 0,
       y: options?.y ?? 30,
@@ -114,6 +120,10 @@ export function scrollRevealStagger(
       },
     }
   )
+  // Fallback: si el contenedor ya está en viewport, revelar de inmediato.
+  if (container.getBoundingClientRect().top < window.innerHeight) {
+    tween.progress(1)
+  }
 }
 
 export function useScrollReveal<T extends HTMLElement>(

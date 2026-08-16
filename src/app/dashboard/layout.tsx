@@ -191,6 +191,7 @@ export default function DashboardLayout({
           variant="outline"
           className="w-full justify-start text-muted-foreground"
           size="sm"
+          nativeButton={false}
           render={
             <Link href="/" onClick={() => setMobileOpen(false)}>
               <Globe className="size-4" strokeWidth={1.5} />

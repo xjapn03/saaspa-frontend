@@ -27,7 +27,7 @@ function LoginForm() {
 
     try {
       await login({ email, password })
-      router.push(redirect)
+      router.replace(redirect)
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err

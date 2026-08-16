@@ -18,6 +18,8 @@ import {
   Menu,
   Receipt,
   ShieldCheck,
+  Globe,
+  Megaphone,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -122,6 +124,12 @@ export default function DashboardLayout({
       roles: ["ADMIN"],
     },
     {
+      href: "/dashboard/banners",
+      label: "Banners",
+      icon: Megaphone,
+      roles: ["ADMIN"],
+    },
+    {
       href: "/dashboard/configuracion",
       label: "Configuración",
       icon: Settings,
@@ -179,6 +187,17 @@ export default function DashboardLayout({
             </p>
           </div>
         </div>
+        <Button
+          variant="outline"
+          className="w-full justify-start text-muted-foreground"
+          size="sm"
+          render={
+            <Link href="/" onClick={() => setMobileOpen(false)}>
+              <Globe className="size-4" strokeWidth={1.5} />
+              Ver sitio web
+            </Link>
+          }
+        />
         <Button
           variant="ghost"
           className="w-full justify-start text-muted-foreground"

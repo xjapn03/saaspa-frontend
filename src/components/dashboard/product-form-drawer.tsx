@@ -7,7 +7,6 @@ import { Modal } from "@/components/ui/modal"
 import { Separator } from "@/components/ui/separator"
 import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
 import { productsApi } from "@/lib/products-api"
-import { api } from "@/lib/api"
 import { API_BASE_URL } from "@/lib/constants"
 import { useToast } from "@/context/toast-provider"
 import type { Product } from "@/types/product"
@@ -103,7 +102,7 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
     try {
       const res = await fetch(`${API_BASE_URL}/api/upload?${params.toString()}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${api.accessToken}` },
+        credentials: "include",
         body: formData,
       })
       if (!res.ok) throw new Error("Upload failed")

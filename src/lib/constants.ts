@@ -11,6 +11,8 @@ export const ENDPOINTS = {
     FORGOT_PASSWORD: `${API_PREFIX}/auth/forgot-password`,
     RESET_PASSWORD: `${API_PREFIX}/auth/reset-password`,
     VERIFY_EMAIL: (token: string) => `${API_PREFIX}/auth/verify-email/${token}`,
+    EMAIL_CHANGE_REQUEST: `${API_PREFIX}/auth/email-change/request`,
+    EMAIL_CHANGE_CONFIRM: `${API_PREFIX}/auth/email-change/confirm`,
   },
   USERS: {
     ME: `${API_PREFIX}/users/me`,
@@ -72,10 +74,13 @@ export const ENDPOINTS = {
     REVENUE: `${API_PREFIX}/payments/revenue`,
     MANUAL: `${API_PREFIX}/payments/manual`,
   },
+  BANNERS: {
+    LIST: `${API_PREFIX}/banners`,
+    PUBLIC: `${API_PREFIX}/banners/public`,
+    BY_ID: (id: string) => `${API_PREFIX}/banners/${id}`,
+  },
 } as const
 
 export const TOKEN_KEYS = {
-  ACCESS: "kamerinos_access_token",
-  REFRESH: "kamerinos_refresh_token",
   USER: "kamerinos_user",
 } as const

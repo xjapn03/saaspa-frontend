@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 }
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { FaqSection } from "@/components/marketing/faq-section"
 
 export default function PoliticasPage() {
   return (
@@ -88,6 +89,10 @@ export default function PoliticasPage() {
             </p>
           </div>
         </div>
+
+        <Separator className="my-12" />
+
+        <FaqSection />
 
         <Separator className="my-12" />
 

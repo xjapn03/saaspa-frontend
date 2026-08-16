@@ -5,7 +5,6 @@ export const authHandlers = [
   http.post("/api/auth/login", async () => {
     return HttpResponse.json({
       user: mockUser,
-      ...mockTokens,
     })
   }),
 

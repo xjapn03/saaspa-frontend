@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Loader2 } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { Loader2, Upload, X, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
+import { Separator } from "@/components/ui/separator"
 import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
 import { servicesApi } from "@/lib/services-api"
 import { API_BASE_URL } from "@/lib/constants"
@@ -17,15 +18,25 @@ interface ServiceFormDrawerProps {
   onSaved: () => void
 }
 
+type ServiceFormState = CreateServiceRequest & {
+  isActive: boolean
+  mainImage: string
+  carouselImages: string[]
+}
+
 export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: ServiceFormDrawerProps) {
   const isEditing = !!service
   const { success: showSuccess, error: showError } = useToast()
-  const [form, setForm] = useState<CreateServiceRequest & { isActive?: boolean }>({
-    name: "", description: "", price: 0, duration: 60, categoryId: "", imageUrl: "", isActive: true,
+  const [form, setForm] = useState<ServiceFormState>({
+    name: "", description: "", price: 0, compareAtPrice: undefined, duration: 60,
+    categoryId: "", imageUrl: "", mainImage: "", carouselImages: [], isActive: true, isFeatured: false,
   })
   const [isSaving, setIsSaving] = useState(false)
+  const [uploading, setUploading] = useState<"main" | "carousel" | null>(null)
   const [error, setError] = useState("")
   const [categories, setCategories] = useState<CategoryOption[]>([])
+  const mainFileRef = useRef<HTMLInputElement>(null)
+  const carouselFileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (open) {
@@ -37,11 +48,13 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     if (service) {
       setForm({
         name: service.name, description: service.description || "", price: service.price,
-        duration: service.duration, categoryId: service.categoryId || "",
-        imageUrl: service.imageUrl || "", isActive: service.isActive,
+        compareAtPrice: service.compareAtPrice ?? undefined, duration: service.duration,
+        categoryId: service.categoryId || "", imageUrl: service.imageUrl || "",
+        mainImage: service.mainImage || "", carouselImages: service.carouselImages || [],
+        isActive: service.isActive, isFeatured: service.isFeatured,
       })
     } else {
-      setForm({ name: "", description: "", price: 0, duration: 60, categoryId: "", imageUrl: "", isActive: true })
+      setForm({ name: "", description: "", price: 0, compareAtPrice: undefined, duration: 60, categoryId: "", imageUrl: "", mainImage: "", carouselImages: [], isActive: true, isFeatured: false })
     }
     setError("")
   }, [service, open])
@@ -51,12 +64,56 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     setForm((prev) => ({ ...prev, [name]: type === "number" ? Number(value) : value }))
   }
 
+  async function uploadImage(file: File, type: "main" | "gallery"): Promise<string | null> {
+    const folderKey = form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") || "servicio"
+    const params = new URLSearchParams({ folder: `services/${folderKey}`, imageType: type })
+    const formData = new FormData()
+    formData.append("file", file)
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/upload?${params.toString()}`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      })
+      if (!res.ok) throw new Error("Upload failed")
+      const data = await res.json()
+      return data.url
+    } catch {
+      setError("Error al subir la imagen")
+      return null
+    }
+  }
+
+  async function handleMainUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading("main")
+    const url = await uploadImage(file, "main")
+    if (url) setForm(prev => ({ ...prev, mainImage: url }))
+    setUploading(null)
+  }
+
+  async function handleCarouselUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading("carousel")
+    const url = await uploadImage(file, "gallery")
+    if (url) setForm(prev => ({ ...prev, carouselImages: [...prev.carouselImages, url] }))
+    setUploading(null)
+  }
+
+  function removeCarouselImage(index: number) {
+    setForm(prev => ({ ...prev, carouselImages: prev.carouselImages.filter((_, i) => i !== index) }))
+  }
+
   async function handleSave() {
     setError("")
     setIsSaving(true)
     try {
       const data: any = { ...form }
       if (!data.categoryId) data.categoryId = null
+      if (!data.compareAtPrice) data.compareAtPrice = undefined
+      data.carouselImages = data.carouselImages.length > 0 ? data.carouselImages : undefined
       if (isEditing && service) await servicesApi.update(service.id, data)
       else await servicesApi.create(data as CreateServiceRequest)
       onSaved()
@@ -69,13 +126,15 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     } finally { setIsSaving(false) }
   }
 
+  const inputCls = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+
   return (
     <Modal open={open} onOpenChange={onOpenChange} title={isEditing ? "Editar servicio" : "Nuevo servicio"} description={isEditing ? "Modifica los datos del servicio." : "Crea un nuevo servicio para ofrecer a tus clientes."}>
       {error && (<div className="mb-4 rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</div>)}
       <div className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Nombre</label>
-          <input name="name" value={form.name} onChange={handleChange} placeholder="Facial Hidratante Premium" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+          <input name="name" value={form.name} onChange={handleChange} placeholder="Facial Hidratante Premium" className={inputCls} />
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Categoría</label>
@@ -84,25 +143,75 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio (COP)</label>
-            <input name="price" type="number" min={0} value={form.price} onChange={handleChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            <input name="price" type="number" min={0} value={form.price} onChange={handleChange} className={inputCls} />
           </div>
           <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Precio anterior (COP)</label>
+            <input name="compareAtPrice" type="number" min={0} value={form.compareAtPrice ?? ""} onChange={handleChange} placeholder="Opcional" className={inputCls} />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Duración (min)</label>
-            <input name="duration" type="number" min={1} value={form.duration} onChange={handleChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            <input name="duration" type="number" min={1} value={form.duration} onChange={handleChange} className={inputCls} />
           </div>
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Descripción</label>
-          <textarea name="description" value={form.description} onChange={handleChange} rows={3} placeholder="Describe el servicio en 1-2 líneas..." className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors resize-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+          <textarea name="description" value={form.description} onChange={handleChange} rows={3} placeholder="Describe el servicio en 1-2 líneas..." className={`${inputCls} resize-none`} />
         </div>
-        {isEditing && (
-          <div className="flex items-center justify-between rounded-xl border border-border p-4">
-            <div><p className="text-sm font-medium text-foreground">Estado</p><p className="text-xs text-muted-foreground">{form.isActive ? "Visible en el sitio público" : "Oculto del sitio público"}</p></div>
-            <button type="button" role="switch" aria-checked={form.isActive} onClick={() => setForm((prev) => ({ ...prev, isActive: !prev.isActive }))} className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors ${form.isActive ? "bg-primary" : "bg-muted"}`}>
-              <span className={`inline-block size-4 rounded-full bg-background shadow-sm transition-transform ${form.isActive ? "translate-x-6" : "translate-x-1"}`} />
+
+        <Separator />
+
+        <div>
+          <p className="text-sm font-medium text-foreground mb-3">Imagen principal</p>
+          {form.mainImage ? (
+            <div className="relative inline-block">
+              <img src={form.mainImage} alt="Preview" className="size-32 rounded-xl object-cover border border-border" />
+              <button onClick={() => setForm(p => ({ ...p, mainImage: "" }))} className="absolute -top-2 -right-2 size-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center"><X className="size-3" /></button>
+            </div>
+          ) : (
+            <div>
+              <input ref={mainFileRef} type="file" accept="image/*" onChange={handleMainUpload} className="hidden" />
+              <Button variant="outline" size="sm" onClick={() => mainFileRef.current?.click()} disabled={uploading === "main"}>
+                {uploading === "main" ? <Loader2 className="mr-2 size-3 animate-spin" /> : <Upload className="mr-2 size-3" />}
+                Subir imagen
+              </Button>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <p className="text-sm font-medium text-foreground mb-3">Galería de imágenes</p>
+          <div className="flex flex-wrap gap-3">
+            {form.carouselImages.map((url, i) => (
+              <div key={i} className="relative">
+                <img src={url} alt={`Carousel ${i + 1}`} className="size-20 rounded-lg object-cover border border-border" />
+                <button onClick={() => removeCarouselImage(i)} className="absolute -top-2 -right-2 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center"><X className="size-2.5" /></button>
+              </div>
+            ))}
+            <input ref={carouselFileRef} type="file" accept="image/*" onChange={handleCarouselUpload} className="hidden" />
+            <button onClick={() => carouselFileRef.current?.click()} disabled={uploading === "carousel"} className="flex size-20 items-center justify-center rounded-lg border-2 border-dashed border-border text-muted-foreground hover:border-primary/50 hover:text-primary/50 transition-colors">
+              {uploading === "carousel" ? <Loader2 className="size-5 animate-spin" /> : <Plus className="size-5" />}
             </button>
           </div>
-        )}
+        </div>
+
+        <Separator />
+
+        <div className="flex items-center justify-between rounded-xl border border-border p-4">
+          <div><p className="text-sm font-medium text-foreground">Estado</p><p className="text-xs text-muted-foreground">{form.isActive ? "Visible en el sitio público" : "Oculto del sitio público"}</p></div>
+          <button type="button" role="switch" aria-checked={form.isActive} onClick={() => setForm((prev) => ({ ...prev, isActive: !prev.isActive }))} className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors ${form.isActive ? "bg-primary" : "bg-muted"}`}>
+            <span className={`inline-block size-4 rounded-full bg-background shadow-sm transition-transform ${form.isActive ? "translate-x-6" : "translate-x-1"}`} />
+          </button>
+        </div>
+
+        <div className="flex items-center justify-between rounded-xl border border-border p-4">
+          <div><p className="text-sm font-medium text-foreground">Destacado en el home</p><p className="text-xs text-muted-foreground">{form.isFeatured ? "Se muestra en rituales destacados" : "Solo aparece en el listado general"}</p></div>
+          <button type="button" role="switch" aria-checked={form.isFeatured} onClick={() => setForm((prev) => ({ ...prev, isFeatured: !prev.isFeatured }))} className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors ${form.isFeatured ? "bg-primary" : "bg-muted"}`}>
+            <span className={`inline-block size-4 rounded-full bg-background shadow-sm transition-transform ${form.isFeatured ? "translate-x-6" : "translate-x-1"}`} />
+          </button>
+        </div>
       </div>
       <div className="mt-8">
         <Button className="w-full" size="lg" onClick={handleSave} disabled={isSaving}>{isSaving ? <Loader2 className="size-4 animate-spin" /> : isEditing ? "Guardar cambios" : "Crear servicio"}</Button>

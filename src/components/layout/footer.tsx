@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Phone, MapPin, Camera } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { scrollReveal, useReducedMotion } from "@/lib/animations"
+import { SocialLinks } from "@/components/layout/social-links"
 
 const serviceLinks = [
   { href: "/servicios/facial-hidratante-premium", label: "Facial Hidratante Premium" },
@@ -94,6 +95,10 @@ export function Footer() {
                 <span>@kamerinosspa</span>
               </li>
             </ul>
+            <p className="mb-3 mt-6 text-xs font-semibold uppercase tracking-widest text-background/40">
+              Síguenos
+            </p>
+            <SocialLinks tone="light" />
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, Clock } from "lucide-react"
+import { ArrowRight, Clock, Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -18,6 +18,9 @@ export interface ServiceCardProps {
   duration: string
   description: string
   price: string
+  compareAtPrice?: string
+  image?: string | null
+  isFeatured?: boolean
   className?: string
 }
 
@@ -28,16 +31,38 @@ export function ServiceCard({
   duration,
   description,
   price,
+  compareAtPrice,
+  image,
+  isFeatured,
   className,
 }: ServiceCardProps) {
   return (
     <Link href={`/servicios/${slug}`} className="block group">
       <Card
         className={cn(
-          "h-full transition-shadow duration-300 group-hover:shadow-lg group-hover:border-primary/40",
+          "h-full overflow-hidden transition-shadow duration-300 group-hover:shadow-lg group-hover:border-primary/40",
           className
         )}
       >
+        <div className="relative aspect-[4/3] overflow-hidden bg-muted/30">
+          {image ? (
+            <img
+              src={image}
+              alt={name}
+              className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center text-4xl text-muted-foreground/30">
+              ✦
+            </div>
+          )}
+          {isFeatured && (
+            <Badge className="absolute left-3 top-3 gap-1">
+              <Sparkles className="size-3" />
+              Destacado
+            </Badge>
+          )}
+        </div>
         <CardHeader>
           <Badge variant="secondary" className="w-fit">
             {category}
@@ -60,6 +85,11 @@ export function ServiceCard({
             <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
               Inversión
             </p>
+            {compareAtPrice && (
+              <p className="text-xs text-muted-foreground line-through">
+                {compareAtPrice}
+              </p>
+            )}
             <p className="font-heading text-xl font-semibold text-foreground">
               {price}
             </p>

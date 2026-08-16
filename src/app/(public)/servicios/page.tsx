@@ -11,6 +11,14 @@ export const metadata: Metadata = {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 
+function formatCOP(value: number): string {
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+  }).format(value)
+}
+
 export default async function ServiciosPage() {
   let services: Service[] = []
 
@@ -61,11 +69,14 @@ export default async function ServiciosPage() {
                   category={svc.categoryRel?.name || "General"}
                   duration={`${svc.duration} min`}
                   description={svc.description || ""}
-                  price={new Intl.NumberFormat("es-CO", {
-                    style: "currency",
-                    currency: "COP",
-                    minimumFractionDigits: 0,
-                  }).format(svc.price)}
+                  image={svc.mainImage || svc.imageUrl}
+                  isFeatured={svc.isFeatured}
+                  price={formatCOP(svc.price)}
+                  compareAtPrice={
+                    svc.compareAtPrice && svc.compareAtPrice > svc.price
+                      ? formatCOP(svc.compareAtPrice)
+                      : undefined
+                  }
                 />
               </div>
             ))}

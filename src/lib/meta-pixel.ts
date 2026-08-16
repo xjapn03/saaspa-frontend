@@ -12,7 +12,7 @@ export function getPixelId(): string {
 }
 
 export function isPixelEnabled(): boolean {
-  return PIXEL_ID.length > 0
+  return process.env.NODE_ENV === "production" && PIXEL_ID.length > 0
 }
 
 export function pageView(): void {

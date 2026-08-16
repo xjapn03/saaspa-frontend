@@ -28,6 +28,21 @@ cp .env.example .env.local
 # editar NEXT_PUBLIC_API_URL si el backend no está en localhost:3001
 ```
 
+### Variables de entorno (Next.js)
+
+Precedencia (mayor → menor): `.env.$(NODE_ENV).local` > `.env.local` > `.env.$(NODE_ENV)` > `.env`.
+Las `NEXT_PUBLIC_*` se **inyectan en build** (no en runtime).
+
+| Variable | Dev | Prod (Docker build args) |
+|----------|-----|--------------------------|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:3001` | `https://kamerinos.sandrapinzonsaludybelleza.com.co` |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | dominio público |
+| `NEXT_PUBLIC_META_PIXEL_ID` | **vacío** (Pixel apagado) | real |
+
+> **Anti-contaminación:** el Pixel (`isPixelEnabled()`) exige `NODE_ENV === 'production'`
+> además del ID → en dev **jamás** se dispara, aunque pongas el ID. El ID real solo
+> entra por los build args del Docker (`kamerinos-infra/.env`). Ver `docs-general/ENV.md`.
+
 ## Comandos
 
 ```bash
@@ -35,7 +50,7 @@ npm run dev          # Dev server (:3000)
 npm run build        # Build de producción
 npm run start        # Servir build
 npm run lint         # ESLint
-npm run test         # Vitest (61 tests, 15 suites)
+npm run test         # Vitest (60 tests, 15 suites)
 npm run test:watch   # Vitest en modo watch
 npm run test:coverage # Cobertura de tests
 ```
@@ -46,14 +61,15 @@ La guía completa de arquitectura de carpetas está en [`docs/STRUCTURE.md`](./d
 
 ```
 src/
-├── app/            # App Router — (public) con /checkout, (auth), dashboard
-├── components/     # ui/ (shadcn + CategorySelect), layout/, marketing/, booking/, dashboard/, shop/
-├── lib/            # api.ts, auth.ts, constants.ts, fonts.ts, utils.ts, *-api.ts (11 API clients), meta-pixel.ts, animations.ts
-├── context/        # AuthProvider, CartProvider, CartProviderWithAuth, ToastProvider
-├── hooks/          # Custom hooks
-├── types/          # Tipos compartidos (auth, booking, service, payment, coupon, product)
-├── test/           # Mocks MSW + fixtures
-└── __tests__/      # Tests unitarios e integración (15 suites, 61 tests)
+├── middleware.ts    # Protección de rutas por cookie (dashboard + login/registro)
+├── app/             # App Router — (public) con /checkout, (auth), dashboard
+├── components/      # ui/ (shadcn + CategorySelect), layout/, marketing/, booking/, dashboard/, shop/
+├── lib/             # api.ts (cookies, credentials include), auth.ts, constants.ts, fonts.ts, utils.ts, *-api.ts (11 API clients), meta-pixel.ts, animations.ts
+├── context/         # AuthProvider, CartProvider, CartProviderWithAuth, ToastProvider
+├── hooks/           # Custom hooks
+├── types/           # Tipos compartidos (auth, booking, service, payment, coupon, product, banner)
+├── test/            # Mocks MSW + fixtures
+└── __tests__/       # Tests unitarios e integración (15 suites, 60 tests)
 ```
 
 ## Puertos

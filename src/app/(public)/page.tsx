@@ -41,6 +41,7 @@ export default async function Home() {
   const services = await getServices()
   const heroBanners = await getBanners("HERO")
   const stripBanners = await getBanners("STRIP")
+  const portraitBanners = await getBanners("PORTRAIT")
 
   return (
     <>
@@ -50,7 +51,7 @@ export default async function Home() {
         </div>
       )}
 
-      <Hero />
+      <Hero portraitImage={portraitBanners[0]?.imageUrl} />
 
       <PhilosophyPillars />
 

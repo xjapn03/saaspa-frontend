@@ -49,6 +49,14 @@ export const auth = {
     return api.post<{ message: string }>(ENDPOINTS.AUTH.EMAIL_CHANGE_CONFIRM, { code })
   },
 
+  async resendVerification(email: string): Promise<{ message: string }> {
+    return api.post<{ message: string }>(ENDPOINTS.AUTH.RESEND_VERIFICATION, { email })
+  },
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<{ message: string }> {
+    return api.post<{ message: string }>(ENDPOINTS.AUTH.CHANGE_PASSWORD, { currentPassword, newPassword })
+  },
+
   getStoredUser(): User | null {
     if (typeof window === "undefined") return null
     const raw = localStorage.getItem(TOKEN_KEYS.USER)

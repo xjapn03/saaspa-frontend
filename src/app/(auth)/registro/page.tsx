@@ -24,6 +24,7 @@ export default function RegistroPage() {
     lastName: "",
     email: "",
     phone: "",
+    birthday: "",
     password: "",
     confirmPassword: "",
   })
@@ -55,6 +56,7 @@ export default function RegistroPage() {
         email: form.email,
         password: form.password,
         phone: form.phone || undefined,
+        birthday: form.birthday || undefined,
       })
       setRegisteredEmail(form.email)
       setRegistered(true)
@@ -198,6 +200,24 @@ export default function RegistroPage() {
               onChange={handleChange}
               placeholder="300 000 0000"
               className="w-full rounded-xl border border-border bg-background py-2.5 px-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label
+              htmlFor="birthday"
+              className="text-sm font-medium text-foreground"
+            >
+              Fecha de nacimiento{" "}
+              <span className="text-muted-foreground">(opcional)</span>
+            </label>
+            <input
+              id="birthday"
+              name="birthday"
+              type="date"
+              value={form.birthday}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-border bg-background py-2.5 px-3 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
           </div>
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
-import { fraunces, geistSans, geistMono } from "@/lib/fonts"
 import { ClientProviders } from "@/components/layout/client-providers"
 import { MetaPixelScript } from "@/components/layout/meta-pixel-script"
 import { JsonLd } from "@/components/layout/json-ld"
@@ -73,13 +72,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={cn(
         "h-full",
         "antialiased",
-        geistSans.variable,
-        geistMono.variable,
-        fraunces.variable,
         "font-sans"
       )}
     >
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Geist:wght@300..700&family=Geist+Mono:wght@300..700&display=swap"
+          rel="stylesheet"
+        />
         <Suspense fallback={null}>
           <MetaPixelScript />
         </Suspense>

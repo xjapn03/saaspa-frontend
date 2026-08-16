@@ -13,6 +13,8 @@ export const ENDPOINTS = {
     VERIFY_EMAIL: (token: string) => `${API_PREFIX}/auth/verify-email/${token}`,
     EMAIL_CHANGE_REQUEST: `${API_PREFIX}/auth/email-change/request`,
     EMAIL_CHANGE_CONFIRM: `${API_PREFIX}/auth/email-change/confirm`,
+    RESEND_VERIFICATION: `${API_PREFIX}/auth/resend-verification`,
+    CHANGE_PASSWORD: `${API_PREFIX}/auth/change-password`,
   },
   USERS: {
     ME: `${API_PREFIX}/users/me`,

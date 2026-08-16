@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import gsap from "gsap"
+import { LogoMark } from "@/components/layout/logo"
 
 function useReducedMotion(): boolean {
   if (typeof window === "undefined") return false
@@ -64,11 +65,12 @@ export function Preloader({ children }: { children: React.ReactNode }) {
         aria-hidden={isExiting}
       >
         <div ref={logoRef} className="text-center">
-          <p className="font-heading text-3xl font-semibold tracking-tight text-foreground">
+          <LogoMark className="mx-auto mb-5 size-16" />
+          <p className="font-heading text-3xl font-semibold italic tracking-tight text-foreground">
             Kamerinos
           </p>
           <p className="mt-1 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-            Bienestar & Estética
+            by Sandra Pinzon
           </p>
         </div>
 

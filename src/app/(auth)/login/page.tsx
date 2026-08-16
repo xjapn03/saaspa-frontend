@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ArrowRight, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { LogoMark } from "@/components/layout/logo"
 import { useAuth } from "@/context/auth-provider"
 
 function LoginForm() {
@@ -44,9 +45,10 @@ function LoginForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
+        <LogoMark className="mx-auto size-16" />
         <Link
           href="/"
-          className="mb-3 inline-block font-heading text-xl font-semibold tracking-tight"
+          className="mt-4 inline-block font-heading text-xl font-semibold tracking-tight"
         >
           Kamerinos by Sandra Pinzon
         </Link>

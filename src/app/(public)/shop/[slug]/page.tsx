@@ -40,14 +40,14 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
     new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(p)
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-32 pb-24 md:pt-40 md:pb-32">
       <MetaViewContent
         contentName={product.name}
         contentCategory={product.category?.name || "General"}
         contentType="product"
         value={product.price}
       />
-      <div className="mx-auto max-w-7xl px-6 py-12">
+      <div className="mx-auto max-w-7xl px-6">
         <Link href="/shop" className="mb-8 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="size-4" /> Volver a la tienda
         </Link>

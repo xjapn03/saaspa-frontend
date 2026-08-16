@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { NumericInput } from "@/components/ui/numeric-input"
 import { bannersApi } from "@/lib/banners-api"
-import { API_BASE_URL } from "@/lib/constants"
+import { uploadImage } from "@/lib/upload"
 import { useToast } from "@/context/toast-provider"
 import type { Banner, BannerPosition } from "@/types/banner"
 
@@ -89,20 +89,11 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    const params = new URLSearchParams({ folder: `banners/${folderKey}`, imageType: "main" })
-    const formData = new FormData()
-    formData.append("file", file)
     try {
-      const res = await fetch(`${API_BASE_URL}/api/upload?${params.toString()}`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      })
-      if (!res.ok) throw new Error("Upload failed")
-      const data = await res.json()
-      setForm((prev) => ({ ...prev, imageUrl: data.url }))
-    } catch {
-      setError("Error al subir la imagen")
+      const url = await uploadImage(file, `banners/${folderKey}`, "main")
+      setForm((prev) => ({ ...prev, imageUrl: url }))
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Error al subir la imagen")
     } finally {
       setUploading(false)
     }

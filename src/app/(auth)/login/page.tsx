@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { LogoMark } from "@/components/layout/logo"
 import { useAuth } from "@/context/auth-provider"
+import { auth } from "@/lib/auth"
 
 function LoginForm() {
   const router = useRouter()
@@ -20,10 +21,14 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [unverified, setUnverified] = useState(false)
+  const [resending, setResending] = useState(false)
+  const [resendMsg, setResendMsg] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
+    setUnverified(false)
     setIsSubmitting(true)
 
     try {
@@ -37,8 +42,30 @@ function LoginForm() {
             : err.message
           : "Error al iniciar sesión"
       setError(String(msg))
+      if (String(msg).includes("verificar tu correo")) setUnverified(true)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  async function handleResend(e: React.FormEvent) {
+    e.preventDefault()
+    if (!email.trim()) return
+    setResending(true)
+    setResendMsg("")
+    try {
+      await auth.resendVerification(email.trim())
+      setResendMsg("Enviamos un nuevo enlace de verificación. Revisa tu correo.")
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === "object" && "message" in err
+          ? Array.isArray(err.message)
+            ? err.message[0]
+            : err.message
+          : "Error al reenviar la verificación"
+      setError(String(msg))
+    } finally {
+      setResending(false)
     }
   }
 
@@ -64,6 +91,12 @@ function LoginForm() {
           {error && (
             <div className="rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">
               {error}
+            </div>
+          )}
+
+          {resendMsg && (
+            <div className="rounded-lg bg-primary/10 px-4 py-3 text-sm text-primary">
+              {resendMsg}
             </div>
           )}
 
@@ -142,6 +175,25 @@ function LoginForm() {
               </>
             )}
           </Button>
+
+          {unverified && (
+            <div className="rounded-xl border border-border bg-muted/40 p-4">
+              <p className="text-xs text-muted-foreground">
+                ¿No recibiste el correo de verificación?
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-3 w-full"
+                onClick={handleResend}
+                disabled={resending}
+              >
+                {resending ? <Loader2 className="size-3 animate-spin" /> : null}
+                Reenviar verificación
+              </Button>
+            </div>
+          )}
         </form>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">

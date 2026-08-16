@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Mail, UserRound, ShieldCheck, Loader2 } from "lucide-react"
+import { Mail, UserRound, ShieldCheck, Loader2, Lock, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/context/auth-provider"
@@ -34,6 +34,40 @@ export default function ConfiguracionPage() {
   const [codeSent, setCodeSent] = useState(false)
   const [sendingCode, setSendingCode] = useState(false)
   const [confirming, setConfirming] = useState(false)
+
+  const [pwd, setPwd] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" })
+  const [showPwd, setShowPwd] = useState(false)
+  const [changingPwd, setChangingPwd] = useState(false)
+  const pwdRef = useScrollReveal<HTMLDivElement>({ y: 30 })
+
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault()
+    if (pwd.newPassword.length < 6) {
+      showError("La nueva contraseña debe tener al menos 6 caracteres.")
+      return
+    }
+    if (pwd.newPassword !== pwd.confirmPassword) {
+      showError("Las contraseñas no coinciden.")
+      return
+    }
+    setChangingPwd(true)
+    try {
+      await auth.changePassword(pwd.currentPassword, pwd.newPassword)
+      showSuccess("Contraseña actualizada. Inicia sesión de nuevo.")
+      await logout()
+      router.replace("/login")
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === "object" && "message" in err
+          ? Array.isArray(err.message)
+            ? err.message[0]
+            : err.message
+          : "Error al cambiar la contraseña"
+      showError(String(msg))
+    } finally {
+      setChangingPwd(false)
+    }
+  }
 
   async function handleSaveProfile(e: React.FormEvent) {
     e.preventDefault()
@@ -213,6 +247,78 @@ export default function ConfiguracionPage() {
                   </div>
                 </form>
               )}
+            </CardContent>
+          </Card>
+        </div>
+
+        <div ref={pwdRef}>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lock className="size-5 text-primary" strokeWidth={1.5} />
+                Cambiar contraseña
+              </CardTitle>
+              <CardDescription>
+                Actualiza tu contraseña. Al cambiarla deberás iniciar sesión de nuevo.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">Contraseña actual</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      type={showPwd ? "text" : "password"}
+                      value={pwd.currentPassword}
+                      onChange={(e) => setPwd((p) => ({ ...p, currentPassword: e.target.value }))}
+                      placeholder="••••••••"
+                      required
+                      className={`${inputCls} pl-10 pr-10`}
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Nueva contraseña</label>
+                    <input
+                      type={showPwd ? "text" : "password"}
+                      value={pwd.newPassword}
+                      onChange={(e) => setPwd((p) => ({ ...p, newPassword: e.target.value }))}
+                      placeholder="Mínimo 6 caracteres"
+                      required
+                      minLength={6}
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Confirmar contraseña</label>
+                    <input
+                      type={showPwd ? "text" : "password"}
+                      value={pwd.confirmPassword}
+                      onChange={(e) => setPwd((p) => ({ ...p, confirmPassword: e.target.value }))}
+                      placeholder="Repite tu contraseña"
+                      required
+                      minLength={6}
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button type="submit" disabled={changingPwd}>
+                    {changingPwd ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
+                    Actualizar contraseña
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => setShowPwd((v) => !v)}
+                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    {showPwd ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                    {showPwd ? "Ocultar" : "Mostrar"}
+                  </button>
+                </div>
+              </form>
             </CardContent>
           </Card>
         </div>

@@ -92,6 +92,10 @@ input[type="number"] {
   --sidebar-accent-foreground: oklch(0.22 0.02 60);
   --sidebar-border: oklch(0.88 0.02 75);
   --sidebar-ring: oklch(0.62 0.08 35 / 50%);
+  --font-heading: "Fraunces", ui-serif, Georgia, serif;
+  --font-geist-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-geist-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-geist-sans);
 }
 
 .dark {

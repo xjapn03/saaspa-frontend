@@ -9,6 +9,7 @@ import { CategorySelect, type CategoryOption } from "@/components/ui/category-se
 import { NumericInput } from "@/components/ui/numeric-input"
 import { servicesApi } from "@/lib/services-api"
 import { API_BASE_URL } from "@/lib/constants"
+import { uploadImage } from "@/lib/upload"
 import { useToast } from "@/context/toast-provider"
 import type { Service, CreateServiceRequest } from "@/types/service"
 
@@ -73,22 +74,12 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  async function uploadImage(file: File, type: "main" | "gallery"): Promise<string | null> {
+  async function uploadImageFile(file: File, type: "main" | "gallery"): Promise<string | null> {
     const folderKey = form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") || "servicio"
-    const params = new URLSearchParams({ folder: `services/${folderKey}`, imageType: type })
-    const formData = new FormData()
-    formData.append("file", file)
     try {
-      const res = await fetch(`${API_BASE_URL}/api/upload?${params.toString()}`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      })
-      if (!res.ok) throw new Error("Upload failed")
-      const data = await res.json()
-      return data.url
-    } catch {
-      setError("Error al subir la imagen")
+      return await uploadImage(file, `services/${folderKey}`, type)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Error al subir la imagen")
       return null
     }
   }
@@ -97,7 +88,7 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     const file = e.target.files?.[0]
     if (!file) return
     setUploading("main")
-    const url = await uploadImage(file, "main")
+    const url = await uploadImageFile(file, "main")
     if (url) setForm(prev => ({ ...prev, mainImage: url }))
     setUploading(null)
   }
@@ -106,7 +97,7 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     const file = e.target.files?.[0]
     if (!file) return
     setUploading("carousel")
-    const url = await uploadImage(file, "gallery")
+    const url = await uploadImageFile(file, "gallery")
     if (url) setForm(prev => ({ ...prev, carouselImages: [...prev.carouselImages, url] }))
     setUploading(null)
   }

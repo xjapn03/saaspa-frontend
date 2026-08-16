@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ProductGallery } from "@/components/shop/product-gallery"
 import { AddToCartButton } from "@/components/shop/add-to-cart-button"
+import { MetaViewContent } from "@/components/common/meta-view-content"
 import type { Product } from "@/types/product"
 
 async function getProduct(slug: string): Promise<Product | null> {
@@ -40,6 +41,12 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
 
   return (
     <div className="min-h-screen">
+      <MetaViewContent
+        contentName={product.name}
+        contentCategory={product.category?.name || "General"}
+        contentType="product"
+        value={product.price}
+      />
       <div className="mx-auto max-w-7xl px-6 py-12">
         <Link href="/shop" className="mb-8 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="size-4" /> Volver a la tienda

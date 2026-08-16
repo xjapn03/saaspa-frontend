@@ -10,6 +10,7 @@ import {
 } from "react"
 import type { LoginRequest, RegisterRequest, User } from "@/types/auth"
 import { auth } from "@/lib/auth"
+import { completeRegistration } from "@/lib/meta-pixel"
 
 interface AuthState {
   user: User | null
@@ -65,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback(async (data: RegisterRequest) => {
     await auth.register(data)
+    completeRegistration("email")
   }, [])
 
   const logout = useCallback(async () => {

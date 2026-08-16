@@ -10,6 +10,7 @@ import { useCart } from "@/context/cart-provider"
 import { useAuth } from "@/context/auth-provider"
 import { paymentsApi } from "@/lib/payments-api"
 import { useToast } from "@/context/toast-provider"
+import { initiateCheckout } from "@/lib/meta-pixel"
 
 declare global { interface Window { WidgetCheckout: new (c: unknown) => { open: (cb: (r: unknown) => void) => void } } }
 
@@ -79,6 +80,10 @@ export default function CheckoutPage() {
       )
       setWompiConfig(config)
       setStep("payment")
+      initiateCheckout({
+        value: Math.max(0, total),
+        numItems: itemCount,
+      })
     } catch (err: unknown) {
       const msg = err && typeof err === "object" && "message" in err ? (err as any).message : "Error al iniciar el pago"
       setCheckoutError(String(msg))

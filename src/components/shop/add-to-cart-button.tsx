@@ -4,6 +4,7 @@ import { useState } from "react"
 import { ShoppingBag, Plus, Minus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/context/cart-provider"
+import { addToCart } from "@/lib/meta-pixel"
 import type { Product } from "@/types/product"
 
 interface AddToCartButtonProps {
@@ -22,6 +23,11 @@ export function AddToCartButton({ product, disabled }: AddToCartButtonProps) {
   function handleAdd() {
     if (atMax) return
     addItem(product)
+    addToCart({
+      contentName: product.name,
+      value: product.price,
+      contentIds: [product.id],
+    })
     setAdded(true)
     setTimeout(() => setAdded(false), 1500)
   }

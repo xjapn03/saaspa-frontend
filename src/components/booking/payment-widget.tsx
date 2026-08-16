@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useAuth } from "@/context/auth-provider"
 import { paymentsApi } from "@/lib/payments-api"
+import { trackPurchase } from "@/lib/meta-pixel"
+import { getFbc, getFbp, generateEventId } from "@/lib/fbc"
 
 declare global {
   interface Window {
@@ -20,6 +22,7 @@ interface PaymentWidgetProps {
   startTime: string
   serviceName: string
   depositAmount: number
+  totalAmount: number
   onPaymentComplete: () => void
   onCancel: () => void
 }
@@ -39,12 +42,15 @@ export function PaymentWidget({
   startTime,
   serviceName,
   depositAmount,
+  totalAmount,
   onPaymentComplete,
   onCancel,
 }: PaymentWidgetProps) {
   const { isAuthenticated } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [payMode, setPayMode] = useState<"deposit" | "full">("deposit")
+  const [eventId, setEventId] = useState<string | null>(null)
   const [wompiConfig, setWompiConfig] = useState<{
     publicKey: string
     reference: string
@@ -73,12 +79,16 @@ export function PaymentWidget({
       document.body.style.overflow = originalOverflow
       const transaction = result?.transaction
       if (transaction?.status === "APPROVED") {
+        trackPurchase(
+          { serviceName, value: payMode === "full" ? totalAmount : depositAmount },
+          eventId || undefined,
+        )
         setPaymentSuccess(true)
       } else if (transaction) {
         setError(`Pago ${transaction.status === "DECLINED" ? "rechazado" : "con error"}. Intenta de nuevo.`)
       }
     })
-  }, [isAuthenticated, wompiConfig, scriptReady])
+  }, [isAuthenticated, wompiConfig, scriptReady, payMode, totalAmount, depositAmount, serviceName, eventId])
 
   useEffect(() => {
     return () => {
@@ -101,7 +111,15 @@ export function PaymentWidget({
         setBookingId(booking.id)
       }
 
-      const config = await paymentsApi.init(currentBookingId, "ABONO")
+      const newEventId = generateEventId()
+      setEventId(newEventId)
+
+      const config = await paymentsApi.init(currentBookingId, "ABONO", {
+        payFull: payMode === "full",
+        fbc: getFbc(),
+        fbp: getFbp(),
+        eventId: newEventId,
+      })
       setWompiConfig(config)
     } catch (err: unknown) {
       const msg = err && typeof err === "object" && "message" in err
@@ -121,12 +139,14 @@ export function PaymentWidget({
     handleStartPayment()
   }
 
+  const amountToPay = payMode === "full" ? totalAmount : depositAmount
+
   const whatsappMsg = encodeURIComponent(
     `Hola Kamerinos! Quiero completar el pago de mi cita:\n\n` +
     `Servicio: ${serviceName}\n` +
     `Fecha: ${formatDate(startTime)}\n` +
     `Hora: ${formatTime(startTime)}\n` +
-    `Abono pendiente: $${depositAmount.toLocaleString("es-CO")}`
+    `${payMode === "full" ? "Pago total" : "Abono pendiente"}: $${amountToPay.toLocaleString("es-CO")}`
   )
 
   const formatPrice = (p: number) =>
@@ -179,7 +199,7 @@ export function PaymentWidget({
         <div className="mt-4 rounded-xl bg-muted/20 p-4 text-left text-sm space-y-1">
           <p><strong>Servicio:</strong> {serviceName}</p>
           <p><strong>Fecha:</strong> {formatDate(startTime)} a las {formatTime(startTime)}</p>
-          <p><strong>Abono pendiente:</strong> {formatPrice(depositAmount)}</p>
+          <p><strong>{payMode === "full" ? "Pago total" : "Abono pendiente"}:</strong> {formatPrice(amountToPay)}</p>
         </div>
         <div className="mt-6 flex flex-col gap-3">
           <Button size="lg" nativeButton={false} render={
@@ -203,7 +223,9 @@ export function PaymentWidget({
         onReady={() => setScriptReady(true)}
       />
 
-      <p className="mb-2 font-heading text-lg font-semibold">Confirmar y pagar abono</p>
+      <p className="mb-2 font-heading text-lg font-semibold">
+        {payMode === "full" ? "Confirmar y pagar el total" : "Confirmar y pagar abono"}
+      </p>
       <p className="mb-4 text-xs text-muted-foreground">
         Se abrirá el widget de Wompi para pagar con PSE, Nequi o tarjeta.
       </p>
@@ -216,11 +238,36 @@ export function PaymentWidget({
         </div>
       )}
 
+      <div className="mb-6 grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={() => setPayMode("deposit")}
+          className={`rounded-xl border p-4 text-left transition-colors ${payMode === "deposit" ? "border-primary bg-primary/10" : "border-border bg-card hover:border-primary/40"}`}
+        >
+          <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            Abono 30%
+          </p>
+          <p className="mt-1 font-heading text-xl font-semibold">{formatPrice(depositAmount)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Saldo se paga en el spa</p>
+        </button>
+        <button
+          type="button"
+          onClick={() => setPayMode("full")}
+          className={`rounded-xl border p-4 text-left transition-colors ${payMode === "full" ? "border-primary bg-primary/10" : "border-border bg-card hover:border-primary/40"}`}
+        >
+          <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            Pagar total
+          </p>
+          <p className="mt-1 font-heading text-xl font-semibold">{formatPrice(totalAmount)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Quedas a paz y salvo</p>
+        </button>
+      </div>
+
       <div className="mb-6 rounded-xl bg-muted/30 p-6 text-center">
         <p className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">
-          Abono del 30%
+          {payMode === "full" ? "Pago total" : "Abono del 30%"}
         </p>
-        <p className="mt-1 font-heading text-3xl font-semibold">{formatPrice(depositAmount)}</p>
+        <p className="mt-1 font-heading text-3xl font-semibold">{formatPrice(amountToPay)}</p>
         <p className="mt-2 text-xs text-muted-foreground">
           Wompi — PSE, Nequi, tarjetas de crédito/débito
         </p>
@@ -231,7 +278,7 @@ export function PaymentWidget({
           Volver
         </Button>
         <Button className="flex-1" size="lg" onClick={handleStartPayment} disabled={isLoading}>
-          {isLoading ? <Loader2 className="size-4 animate-spin" /> : `Pagar ${formatPrice(depositAmount)}`}
+          {isLoading ? <Loader2 className="size-4 animate-spin" /> : `Pagar ${formatPrice(amountToPay)}`}
         </Button>
       </div>
     </div>

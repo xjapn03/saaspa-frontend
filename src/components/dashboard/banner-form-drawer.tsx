@@ -20,6 +20,11 @@ interface BannerFormDrawerProps {
 const inputCls =
   "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
 
+function generateFolderKey(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID()
+  return `banner-${Date.now()}-${Math.round(Math.random() * 1e9)}`
+}
+
 export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: BannerFormDrawerProps) {
   const isEditing = !!banner
   const { success: showSuccess, error: showError } = useToast()
@@ -66,11 +71,6 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
     }
     setError("")
   }, [banner, open])
-
-  function generateFolderKey(): string {
-    if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID()
-    return `banner-${Date.now()}-${Math.round(Math.random() * 1e9)}`
-  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target

@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { sanitizeNumericInput } from "@/lib/numeric"
 
 interface NumericInputProps {
@@ -26,34 +25,25 @@ export function NumericInput({
   className,
   disabled,
 }: NumericInputProps) {
-  const [internal, setInternal] = useState(String(value ?? ""))
-
-  useEffect(() => {
-    setInternal(String(value ?? ""))
-  }, [value])
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const sanitized = sanitizeNumericInput(e.target.value, { allowDecimal, allowEmpty })
-    setInternal(sanitized)
-    onChange(sanitized)
+    onChange(sanitizeNumericInput(e.target.value, { allowDecimal, allowEmpty }))
   }
 
   function handleBlur() {
-    if (internal === "") return
-    let parsed = allowDecimal ? parseFloat(internal) : parseInt(internal, 10)
+    const current = String(value ?? "")
+    if (current === "") return
+    let parsed = allowDecimal ? parseFloat(current) : parseInt(current, 10)
     if (Number.isNaN(parsed)) return
     if (typeof min === "number" && parsed < min) parsed = min
     if (typeof max === "number" && parsed > max) parsed = max
-    const clamped = String(parsed)
-    setInternal(clamped)
-    onChange(clamped)
+    onChange(String(parsed))
   }
 
   return (
     <input
       type="text"
       inputMode={allowDecimal ? "decimal" : "numeric"}
-      value={internal}
+      value={String(value ?? "")}
       onChange={handleChange}
       onBlur={handleBlur}
       placeholder={placeholder}

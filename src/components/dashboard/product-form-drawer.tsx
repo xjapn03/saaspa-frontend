@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { Separator } from "@/components/ui/separator"
 import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
+import { NumericInput } from "@/components/ui/numeric-input"
 import { productsApi } from "@/lib/products-api"
 import { API_BASE_URL } from "@/lib/constants"
 import { useToast } from "@/context/toast-provider"
@@ -24,7 +25,7 @@ const EMPTY_FORM = {
   description: "",
   price: "",
   compareAtPrice: "",
-  stock: "0",
+  stock: "",
   sku: "",
   sponsor: "",
   categoryId: "",
@@ -209,15 +210,15 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
         <div className="grid grid-cols-3 gap-3">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio (COP) *</label>
-            <input name="price" type="number" min="0" value={form.price} onChange={handleChange} placeholder="85000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 [&::-webkit-inner-spin-button]:appearance-none" />
+            <NumericInput value={form.price} onChange={(v) => setForm((p) => ({ ...p, price: v }))} min={0} placeholder="85000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio anterior</label>
-            <input name="compareAtPrice" type="number" value={form.compareAtPrice} onChange={handleChange} placeholder="110000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            <NumericInput value={form.compareAtPrice} onChange={(v) => setForm((p) => ({ ...p, compareAtPrice: v }))} min={0} placeholder="110000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Stock</label>
-            <input name="stock" type="number" value={form.stock} onChange={handleChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            <NumericInput value={form.stock} onChange={(v) => setForm((p) => ({ ...p, stock: v }))} min={0} placeholder="0" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
           </div>
         </div>
 

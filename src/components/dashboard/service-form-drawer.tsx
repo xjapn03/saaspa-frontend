@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { Separator } from "@/components/ui/separator"
 import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
+import { NumericInput } from "@/components/ui/numeric-input"
 import { servicesApi } from "@/lib/services-api"
 import { API_BASE_URL } from "@/lib/constants"
 import { useToast } from "@/context/toast-provider"
@@ -18,17 +19,25 @@ interface ServiceFormDrawerProps {
   onSaved: () => void
 }
 
-type ServiceFormState = CreateServiceRequest & {
-  isActive: boolean
+interface ServiceFormState {
+  name: string
+  description: string
+  price: string
+  compareAtPrice: string
+  duration: string
+  categoryId: string
+  imageUrl: string
   mainImage: string
   carouselImages: string[]
+  isActive: boolean
+  isFeatured: boolean
 }
 
 export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: ServiceFormDrawerProps) {
   const isEditing = !!service
   const { success: showSuccess, error: showError } = useToast()
   const [form, setForm] = useState<ServiceFormState>({
-    name: "", description: "", price: 0, compareAtPrice: undefined, duration: 60,
+    name: "", description: "", price: "", compareAtPrice: "", duration: "60",
     categoryId: "", imageUrl: "", mainImage: "", carouselImages: [], isActive: true, isFeatured: false,
   })
   const [isSaving, setIsSaving] = useState(false)
@@ -47,21 +56,21 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
   useEffect(() => {
     if (service) {
       setForm({
-        name: service.name, description: service.description || "", price: service.price,
-        compareAtPrice: service.compareAtPrice ?? undefined, duration: service.duration,
+        name: service.name, description: service.description || "", price: String(service.price),
+        compareAtPrice: service.compareAtPrice ? String(service.compareAtPrice) : "", duration: String(service.duration),
         categoryId: service.categoryId || "", imageUrl: service.imageUrl || "",
         mainImage: service.mainImage || "", carouselImages: service.carouselImages || [],
         isActive: service.isActive, isFeatured: service.isFeatured,
       })
     } else {
-      setForm({ name: "", description: "", price: 0, compareAtPrice: undefined, duration: 60, categoryId: "", imageUrl: "", mainImage: "", carouselImages: [], isActive: true, isFeatured: false })
+      setForm({ name: "", description: "", price: "", compareAtPrice: "", duration: "60", categoryId: "", imageUrl: "", mainImage: "", carouselImages: [], isActive: true, isFeatured: false })
     }
     setError("")
   }, [service, open])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const { name, value, type } = e.target
-    setForm((prev) => ({ ...prev, [name]: type === "number" ? Number(value) : value }))
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
   }
 
   async function uploadImage(file: File, type: "main" | "gallery"): Promise<string | null> {
@@ -110,9 +119,26 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
     setError("")
     setIsSaving(true)
     try {
-      const data: any = { ...form }
+      const priceNum = parseInt(form.price, 10)
+      const durationNum = parseInt(form.duration, 10)
+      if (!form.name || isNaN(priceNum) || priceNum <= 0) {
+        setError("Completa nombre y un precio válido (mayor a 0)")
+        setIsSaving(false)
+        return
+      }
+      if (isNaN(durationNum) || durationNum < 1) {
+        setError("La duración debe ser al menos 1 minuto")
+        setIsSaving(false)
+        return
+      }
+      const compareAtNum = form.compareAtPrice ? parseInt(form.compareAtPrice, 10) : undefined
+      const data: any = {
+        ...form,
+        price: priceNum,
+        duration: durationNum,
+        compareAtPrice: compareAtNum && !isNaN(compareAtNum) ? compareAtNum : undefined,
+      }
       if (!data.categoryId) data.categoryId = null
-      if (!data.compareAtPrice) data.compareAtPrice = undefined
       data.carouselImages = data.carouselImages.length > 0 ? data.carouselImages : undefined
       if (isEditing && service) await servicesApi.update(service.id, data)
       else await servicesApi.create(data as CreateServiceRequest)
@@ -143,17 +169,17 @@ export function ServiceFormDrawer({ service, open, onOpenChange, onSaved }: Serv
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio (COP)</label>
-            <input name="price" type="number" min={0} value={form.price} onChange={handleChange} className={inputCls} />
+            <NumericInput value={form.price} onChange={(v) => setForm((p) => ({ ...p, price: v }))} min={0} placeholder="85000" className={inputCls} />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio anterior (COP)</label>
-            <input name="compareAtPrice" type="number" min={0} value={form.compareAtPrice ?? ""} onChange={handleChange} placeholder="Opcional" className={inputCls} />
+            <NumericInput value={form.compareAtPrice} onChange={(v) => setForm((p) => ({ ...p, compareAtPrice: v }))} min={0} placeholder="Opcional" className={inputCls} />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Duración (min)</label>
-            <input name="duration" type="number" min={1} value={form.duration} onChange={handleChange} className={inputCls} />
+            <NumericInput value={form.duration} onChange={(v) => setForm((p) => ({ ...p, duration: v }))} min={1} className={inputCls} />
           </div>
         </div>
         <div className="space-y-2">

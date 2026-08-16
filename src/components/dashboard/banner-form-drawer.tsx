@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { Loader2, Upload, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
+import { NumericInput } from "@/components/ui/numeric-input"
 import { bannersApi } from "@/lib/banners-api"
 import { API_BASE_URL } from "@/lib/constants"
 import { useToast } from "@/context/toast-provider"
@@ -19,6 +20,11 @@ interface BannerFormDrawerProps {
 const inputCls =
   "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
 
+function generateFolderKey(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID()
+  return `banner-${Date.now()}-${Math.round(Math.random() * 1e9)}`
+}
+
 export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: BannerFormDrawerProps) {
   const isEditing = !!banner
   const { success: showSuccess, error: showError } = useToast()
@@ -29,7 +35,7 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
     ctaText: "",
     ctaLink: "",
     position: "HERO" as BannerPosition,
-    sortOrder: 0,
+    sortOrder: "",
     isActive: true,
     startsAt: "",
     endsAt: "",
@@ -49,7 +55,7 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
         ctaText: banner.ctaText || "",
         ctaLink: banner.ctaLink || "",
         position: banner.position,
-        sortOrder: banner.sortOrder,
+        sortOrder: String(banner.sortOrder),
         isActive: banner.isActive,
         startsAt: banner.startsAt ? banner.startsAt.slice(0, 16) : "",
         endsAt: banner.endsAt ? banner.endsAt.slice(0, 16) : "",
@@ -59,7 +65,7 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
     } else {
       setForm({
         title: "", subtitle: "", imageUrl: "", ctaText: "", ctaLink: "",
-        position: "HERO", sortOrder: 0, isActive: true, startsAt: "", endsAt: "",
+        position: "HERO", sortOrder: "", isActive: true, startsAt: "", endsAt: "",
       })
       setFolderKey(generateFolderKey())
     }
@@ -72,8 +78,8 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-    const { name, value, type } = e.target
-    setForm((prev) => ({ ...prev, [name]: type === "number" ? Number(value) : value }))
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
   }
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -114,7 +120,7 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
         ctaText: form.ctaText || undefined,
         ctaLink: form.ctaLink || undefined,
         position: form.position,
-        sortOrder: form.sortOrder,
+        sortOrder: parseInt(form.sortOrder, 10) || 0,
         isActive: form.isActive,
         startsAt: form.startsAt ? new Date(form.startsAt).toISOString() : undefined,
         endsAt: form.endsAt ? new Date(form.endsAt).toISOString() : undefined,
@@ -180,7 +186,7 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Orden</label>
-            <input name="sortOrder" type="number" min={0} value={form.sortOrder} onChange={handleChange} className={inputCls} />
+            <NumericInput value={form.sortOrder} onChange={(v) => setForm((p) => ({ ...p, sortOrder: v }))} min={0} placeholder="0" className={inputCls} />
           </div>
         </div>
 

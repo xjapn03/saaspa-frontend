@@ -37,6 +37,7 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
   const [isSaving, setIsSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState("")
+  const [folderKey, setFolderKey] = useState("")
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -53,14 +54,22 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
         startsAt: banner.startsAt ? banner.startsAt.slice(0, 16) : "",
         endsAt: banner.endsAt ? banner.endsAt.slice(0, 16) : "",
       })
+      const match = (banner.imageUrl || "").match(/\/banners\/([^/]+)\//)
+      setFolderKey(match ? match[1] : generateFolderKey())
     } else {
       setForm({
         title: "", subtitle: "", imageUrl: "", ctaText: "", ctaLink: "",
         position: "HERO", sortOrder: 0, isActive: true, startsAt: "", endsAt: "",
       })
+      setFolderKey(generateFolderKey())
     }
     setError("")
   }, [banner, open])
+
+  function generateFolderKey(): string {
+    if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID()
+    return `banner-${Date.now()}-${Math.round(Math.random() * 1e9)}`
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value, type } = e.target
@@ -71,7 +80,7 @@ export function BannerFormDrawer({ banner, open, onOpenChange, onSaved }: Banner
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    const params = new URLSearchParams({ folder: "banners", imageType: "main" })
+    const params = new URLSearchParams({ folder: `banners/${folderKey}`, imageType: "main" })
     const formData = new FormData()
     formData.append("file", file)
     try {

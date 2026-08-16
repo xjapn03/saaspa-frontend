@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ProductGallery } from "@/components/shop/product-gallery"
+import { MetaViewContent } from "@/components/common/meta-view-content"
 import type { Service } from "@/types/service"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
@@ -58,6 +59,12 @@ export default async function ServicioDetallePage({ params }: Props) {
 
   return (
     <section className="pt-32 pb-24 md:pt-40 md:pb-32">
+      <MetaViewContent
+        contentName={service.name}
+        contentCategory={service.categoryRel?.name || "General"}
+        contentType="service"
+        value={service.price}
+      />
       <div className="mx-auto max-w-6xl px-6">
         <Link
           href="/servicios"

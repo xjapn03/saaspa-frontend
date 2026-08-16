@@ -51,8 +51,12 @@ export const PAYMENT_METHOD_VARIANTS: Record<string, "default" | "secondary" | "
 }
 
 export const paymentsApi = {
-  async init(bookingId: string, type: "ABONO" | "SALDO" = "ABONO"): Promise<PaymentInitResponse> {
-    return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT, { bookingId, type })
+  async init(
+    bookingId: string,
+    type: "ABONO" | "SALDO" = "ABONO",
+    options?: { payFull?: boolean; fbc?: string; fbp?: string; eventId?: string },
+  ): Promise<PaymentInitResponse> {
+    return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT, { bookingId, type, ...options })
   },
 
   async getStatus(bookingId: string): Promise<BalanceResponse> {

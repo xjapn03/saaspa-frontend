@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props) {
   const service = await getServiceBySlug(slug)
   if (!service) return { title: "Servicio no encontrado" }
   return {
-    title: `${service.name} — Kamerinos SPA`,
+    title: `${service.name} — Kamerinos by Sandra Pinzon`,
     description: service.description || "",
     openGraph: {
       images: service.mainImage ? [{ url: service.mainImage }] : [],

@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react"
 export const metadata: Metadata = {
   title: "Políticas",
   description:
-    "Conoce nuestras políticas de abono, cancelación y puntualidad para garantizar la mejor experiencia en Kamerinos SPA.",
+    "Conoce nuestras políticas de abono, cancelación y puntualidad para garantizar la mejor experiencia en Kamerinos by Sandra Pinzon.",
 }
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"

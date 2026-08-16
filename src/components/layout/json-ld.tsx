@@ -3,7 +3,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
 const LOCAL_BUSINESS = {
   "@context": "https://schema.org",
   "@type": "HealthAndBeautyBusiness",
-  name: "Kamerinos SPA",
+  name: "Kamerinos by Sandra Pinzon",
   description:
     "Centro de bienestar y estética en Bogotá. Servicios profesionales de cuidado facial, corporal, capilar, masajes terapéuticos y tratamientos de belleza personalizados.",
   url: SITE_URL,
@@ -46,7 +46,7 @@ const LOCAL_BUSINESS = {
 const WEBSITE = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Kamerinos SPA",
+  name: "Kamerinos by Sandra Pinzon",
   url: SITE_URL,
   potentialAction: {
     "@type": "SearchAction",
@@ -58,7 +58,7 @@ const WEBSITE = {
 const ORGANIZATION = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Kamerinos SPA",
+  name: "Kamerinos by Sandra Pinzon",
   url: SITE_URL,
   logo: `${SITE_URL}/og-image.jpg`,
   contactPoint: {

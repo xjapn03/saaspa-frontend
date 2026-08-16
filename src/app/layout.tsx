@@ -9,7 +9,7 @@ import "./globals.css"
 import { cn } from "@/lib/utils"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-const SITE_NAME = "Kamerinos SPA"
+const SITE_NAME = "Kamerinos by Sandra Pinzon"
 const SITE_DESCRIPTION =
   "Centro de bienestar, estética y salud en Bogotá. Reserva tu ritual de cuidado personal con abono previo. Tratamientos faciales, corporales, capilares, masajes terapéuticos y más."
 

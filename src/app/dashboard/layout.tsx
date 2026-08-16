@@ -221,7 +221,7 @@ export default function DashboardLayout({
       <div className="flex flex-1 flex-col min-w-0">
         <header className="flex h-16 items-center justify-between gap-4 border-b border-border bg-card px-6 md:hidden">
           <Link href="/" className="font-heading text-base font-semibold tracking-tight">
-            Kamerinos SPA
+            Kamerinos by Sandra Pinzon
           </Link>
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger render={<Button variant="ghost" size="icon-sm" />}>

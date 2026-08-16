@@ -77,7 +77,7 @@ export default function RegistroPage() {
           href="/"
           className="mb-3 inline-block font-heading text-xl font-semibold tracking-tight"
         >
-          Kamerinos SPA
+          Kamerinos by Sandra Pinzon
         </Link>
         <CardTitle className="font-heading text-2xl font-semibold">
           Crear cuenta

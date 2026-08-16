@@ -69,7 +69,7 @@ export function Hero() {
             ref={bodyRef}
             className="mb-10 max-w-xl text-lg leading-relaxed text-muted-foreground text-pretty"
           >
-            En Kamerinos SPA transformamos cada sesión en una pausa consciente
+            En Kamerinos by Sandra Pinzon transformamos cada sesión en una pausa consciente
             de autocuidado. Ciencia dérmica, ingredientes de grado profesional y
             un enfoque cálido que te hace sentir en casa.
           </p>

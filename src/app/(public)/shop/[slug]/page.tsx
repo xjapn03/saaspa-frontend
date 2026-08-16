@@ -22,10 +22,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!product) return { title: "Producto no encontrado" }
   return {
     title: product.name,
-    description: product.description?.slice(0, 160) || `Compra ${product.name} en Kamerinos SPA. Productos de cuidado personal y bienestar.`,
+    description: product.description?.slice(0, 160) || `Compra ${product.name} en Kamerinos by Sandra Pinzon. Productos de cuidado personal y bienestar.`,
     openGraph: {
       title: product.name,
-      description: product.description?.slice(0, 160) || `Compra ${product.name} en Kamerinos SPA.`,
+      description: product.description?.slice(0, 160) || `Compra ${product.name} en Kamerinos by Sandra Pinzon.`,
       images: product.mainImage ? [{ url: product.mainImage }] : [],
     },
   }

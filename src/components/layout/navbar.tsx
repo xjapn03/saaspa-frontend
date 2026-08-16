@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { CartIcon } from "./cart-icon"
 import { NavbarAuthButtons } from "./navbar-auth-buttons"
 import { NavbarMobileAuth } from "./navbar-mobile-auth"
+import { Logo } from "./logo"
 
 const navLinks = [
   { href: "/", label: "Inicio" },
@@ -47,12 +48,7 @@ export function Navbar() {
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link
-          href="/"
-          className="text-lg font-heading font-semibold tracking-tight text-foreground sm:text-xl"
-        >
-          Kamerinos SPA
-        </Link>
+        <Logo />
 
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (

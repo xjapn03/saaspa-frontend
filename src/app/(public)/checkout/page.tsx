@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Script from "next/script"
 import { Loader2, CheckCircle, ArrowLeft, ShoppingBag, CreditCard, User, MapPin } from "lucide-react"
@@ -11,6 +11,7 @@ import { useAuth } from "@/context/auth-provider"
 import { paymentsApi } from "@/lib/payments-api"
 import { useToast } from "@/context/toast-provider"
 import { initiateCheckout } from "@/lib/meta-pixel"
+import { getAllDepartments, getCitiesByDepartment } from "@/lib/colombia"
 
 declare global { interface Window { WidgetCheckout: new (c: unknown) => { open: (cb: (r: unknown) => void) => void } } }
 
@@ -21,7 +22,9 @@ interface BillingInfo {
   email: string
   phone: string
   address: string
+  state: string
   city: string
+  nit: string
   notes: string
 }
 
@@ -37,24 +40,50 @@ export default function CheckoutPage() {
     email: user?.email || "",
     phone: user?.phone || "",
     address: "",
+    state: "",
     city: "",
+    nit: "",
     notes: "",
   })
+  
+  const departments = getAllDepartments()
+  const availableCities = getCitiesByDepartment(info.state)
   const [scriptReady, setScriptReady] = useState(false)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState("")
   const [paymentSuccess, setPaymentSuccess] = useState(false)
   const [wompiConfig, setWompiConfig] = useState<{ publicKey: string; amountInCents: number; currency: string; reference: string; signature: string } | null>(null)
 
+  useEffect(() => {
+    // Scroll automatically to top on step change or success
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 50)
+    
+    if (items.length === 0 || paymentSuccess) return
+    
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ""
+    }
+    
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+  }, [items.length, paymentSuccess, step])
+
   const formatPrice = (p: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(p)
 
-  function handleInfoChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleInfoChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target
-    setInfo((prev) => ({ ...prev, [name]: value }))
+    if (name === "state") {
+      setInfo((prev) => ({ ...prev, state: value, city: "" }))
+    } else {
+      setInfo((prev) => ({ ...prev, [name]: value }))
+    }
   }
 
   function canProceed() {
-    return info.name.trim() && info.email.trim() && info.phone.trim() && info.address.trim() && info.city.trim()
+    return info.name.trim() && info.email.trim() && info.phone.trim() && info.address.trim() && info.state.trim() && info.city.trim() && info.nit.trim()
   }
 
   async function handleStartPayment() {
@@ -74,7 +103,9 @@ export default function CheckoutPage() {
           shippingEmail: info.email,
           shippingPhone: info.phone,
           shippingAddress: info.address,
+          shippingState: info.state,
           shippingCity: info.city,
+          shippingNit: info.nit,
           shippingNotes: info.notes || undefined,
         },
       )
@@ -181,13 +212,29 @@ export default function CheckoutPage() {
               <div><p className="font-medium text-foreground">Dirección de envío</p><p className="text-xs text-muted-foreground">Dónde quieres recibir tu pedido</p></div>
             </div>
             <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Dirección *</label>
-                <input name="address" value={info.address} onChange={handleInfoChange} placeholder="Calle 123 #45-67" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">Departamento *</label>
+                  <select name="state" value={info.state} onChange={handleInfoChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20">
+                    <option value="">Selecciona...</option>
+                    {departments.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">Ciudad *</label>
+                  <select name="city" value={info.city} onChange={handleInfoChange} disabled={!info.state} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50">
+                    <option value="">Selecciona...</option>
+                    {availableCities.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Ciudad *</label>
-                <input name="city" value={info.city} onChange={handleInfoChange} placeholder="Bogotá" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+                <label className="text-sm font-medium text-foreground">Dirección exacta *</label>
+                <input name="address" value={info.address} onChange={handleInfoChange} placeholder="Calle 123 #45-67, Apto 101" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Cédula o NIT (Facturación) *</label>
+                <input name="nit" value={info.nit} onChange={handleInfoChange} placeholder="123456789" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Notas adicionales</label>
@@ -247,9 +294,9 @@ export default function CheckoutPage() {
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="mb-4 flex items-center gap-3">
               <span className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary"><User className="size-4" /></span>
-              <div><p className="font-medium text-foreground">Envío a</p><p className="text-xs text-muted-foreground">{info.address}, {info.city}</p></div>
+              <div><p className="font-medium text-foreground">Envío a</p><p className="text-xs text-muted-foreground">{info.address}, {info.city}, {info.state}</p></div>
             </div>
-            <p className="text-sm text-muted-foreground">{info.name} · {info.phone} · {info.email}</p>
+            <p className="text-sm text-muted-foreground">{info.name} · CC/NIT: {info.nit} · {info.phone} · {info.email}</p>
           </div>
 
           {checkoutError && (

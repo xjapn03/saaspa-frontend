@@ -213,15 +213,15 @@ export default function DashboardLayout({
   )
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen w-full max-w-[100vw] overflow-x-hidden">
       <aside className="hidden w-64 shrink-0 border-r border-border bg-card md:flex md:flex-col">
         {sidebarNav}
       </aside>
 
       <div className="flex flex-1 flex-col min-w-0">
         <header className="flex h-16 items-center justify-between gap-4 border-b border-border bg-card px-6 md:hidden">
-          <Link href="/" className="font-heading text-base font-semibold tracking-tight">
-            Kamerinos by Sandra Pinzon
+          <Link href="/" className="font-heading text-base font-semibold tracking-tight truncate">
+            Kamerinos SPA
           </Link>
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger render={<Button variant="ghost" size="icon-sm" />}>

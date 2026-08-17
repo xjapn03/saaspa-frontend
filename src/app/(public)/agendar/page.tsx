@@ -49,6 +49,22 @@ function AgendarContent() {
     })
   }, [preselectedServiceId])
 
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 50)
+
+    if (step === "service") return
+    
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ""
+    }
+    
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+  }, [step])
+
   const steps: Step[] = ["service", "slot", "summary", "payment"]
   const currentIdx = steps.indexOf(step)
 

@@ -1,3 +1,6 @@
+import Link from "next/link"
+import { ArrowRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { Hero } from "@/components/marketing/hero"
 import { PhilosophyPillars } from "@/components/marketing/philosophy-pillars"
 import { ServiceCard } from "@/components/marketing/service-card"
@@ -43,6 +46,8 @@ export default async function Home() {
   const stripBanners = await getBanners("STRIP")
   const portraitBanners = await getBanners("PORTRAIT")
 
+  const featuredServices = services.filter((s) => s.isFeatured).slice(0, 6)
+
   return (
     <>
       {heroBanners.length > 0 && (
@@ -57,18 +62,26 @@ export default async function Home() {
 
       <section className="py-24 md:py-32">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mb-16 max-w-2xl">
-            <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Nuestros rituales
-            </p>
-            <h2 className="font-heading text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-              Experiencias diseñadas
-              <br />
-              para tu bienestar
-            </h2>
+          <div className="mb-16 flex items-end justify-between flex-wrap gap-6">
+            <div className="max-w-2xl">
+              <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                Nuestros rituales
+              </p>
+              <h2 className="font-heading text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+                Experiencias diseñadas
+                <br />
+                para tu bienestar
+              </h2>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              nativeButton={false}
+              render={<Link href="/servicios">Ver servicios <ArrowRight className="ml-1 size-4" /></Link>}
+            />
           </div>
 
-          {services.length === 0 ? (
+          {featuredServices.length === 0 ? (
             <div className="rounded-2xl border border-border bg-card p-12 text-center">
               <p className="text-sm text-muted-foreground">
                 Cargando servicios...
@@ -76,7 +89,7 @@ export default async function Home() {
             </div>
           ) : (
             <AnimatedGrid className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {services.map((svc) => (
+              {featuredServices.map((svc) => (
                 <div key={svc.id} className="grid-card">
                   <ServiceCard
                     name={svc.name}

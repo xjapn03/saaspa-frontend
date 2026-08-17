@@ -14,7 +14,7 @@ export function CtaSection() {
   const circle1Ref = useRef<HTMLDivElement>(null)
   const circle2Ref = useRef<HTMLDivElement>(null)
   const waPhone = "573041338567"
-  const waMessage = encodeURIComponent("Hola, quiero agendar una cita")
+  const waMessage = encodeURIComponent("Hola Kamerinos, estuve revisando su sitio web y me gustaría mas información.")
 
   useEffect(() => {
     if (reduced) return

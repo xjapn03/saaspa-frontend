@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import Script from "next/script"
 import { Loader2, CheckCircle, ArrowLeft, ShoppingBag, CreditCard, User, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -12,8 +11,8 @@ import { paymentsApi } from "@/lib/payments-api"
 import { useToast } from "@/context/toast-provider"
 import { initiateCheckout } from "@/lib/meta-pixel"
 import { getAllDepartments, getCitiesByDepartment } from "@/lib/colombia"
-
-declare global { interface Window { WidgetCheckout: new (c: unknown) => { open: (cb: (r: unknown) => void) => void } } }
+import { openPaymentWidget } from "@/lib/payment-provider"
+import { PaymentWidgetScript } from "@/components/payment-widget-script"
 
 type Step = "info" | "payment"
 
@@ -254,7 +253,7 @@ export default function CheckoutPage() {
 
       {step === "payment" && (
         <div className="space-y-6">
-          <Script src="https://checkout.wompi.co/widget.js" onReady={() => setScriptReady(true)} />
+          <PaymentWidgetScript onReady={() => setScriptReady(true)} />
 
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="mb-4 flex items-center gap-3">
@@ -310,13 +309,7 @@ export default function CheckoutPage() {
               size="lg"
               onClick={() => {
                 if (wompiConfig && scriptReady) {
-                  new window.WidgetCheckout({
-                    currency: wompiConfig.currency,
-                    amountInCents: wompiConfig.amountInCents,
-                    reference: wompiConfig.reference,
-                    publicKey: wompiConfig.publicKey,
-                    signature: { integrity: wompiConfig.signature },
-                  } as any).open(handlePaymentResult)
+                  openPaymentWidget(wompiConfig, handlePaymentResult)
                 }
               }}
               disabled={!scriptReady || !wompiConfig}

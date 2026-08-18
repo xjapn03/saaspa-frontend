@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import Script from "next/script"
 import { Loader2, CheckCircle, LogIn, AlertTriangle, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -10,12 +9,8 @@ import { useAuth } from "@/context/auth-provider"
 import { paymentsApi } from "@/lib/payments-api"
 import { trackPurchase } from "@/lib/meta-pixel"
 import { getFbc, getFbp, generateEventId } from "@/lib/fbc"
-
-declare global {
-  interface Window {
-    WidgetCheckout: new (config: unknown) => { open: (cb: (result: unknown) => void) => void }
-  }
-}
+import { openPaymentWidget } from "@/lib/payment-provider"
+import { PaymentWidgetScript } from "@/components/payment-widget-script"
 
 interface PaymentWidgetProps {
   serviceId: string
@@ -67,15 +62,7 @@ export function PaymentWidget({
     if (!isAuthenticated || !wompiConfig || !scriptReady) return
 
     const originalOverflow = document.body.style.overflow || ""
-    const checkout = new window.WidgetCheckout({
-      currency: wompiConfig.currency,
-      amountInCents: wompiConfig.amountInCents,
-      reference: wompiConfig.reference,
-      publicKey: wompiConfig.publicKey,
-      signature: { integrity: wompiConfig.signature },
-    })
-
-    checkout.open(function (result: any) {
+    openPaymentWidget(wompiConfig, (result) => {
       document.body.style.overflow = originalOverflow
       const transaction = result?.transaction
       if (transaction?.status === "APPROVED") {
@@ -218,10 +205,7 @@ export function PaymentWidget({
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
-      <Script
-        src="https://checkout.wompi.co/widget.js"
-        onReady={() => setScriptReady(true)}
-      />
+      <PaymentWidgetScript onReady={() => setScriptReady(true)} />
 
       <p className="mb-2 font-heading text-lg font-semibold">
         {payMode === "full" ? "Confirmar y pagar el total" : "Confirmar y pagar abono"}

@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import Script from "next/script"
 import { Loader2, ChevronLeft, ChevronRight, MessageCircle, CalendarDays, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Modal } from "@/components/ui/modal"
 import { bookingsApi } from "@/lib/bookings-api"
 import { paymentsApi } from "@/lib/payments-api"
+import { openPaymentWidget } from "@/lib/payment-provider"
+import { PaymentWidgetScript } from "@/components/payment-widget-script"
 import type { Booking, BookingStatus } from "@/types/booking"
 import type { BalanceResponse } from "@/types/payment"
 
@@ -82,16 +83,9 @@ export function ClientBookingCalendar() {
     setPayingId(bookingId)
     try {
       const config = await paymentsApi.init(bookingId, "SALDO")
-      const widget = new window.WidgetCheckout({
-        publicKey: config.publicKey,
-        currency: config.currency,
-        amountInCents: config.amountInCents,
-        reference: config.reference,
-        signature: { integrity: config.signature },
-      } as any)
-      widget.open(async (result: unknown) => {
+      openPaymentWidget(config, async (result) => {
         document.body.style.overflow = ""
-        const tx = (result as any)?.transaction
+        const tx = result?.transaction
         if (tx?.status === "APPROVED") {
           const bal = await bookingsApi.getBalance(bookingId)
           setBalances((prev) => ({ ...prev, [bookingId]: bal }))
@@ -141,7 +135,7 @@ export function ClientBookingCalendar() {
 
   return (
     <div>
-      <Script src="https://checkout.wompi.co/widget.js" onReady={() => setScriptReady(true)} />
+      <PaymentWidgetScript onReady={() => setScriptReady(true)} />
       <div className="mb-4 flex items-center justify-between">
         <Button variant="outline" size="icon-sm" onClick={() => { setMonth(m => m === 0 ? (setYear(y => y - 1), 11) : m - 1) }}>
           <ChevronLeft className="size-4" strokeWidth={1.5} />

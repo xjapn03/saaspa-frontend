@@ -90,7 +90,7 @@ export function CtaSection() {
             </h2>
             <p className="mb-10 max-w-lg text-primary-foreground/80 leading-relaxed">
               Reserva tu ritual y regálate una pausa de bienestar en el corazón
-              de Usaquén. El primer paso es el más sencillo.
+              de Teusaquillo. El primer paso es el más sencillo.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">

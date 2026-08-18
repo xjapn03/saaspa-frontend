@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
               <p>
                 El responsable del tratamiento de tus datos personales es
                 Kamerinos by Sandra Pinzon, establecimiento de Sandra Pinzón Salud y Belleza,
-                ubicado en Bogotá (Usaquén), Colombia.
+                ubicado en Bogotá (Teusaquillo), Colombia.
               </p>
               <p>
                 Para cualquier consulta relacionada con tus datos puedes

@@ -13,13 +13,16 @@ describe("Home page", () => {
     server.use(
       http.get("/api/services/public", () => {
         return HttpResponse.json({ data: [
-          { id: "svc-1", name: "Facial Premium", description: "Test", price: 180000, duration: 75, isActive: true, category: "Facial", imageUrl: null, createdAt: "2024-01-01", updatedAt: "2024-01-01" },
+          { id: "svc-1", name: "Facial Premium", slug: "facial-premium", description: "Test", price: 180000, duration: 75, isActive: true, isFeatured: true, category: "Facial", imageUrl: null, createdAt: "2024-01-01", updatedAt: "2024-01-01" },
         ], total: 1, page: 1, limit: 20, totalPages: 1 })
       }),
       http.get("http://localhost:3001/api/services/public", () => {
         return HttpResponse.json({ data: [
-          { id: "svc-1", name: "Facial Premium", description: "Test", price: 180000, duration: 75, isActive: true, category: "Facial", imageUrl: null, createdAt: "2024-01-01", updatedAt: "2024-01-01" },
+          { id: "svc-1", name: "Facial Premium", slug: "facial-premium", description: "Test", price: 180000, duration: 75, isActive: true, isFeatured: true, category: "Facial", imageUrl: null, createdAt: "2024-01-01", updatedAt: "2024-01-01" },
         ], total: 1, page: 1, limit: 20, totalPages: 1 })
+      }),
+      http.get("http://localhost:3001/api/banners/public", () => {
+        return HttpResponse.json([])
       }),
       http.get("/api/products", () => {
         return HttpResponse.json({ data: [], total: 0, page: 1, limit: 20, totalPages: 0 })

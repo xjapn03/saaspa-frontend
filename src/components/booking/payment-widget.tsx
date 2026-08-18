@@ -277,8 +277,15 @@ export function PaymentWidget({
         <Button variant="outline" className="flex-1" onClick={onCancel} disabled={isLoading}>
           Volver
         </Button>
-        <Button className="flex-1" size="lg" onClick={handleStartPayment} disabled={isLoading}>
-          {isLoading ? <Loader2 className="size-4 animate-spin" /> : `Pagar ${formatPrice(amountToPay)}`}
+        <Button className="flex-1" size="lg" onClick={handleStartPayment} disabled={isLoading || !!wompiConfig}>
+          {isLoading || !!wompiConfig ? (
+            <>
+              <Loader2 className="mr-2 size-4 animate-spin" />
+              Conectando...
+            </>
+          ) : (
+            `Pagar ${formatPrice(amountToPay)}`
+          )}
         </Button>
       </div>
     </div>

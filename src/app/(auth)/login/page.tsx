@@ -35,12 +35,17 @@ function LoginForm() {
       await login({ email, password })
       router.replace(redirect)
     } catch (err: unknown) {
-      const msg =
+      let msg =
         err && typeof err === "object" && "message" in err
-          ? Array.isArray(err.message)
-            ? err.message[0]
-            : err.message
+          ? Array.isArray((err as any).message)
+            ? (err as any).message[0]
+            : (err as any).message
           : "Error al iniciar sesión"
+      
+      if (String(msg).includes("ThrottlerException")) {
+        msg = "Has realizado demasiados intentos fallidos. Por seguridad, espera 1 minuto e intenta de nuevo."
+      }
+
       setError(String(msg))
       if (String(msg).includes("verificar tu correo")) setUnverified(true)
     } finally {

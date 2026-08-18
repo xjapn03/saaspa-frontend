@@ -8,19 +8,19 @@ const LOCAL_BUSINESS = {
     "Centro de bienestar y estética en Bogotá. Servicios profesionales de cuidado facial, corporal, capilar, masajes terapéuticos y tratamientos de belleza personalizados.",
   url: SITE_URL,
   telephone: "+573041338567",
-  email: "info@kamerinosspa.com",
+  email: "kamerinosg@gmail.com",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Carrera 7 # 123-45",
+    streetAddress: "Calle 53b # 25-21",
     addressLocality: "Bogotá",
     addressRegion: "Cundinamarca",
     addressCountry: "CO",
-    postalCode: "110111",
+    postalCode: "111311",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 4.711,
-    longitude: -74.0721,
+    latitude: 4.64271,
+    longitude: -74.07480,
   },
   openingHoursSpecification: [
     {

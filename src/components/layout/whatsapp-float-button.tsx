@@ -9,7 +9,7 @@ import { contactOrLead } from "@/lib/meta-pixel"
 export function WhatsAppFloatButton() {
   const ref = useRef<HTMLAnchorElement>(null)
   const phone = "573041338567"
-  const message = encodeURIComponent("Hola, quiero agendar una cita")
+  const message = encodeURIComponent("Hola Kamerinos, estuve revisando su sitio web y me gustaría mas información.")
 
   useEffect(() => {
     if (!ref.current) return

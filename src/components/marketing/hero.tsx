@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils"
 import { useReducedMotion } from "@/lib/animations"
 
 const quickFacts = [
-  { label: "Experiencias desde", value: "$ 120.000" },
-  { label: "Duración típica", value: "1h — 2h30" },
-  { label: "Ubicación", value: "Bogotá · Usaquén" },
+  { label: "Experiencias desde", value: "$ 100.000" },
+  { label: "Duración típica", value: "1h — 2h" },
+  { label: "Ubicación", value: "Bogotá · CC Galerias · 2043" },
 ]
 
 export function Hero({ portraitImage }: { portraitImage?: string }) {
@@ -71,7 +71,7 @@ export function Hero({ portraitImage }: { portraitImage?: string }) {
             ref={bodyRef}
             className="mb-10 max-w-xl text-lg leading-relaxed text-muted-foreground text-pretty"
           >
-            En Kamerinos by Sandra Pinzon transformamos cada sesión en una pausa consciente
+            En Kamerinos transformamos cada sesión en una pausa consciente
             de autocuidado. Ciencia dérmica, ingredientes de grado profesional y
             un enfoque cálido que te hace sentir en casa.
           </p>

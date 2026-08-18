@@ -57,7 +57,7 @@
 | 27 | **Carrito de compras** | Completo | `CartContext`, `CartProviderWithAuth`, `CartIcon`, `CartSheet`, `AddToCartButton`, `CouponInput`, `CartItemRow` |
 | 28 | **Checkout Wompi** | Completo | `initCartPayment`, widget Wompi en CartSheet, success/error states, carrito local + server-side sync |
 | 29 | **Admin categories CRUD** | Completo | `categories-table.tsx` + `category-form-drawer.tsx` + `/dashboard/categorias` con sidebar |
-| 30 | **Checkout page** | Completo | `/checkout` — 2 steps: facturación/envío + resumen + pago Wompi full-page |
+| 30 | **Checkout page** | Completo | `/checkout` — 2 steps: facturación/envío + resumen + pago Wompi full-page. Selectores de departamento/ciudad de Colombia (`lib/colombia.ts`) + campo Cédula/NIT (`shippingNit`) |
 | 31 | **Stock validation** | Completo | `CartItem.maxQuantity`, límites en `AddToCartButton` y `CartItemRow` |
 | 32 | **CategorySelect** | Completo | `category-select.tsx` — dropdown con búsqueda inline e indentación de subcategorías |
 | 33 | **Payment fallback** | Completo | WhatsApp button en `PaymentWidget` si Wompi no responde + mensaje de reserva temporal |

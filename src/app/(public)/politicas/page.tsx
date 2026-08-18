@@ -1,11 +1,19 @@
 import Link from "next/link"
 import type { Metadata } from "next"
 import { ArrowRight } from "lucide-react"
+import { absoluteUrl } from "@/lib/seo"
 
 export const metadata: Metadata = {
   title: "Políticas",
   description:
     "Conoce nuestras políticas de abono, cancelación y puntualidad para garantizar la mejor experiencia en Kamerinos by Sandra Pinzon.",
+  alternates: { canonical: absoluteUrl("/politicas") },
+  openGraph: {
+    title: "Políticas — Kamerinos by Sandra Pinzon",
+    description:
+      "Conoce nuestras políticas de abono, cancelación y puntualidad para garantizar la mejor experiencia en Kamerinos by Sandra Pinzon.",
+    url: absoluteUrl("/politicas"),
+  },
 }
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"

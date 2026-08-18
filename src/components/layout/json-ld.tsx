@@ -39,8 +39,13 @@ const LOCAL_BUSINESS = {
   priceRange: "$$",
   currenciesAccepted: "COP",
   paymentAccepted: "Credit Card, Debit Card, PSE, Nequi",
-  image: `${SITE_URL}/og-image.jpg`,
-  sameAs: [],
+  image: `${SITE_URL}/hero-portrait.webp`,
+  sameAs: [
+    "https://www.facebook.com/share/1PtH5Feooz/",
+    "https://www.instagram.com/kamerinos_co",
+    "https://www.tiktok.com/@kamerinosbysandra",
+    "https://wa.me/573041338567",
+  ],
 }
 
 const WEBSITE = {
@@ -60,7 +65,7 @@ const ORGANIZATION = {
   "@type": "Organization",
   name: "Kamerinos by Sandra Pinzon",
   url: SITE_URL,
-  logo: `${SITE_URL}/og-image.jpg`,
+  logo: `${SITE_URL}/LogokamerinosYellow.png`,
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+573041338567",

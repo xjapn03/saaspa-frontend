@@ -55,15 +55,22 @@ export function trackPurchase(
     serviceName?: string
     value?: number
     currency?: string
+    contentName?: string
+    contentType?: string
+    numItems?: number
+    contentIds?: string[]
   },
   eventId?: string,
 ): void {
   track(
     "Purchase",
     {
-      content_name: paymentData.serviceName,
+      content_name: paymentData.contentName || paymentData.serviceName,
+      content_type: paymentData.contentType,
       value: paymentData.value,
       currency: paymentData.currency || "COP",
+      num_items: paymentData.numItems,
+      content_ids: paymentData.contentIds,
     },
     eventId,
   )

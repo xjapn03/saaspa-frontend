@@ -50,21 +50,26 @@ export const PAYMENT_METHOD_VARIANTS: Record<string, "default" | "secondary" | "
   WOMAPI: "default", EFECTIVO: "secondary", TRANSFERENCIA: "outline",
 }
 
+function getUserAgent(): string | undefined {
+  if (typeof navigator === "undefined") return undefined
+  return navigator.userAgent
+}
+
 export const paymentsApi = {
   async init(
     bookingId: string,
     type: "ABONO" | "SALDO" = "ABONO",
     options?: { payFull?: boolean; fbc?: string; fbp?: string; eventId?: string },
   ): Promise<PaymentInitResponse> {
-    return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT, { bookingId, type, ...options })
+    return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT, { bookingId, type, clientUserAgent: getUserAgent(), ...options })
   },
 
   async getStatus(bookingId: string): Promise<BalanceResponse> {
     return api.get<BalanceResponse>(ENDPOINTS.BOOKINGS.BALANCE(bookingId))
   },
 
-  async initCart(items: { productId: string; name: string; price: number; quantity: number }[], couponCode?: string, couponId?: string, shipping?: { shippingName?: string; shippingEmail?: string; shippingPhone?: string; shippingAddress?: string; shippingCity?: string; shippingState?: string; shippingNit?: string; shippingNotes?: string }): Promise<PaymentInitResponse> {
-    return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT_CART, { items, couponCode, couponId, ...shipping })
+  async initCart(items: { productId: string; name: string; price: number; quantity: number }[], couponCode?: string, couponId?: string, shipping?: { shippingName?: string; shippingEmail?: string; shippingPhone?: string; shippingAddress?: string; shippingCity?: string; shippingState?: string; shippingNit?: string; shippingNotes?: string }, options?: { fbc?: string; fbp?: string; eventId?: string }): Promise<PaymentInitResponse> {
+    return api.post<PaymentInitResponse>(ENDPOINTS.PAYMENTS.INIT_CART, { items, couponCode, couponId, clientUserAgent: getUserAgent(), ...shipping, ...options })
   },
 
   async listTransactions(filters?: PaymentTransactionFilters): Promise<PaginatedResult<PaymentTransaction>> {

@@ -1,11 +1,19 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { LegalPage } from "@/components/legal/legal-page"
+import { absoluteUrl } from "@/lib/seo"
 
 export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
     "Términos y condiciones que rigen el uso del sitio de Kamerinos by Sandra Pinzon: agendamiento de citas, compras en línea, pagos, envíos y responsabilidades.",
+  alternates: { canonical: absoluteUrl("/terminos-y-condiciones") },
+  openGraph: {
+    title: "Términos y Condiciones — Kamerinos by Sandra Pinzon",
+    description:
+      "Términos y condiciones que rigen el uso del sitio de Kamerinos by Sandra Pinzon: agendamiento de citas, compras en línea, pagos, envíos y responsabilidades.",
+    url: absoluteUrl("/terminos-y-condiciones"),
+  },
 }
 
 export default function TermsPage() {

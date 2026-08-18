@@ -1,11 +1,19 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { LegalPage } from "@/components/legal/legal-page"
+import { absoluteUrl } from "@/lib/seo"
 
 export const metadata: Metadata = {
   title: "Eliminación de Datos",
   description:
     "Instrucciones para solicitar la eliminación de tus datos personales en Kamerinos by Sandra Pinzon, conforme a la Ley 1581 de 2012 de Colombia.",
+  alternates: { canonical: absoluteUrl("/eliminar-datos") },
+  openGraph: {
+    title: "Eliminación de Datos — Kamerinos by Sandra Pinzon",
+    description:
+      "Instrucciones para solicitar la eliminación de tus datos personales en Kamerinos by Sandra Pinzon, conforme a la Ley 1581 de 2012 de Colombia.",
+    url: absoluteUrl("/eliminar-datos"),
+  },
 }
 
 export default function DataDeletionPage() {

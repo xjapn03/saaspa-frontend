@@ -44,24 +44,11 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: `${SITE_NAME} — Bienestar, Estética & Salud en Bogotá`,
     description: SITE_DESCRIPTION,
-    url: SITE_URL,
-    images: [
-      {
-        url: `${SITE_URL}/og-image.jpg`,
-        width: 1200,
-        height: 630,
-        alt: SITE_NAME,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} — Bienestar, Estética & Salud`,
     description: SITE_DESCRIPTION,
-    images: [`${SITE_URL}/og-image.jpg`],
-  },
-  alternates: {
-    canonical: SITE_URL,
   },
 }
 

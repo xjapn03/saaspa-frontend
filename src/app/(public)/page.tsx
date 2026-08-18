@@ -12,6 +12,18 @@ import { BannerSlider } from "@/components/marketing/banner-slider"
 import { AnimatedGrid } from "@/components/layout/animated-grid"
 import type { Service } from "@/types/service"
 import type { Banner } from "@/types/banner"
+import type { Metadata } from "next"
+import { absoluteUrl } from "@/lib/seo"
+
+export const metadata: Metadata = {
+  alternates: { canonical: absoluteUrl("/") },
+  openGraph: {
+    title: "Kamerinos by Sandra Pinzon — Bienestar, Estética & Salud en Bogotá",
+    description:
+      "Centro de bienestar, estética y salud en Bogotá. Reserva tu ritual de cuidado personal con abono previo. Tratamientos faciales, corporales, capilares, masajes terapéuticos y más.",
+    url: absoluteUrl("/"),
+  },
+}
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 

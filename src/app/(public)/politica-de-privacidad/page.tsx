@@ -1,11 +1,19 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { LegalPage } from "@/components/legal/legal-page"
+import { absoluteUrl } from "@/lib/seo"
 
 export const metadata: Metadata = {
   title: "Política de Privacidad",
   description:
     "Conoce cómo Kamerinos by Sandra Pinzon recopila, usa y protege tus datos personales, conforme a la Ley 1581 de 2012 de Colombia.",
+  alternates: { canonical: absoluteUrl("/politica-de-privacidad") },
+  openGraph: {
+    title: "Política de Privacidad — Kamerinos by Sandra Pinzon",
+    description:
+      "Conoce cómo Kamerinos by Sandra Pinzon recopila, usa y protege tus datos personales, conforme a la Ley 1581 de 2012 de Colombia.",
+    url: absoluteUrl("/politica-de-privacidad"),
+  },
 }
 
 export default function PrivacyPolicyPage() {

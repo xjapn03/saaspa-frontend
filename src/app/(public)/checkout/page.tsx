@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Loader2, CheckCircle, ArrowLeft, ShoppingBag, CreditCard, User, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,8 @@ import { useCart } from "@/context/cart-provider"
 import { useAuth } from "@/context/auth-provider"
 import { paymentsApi } from "@/lib/payments-api"
 import { useToast } from "@/context/toast-provider"
-import { initiateCheckout } from "@/lib/meta-pixel"
+import { initiateCheckout, trackPurchase } from "@/lib/meta-pixel"
+import { getFbc, getFbp, generateEventId } from "@/lib/fbc"
 import { getAllDepartments, getCitiesByDepartment } from "@/lib/colombia"
 import { openPaymentWidget } from "@/lib/payment-provider"
 import { PaymentWidgetScript } from "@/components/payment-widget-script"
@@ -52,6 +53,7 @@ export default function CheckoutPage() {
   const [checkoutError, setCheckoutError] = useState("")
   const [paymentSuccess, setPaymentSuccess] = useState(false)
   const [wompiConfig, setWompiConfig] = useState<{ publicKey: string; amountInCents: number; currency: string; reference: string; signature: string } | null>(null)
+  const paymentEventId = useRef<string | undefined>(undefined)
 
   useEffect(() => {
     // Scroll automatically to top on step change or success
@@ -93,6 +95,8 @@ export default function CheckoutPage() {
     setCheckoutLoading(true)
     setCheckoutError("")
     try {
+      const eventId = generateEventId()
+      paymentEventId.current = eventId
       const config = await paymentsApi.initCart(
         items.map((i) => ({ productId: i.productId, name: i.name, price: i.price, quantity: i.quantity })),
         couponCode || undefined,
@@ -107,6 +111,7 @@ export default function CheckoutPage() {
           shippingNit: info.nit,
           shippingNotes: info.notes || undefined,
         },
+        { fbc: getFbc(), fbp: getFbp(), eventId },
       )
       setWompiConfig(config)
       setStep("payment")
@@ -127,6 +132,15 @@ export default function CheckoutPage() {
     const tx = result?.transaction
     if (tx?.status === "APPROVED") {
       setPaymentSuccess(true)
+      trackPurchase(
+        {
+          value: Math.max(0, total),
+          currency: "COP",
+          contentName: "Carrito",
+          numItems: itemCount,
+        },
+        paymentEventId.current,
+      )
       clearCart()
     } else if (tx) {
       setCheckoutError(`Pago ${tx.status === "DECLINED" ? "rechazado" : "con error"}. Intenta de nuevo.`)

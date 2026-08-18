@@ -8,6 +8,8 @@ import { ProductGallery } from "@/components/shop/product-gallery"
 import { AddToCartButton } from "@/components/shop/add-to-cart-button"
 import { MetaViewContent } from "@/components/common/meta-view-content"
 import type { Product } from "@/types/product"
+import { absoluteUrl } from "@/lib/seo"
+import { JsonLdScript } from "@/components/common/json-ld-script"
 
 async function getProduct(slug: string): Promise<Product | null> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
@@ -16,16 +18,21 @@ async function getProduct(slug: string): Promise<Product | null> {
   return res.json()
 }
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const product = await getProduct(slug)
   if (!product) return { title: "Producto no encontrado" }
+  const url = absoluteUrl(`/shop/${slug}`)
   return {
     title: product.name,
     description: product.description?.slice(0, 160) || `Compra ${product.name} en Kamerinos by Sandra Pinzon. Productos de cuidado personal y bienestar.`,
+    alternates: { canonical: url },
     openGraph: {
       title: product.name,
       description: product.description?.slice(0, 160) || `Compra ${product.name} en Kamerinos by Sandra Pinzon.`,
+      url,
       images: product.mainImage ? [{ url: product.mainImage }] : [],
     },
   }
@@ -41,6 +48,32 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
 
   return (
     <div className="min-h-screen pt-32 pb-24 md:pt-40 md:pb-32">
+      <JsonLdScript data={{
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.name,
+        description: product.description || undefined,
+        image: product.mainImage || undefined,
+        sku: product.sku || undefined,
+        category: product.category?.name || undefined,
+        brand: { "@type": "Brand", name: "Kamerinos by Sandra Pinzon" },
+        offers: {
+          "@type": "Offer",
+          url: absoluteUrl(`/shop/${product.slug}`),
+          price: product.price,
+          priceCurrency: "COP",
+          availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        },
+      }} />
+      <JsonLdScript data={{
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Tienda", item: `${SITE_URL}/shop` },
+          { "@type": "ListItem", position: 3, name: product.name },
+        ],
+      }} />
       <MetaViewContent
         contentName={product.name}
         contentCategory={product.category?.name || "General"}

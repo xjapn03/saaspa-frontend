@@ -7,8 +7,11 @@ import { Separator } from "@/components/ui/separator"
 import { ProductGallery } from "@/components/shop/product-gallery"
 import { MetaViewContent } from "@/components/common/meta-view-content"
 import type { Service } from "@/types/service"
+import { absoluteUrl } from "@/lib/seo"
+import { JsonLdScript } from "@/components/common/json-ld-script"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
 
 async function getServiceBySlug(slug: string): Promise<Service | null> {
   try {
@@ -30,10 +33,15 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params
   const service = await getServiceBySlug(slug)
   if (!service) return { title: "Servicio no encontrado" }
+  const url = absoluteUrl(`/servicios/${slug}`)
   return {
     title: `${service.name} — Kamerinos by Sandra Pinzon`,
     description: service.description || "",
+    alternates: { canonical: url },
     openGraph: {
+      title: service.name,
+      description: service.description || "",
+      url,
       images: service.mainImage ? [{ url: service.mainImage }] : [],
     },
   }
@@ -59,6 +67,36 @@ export default async function ServicioDetallePage({ params }: Props) {
 
   return (
     <section className="pt-32 pb-24 md:pt-40 md:pb-32">
+      <JsonLdScript data={{
+        "@context": "https://schema.org",
+        "@type": "Service",
+        name: service.name,
+        description: service.description || undefined,
+        image: service.mainImage || undefined,
+        url: absoluteUrl(`/servicios/${service.slug}`),
+        provider: {
+          "@type": "HealthAndBeautyBusiness",
+          name: "Kamerinos by Sandra Pinzon",
+          url: SITE_URL,
+        },
+        areaServed: { "@type": "Place", name: "Bogotá, Colombia" },
+        offers: {
+          "@type": "Offer",
+          price: service.price,
+          priceCurrency: "COP",
+          availability: "https://schema.org/InStock",
+          url: absoluteUrl(`/servicios/${service.slug}`),
+        },
+      }} />
+      <JsonLdScript data={{
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Servicios", item: `${SITE_URL}/servicios` },
+          { "@type": "ListItem", position: 3, name: service.name },
+        ],
+      }} />
       <MetaViewContent
         contentName={service.name}
         contentCategory={service.categoryRel?.name || "General"}

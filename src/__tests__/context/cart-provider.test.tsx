@@ -81,11 +81,13 @@ describe("CartProvider", () => {
     act(() => { result.current.applyCoupon("DESC10", "coupon-1", 0.1) })
     expect(result.current.couponCode).toBe("DESC10")
     expect(result.current.couponId).toBe("coupon-1")
+    expect(result.current.couponDiscount).toBe(0.1)
     expect(result.current.discount).toBe(5000)
     expect(result.current.total).toBe(45000)
 
     act(() => { result.current.removeCoupon() })
     expect(result.current.couponCode).toBeNull()
+    expect(result.current.couponDiscount).toBeNull()
     expect(result.current.discount).toBe(0)
     expect(result.current.total).toBe(50000)
   })
@@ -97,6 +99,7 @@ describe("CartProvider", () => {
     act(() => { result.current.clearCart() })
     expect(result.current.items).toHaveLength(0)
     expect(result.current.couponCode).toBeNull()
+    expect(result.current.couponDiscount).toBeNull()
     expect(result.current.discount).toBe(0)
   })
 

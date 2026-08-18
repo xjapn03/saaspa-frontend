@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { Separator } from "@/components/ui/separator"
 import { CategorySelect, type CategoryOption } from "@/components/ui/category-select"
+import { NumericInput } from "@/components/ui/numeric-input"
 import { productsApi } from "@/lib/products-api"
-import { api } from "@/lib/api"
 import { API_BASE_URL } from "@/lib/constants"
+import { uploadImage } from "@/lib/upload"
 import { useToast } from "@/context/toast-provider"
 import type { Product } from "@/types/product"
 
@@ -25,7 +26,7 @@ const EMPTY_FORM = {
   description: "",
   price: "",
   compareAtPrice: "",
-  stock: "0",
+  stock: "",
   sku: "",
   sponsor: "",
   categoryId: "",
@@ -95,22 +96,12 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
     }
   }
 
-  async function uploadImage(file: File, type: "main" | "gallery"): Promise<string | null> {
+  async function uploadImageFile(file: File, type: "main" | "gallery"): Promise<string | null> {
     const folderKey = form.slug || form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") || "producto"
-    const params = new URLSearchParams({ folder: `products/${folderKey}`, imageType: type })
-    const formData = new FormData()
-    formData.append("file", file)
     try {
-      const res = await fetch(`${API_BASE_URL}/api/upload?${params.toString()}`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${api.accessToken}` },
-        body: formData,
-      })
-      if (!res.ok) throw new Error("Upload failed")
-      const data = await res.json()
-      return data.url
-    } catch {
-      setError("Error al subir la imagen")
+      return await uploadImage(file, `products/${folderKey}`, type)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Error al subir la imagen")
       return null
     }
   }
@@ -119,7 +110,7 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
     const file = e.target.files?.[0]
     if (!file) return
     setUploading("main")
-    const url = await uploadImage(file, "main")
+    const url = await uploadImageFile(file, "main")
     if (url) setForm(prev => ({ ...prev, mainImage: url }))
     setUploading(null)
   }
@@ -128,7 +119,7 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
     const file = e.target.files?.[0]
     if (!file) return
     setUploading("carousel")
-    const url = await uploadImage(file, "gallery")
+    const url = await uploadImageFile(file, "gallery")
     if (url) setForm(prev => ({ ...prev, carouselImages: [...prev.carouselImages, url] }))
     setUploading(null)
   }
@@ -210,15 +201,15 @@ export function ProductFormDrawer({ product, open, onOpenChange, onSaved }: Prod
         <div className="grid grid-cols-3 gap-3">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio (COP) *</label>
-            <input name="price" type="number" min="0" value={form.price} onChange={handleChange} placeholder="85000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 [&::-webkit-inner-spin-button]:appearance-none" />
+            <NumericInput value={form.price} onChange={(v) => setForm((p) => ({ ...p, price: v }))} min={0} placeholder="85000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Precio anterior</label>
-            <input name="compareAtPrice" type="number" value={form.compareAtPrice} onChange={handleChange} placeholder="110000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            <NumericInput value={form.compareAtPrice} onChange={(v) => setForm((p) => ({ ...p, compareAtPrice: v }))} min={0} placeholder="110000" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Stock</label>
-            <input name="stock" type="number" value={form.stock} onChange={handleChange} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            <NumericInput value={form.stock} onChange={(v) => setForm((p) => ({ ...p, stock: v }))} min={0} placeholder="0" className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20" />
           </div>
         </div>
 

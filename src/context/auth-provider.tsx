@@ -10,6 +10,7 @@ import {
 } from "react"
 import type { LoginRequest, RegisterRequest, User } from "@/types/auth"
 import { auth } from "@/lib/auth"
+import { completeRegistration } from "@/lib/meta-pixel"
 
 interface AuthState {
   user: User | null
@@ -29,10 +30,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = useCallback(async () => {
     try {
-      if (!auth.isAuthenticated()) {
-        setUser(null)
-        return
-      }
       const profile = await auth.getProfile()
       setUser(profile)
       if (typeof window !== "undefined") {
@@ -40,25 +37,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     } catch {
       setUser(null)
-      await auth.logout()
+      auth.clearStoredUser()
     }
   }, [])
 
   useEffect(() => {
     const init = async () => {
-      const storedUser = auth.getStoredUser()
-      if (storedUser && auth.isAuthenticated()) {
-        setUser(storedUser)
-        try {
-          const profile = await auth.getProfile()
-          setUser(profile)
-          if (typeof window !== "undefined") {
-            localStorage.setItem("kamerinos_user", JSON.stringify(profile))
-          }
-        } catch {
-          setUser(null)
-          auth.logout()
+      setUser(auth.getStoredUser())
+      try {
+        const profile = await auth.getProfile()
+        setUser(profile)
+        if (typeof window !== "undefined") {
+          localStorage.setItem("kamerinos_user", JSON.stringify(profile))
         }
+      } catch {
+        setUser(null)
+        auth.clearStoredUser()
       }
       setIsLoading(false)
     }
@@ -71,8 +65,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const register = useCallback(async (data: RegisterRequest) => {
-    const response = await auth.register(data)
-    setUser(response.user)
+    await auth.register(data)
+    completeRegistration("email")
   }, [])
 
   const logout = useCallback(async () => {

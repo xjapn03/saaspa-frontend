@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { AnimatedGrid } from "@/components/layout/animated-grid"
 import { ProductCard } from "@/components/marketing/product-card"
 import type { Product } from "@/types/product"
+import { absoluteUrl } from "@/lib/seo"
 
 async function getProducts(search?: string, categorySlug?: string): Promise<Product[]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
@@ -31,6 +32,13 @@ export const metadata: Metadata = {
   title: "Tienda",
   description:
     "Explora nuestra selección de productos de cuidado personal: cremas, sérums, mascarillas y más para tu rutina de bienestar y belleza.",
+  alternates: { canonical: absoluteUrl("/shop") },
+  openGraph: {
+    title: "Tienda — Kamerinos by Sandra Pinzon",
+    description:
+      "Explora nuestra selección de productos de cuidado personal: cremas, sérums, mascarillas y más para tu rutina de bienestar y belleza.",
+    url: absoluteUrl("/shop"),
+  },
 }
 
 interface ShopPageProps {

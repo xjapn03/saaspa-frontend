@@ -3,24 +3,24 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
 const LOCAL_BUSINESS = {
   "@context": "https://schema.org",
   "@type": "HealthAndBeautyBusiness",
-  name: "Kamerinos SPA",
+  name: "Kamerinos by Sandra Pinzon",
   description:
     "Centro de bienestar y estética en Bogotá. Servicios profesionales de cuidado facial, corporal, capilar, masajes terapéuticos y tratamientos de belleza personalizados.",
   url: SITE_URL,
   telephone: "+573041338567",
-  email: "info@kamerinosspa.com",
+  email: "kamerinosg@gmail.com",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Carrera 7 # 123-45",
+    streetAddress: "Calle 53b # 25-21",
     addressLocality: "Bogotá",
     addressRegion: "Cundinamarca",
     addressCountry: "CO",
-    postalCode: "110111",
+    postalCode: "111311",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 4.711,
-    longitude: -74.0721,
+    latitude: 4.64271,
+    longitude: -74.07480,
   },
   openingHoursSpecification: [
     {
@@ -39,14 +39,19 @@ const LOCAL_BUSINESS = {
   priceRange: "$$",
   currenciesAccepted: "COP",
   paymentAccepted: "Credit Card, Debit Card, PSE, Nequi",
-  image: `${SITE_URL}/og-image.jpg`,
-  sameAs: [],
+  image: `${SITE_URL}/hero-portrait.webp`,
+  sameAs: [
+    "https://www.facebook.com/share/1PtH5Feooz/",
+    "https://www.instagram.com/kamerinos_co",
+    "https://www.tiktok.com/@kamerinosbysandra",
+    "https://wa.me/573041338567",
+  ],
 }
 
 const WEBSITE = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Kamerinos SPA",
+  name: "Kamerinos by Sandra Pinzon",
   url: SITE_URL,
   potentialAction: {
     "@type": "SearchAction",
@@ -58,9 +63,9 @@ const WEBSITE = {
 const ORGANIZATION = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Kamerinos SPA",
+  name: "Kamerinos by Sandra Pinzon",
   url: SITE_URL,
-  logo: `${SITE_URL}/og-image.jpg`,
+  logo: `${SITE_URL}/LogokamerinosYellow.png`,
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+573041338567",

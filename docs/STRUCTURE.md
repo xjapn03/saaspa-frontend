@@ -17,7 +17,10 @@ src/
 │   │   ├── politicas/page.tsx  # Políticas de cancelación y abono
 │   │   ├── politica-de-privacidad/page.tsx   # Política de privacidad
 │   │   ├── terminos-y-condiciones/page.tsx   # Términos y condiciones
-│   │   └── eliminar-datos/page.tsx           # Instrucciones de eliminación de datos
+│   │   ├── eliminar-datos/page.tsx           # Instrucciones de eliminación de datos
+│   │   ├── opengraph-image.tsx # OG image dinámica (next/og) — logo + marca terracota
+│   │   ├── twitter-image.tsx   # Re-export de la OG image para Twitter/X
+│   │   └── og-logo.ts          # Logo embebido en base64 (para generar la OG image)
 │   │
 │   ├── (auth)/                 # Grupo de rutas: autenticación
 │   │   ├── layout.tsx          # Layout centrado minimal (sin Navbar público)
@@ -44,14 +47,15 @@ src/
 │   │   ├── auditoria/page.tsx  # Registro de auditoría (solo ADMIN) — quién hizo qué |
 │   │   └── configuracion/page.tsx # Ajustes de cuenta del usuario
 │   │
-│   ├── layout.tsx              # Root layout: fonts, metadata (OG/twitter), JsonLd, ClientProviders, SpeculationRules, MetaPixel
-│   ├── sitemap.ts               # Sitemap dinámico (Next.js generateSitemaps)
+│   ├── layout.tsx              # Root layout: fonts, metadata (canonical/OG por página), JsonLd, ClientProviders, SpeculationRules, MetaPixel
+│   ├── sitemap.ts               # Sitemap dinámico (fetch de services/products públicos)
 │   ├── robots.ts                # Robots.txt (Next.js Robots)
 │   └── globals.css             # Tokens de diseño (oklch) + estilos base Maia + number input fix
 │
 ├── components/
 │   ├── common/                  # Componentes compartidos
-│   │   └── SpeculationRules.tsx # Speculation Rules API (prerender nativo del navegador)
+│   │   ├── SpeculationRules.tsx # Speculation Rules API (prerender nativo del navegador)
+│   │   └── json-ld-script.tsx   # JSON-LD por página (Service/Product/Breadcrumb) en detalle
 │   ├── ui/                     # shadcn/ui (Base UI) — NO editar manual
 │   │   ├── button.tsx          # Base UI button con variantes Maia + cursor-pointer
 │   │   ├── card.tsx            # Card, CardHeader, CardContent, CardTitle, CardFooter
@@ -75,7 +79,7 @@ src/
 │   │   ├── cart-icon.tsx       # Ícono carrito + Sheet con items + coupon + navega a /checkout
 │   │   ├── cart-item-row.tsx   # Fila de item en carrito (imagen, nombre, ± cantidad, eliminar)
 │   │   ├── coupon-input.tsx    # Input + validación de cupón con couponsApi
-│   │   ├── meta-pixel-script.tsx # Meta Pixel injection + ctwa_clid capture
+│   │   ├── meta-pixel-script.tsx # Meta Pixel: init + PageView por ruta SPA + ctwa_clid capture
 │   │   ├── json-ld.tsx         # Structured data JSON-LD (LocalBusiness, WebSite, Organization)
 │   │   └── animated-grid.tsx   # Wrapper con GSAP stagger reveal para grids
 │   │
@@ -127,12 +131,14 @@ src/
 │   ├── utils.ts                # cn() — clsx + tailwind-merge
 │   ├── fonts.ts                # next/font (Fraunces heading + Geist body/mono)
 │   ├── animations.ts           # GSAP helpers (scrollReveal, countUp, fadeInUp, parallax, useReducedMotion)
-│   ├── meta-pixel.ts           # Meta Pixel helpers (track, pageView, trackSchedule, trackPurchase)
+│   ├── meta-pixel.ts           # Meta Pixel helpers (track, pageView, trackSchedule, trackPurchase, getFbc/getFbp)
+│   ├── fbc.ts                  # fbc/fbp (click_id cookies) + generateEventId (dedup CAPI)
+│   ├── seo.ts                  # SITE_URL, absoluteUrl(), pageCanonical(), ogUrl()
 │   ├── services-api.ts         # Servicios API client (listPublic, list, getBySlug, getById, create, update, remove)
 │   ├── products-api.ts         # Productos API client (list, getBySlug, create, update, remove)
 │   ├── categories-api.ts       # Categorías API client (list, tree, create, update, remove)
 │   ├── bookings-api.ts         # Citas API client (list, slots, create, confirm, cancel, complete, reopen, reschedule, getBalance)
-│   ├── payments-api.ts         # Pagos API client (init, getStatus, initCart, listTransactions)
+│   ├── payments-api.ts         # Pagos API client (init, getStatus, initCart, listTransactions, getRevenue)
 │   ├── coupons-api.ts          # Cupones API client (list, create, validate, remove)
 │   ├── cart-api.ts             # Carrito API client (get, addItem, updateQuantity, removeItem, clear, merge)
 │   ├── orders-api.ts           # Pedidos API client (list con filtros, listMy, getById, updateStatus)
@@ -167,12 +173,13 @@ src/
 │   └── fixtures/
 │       └── user.ts             # Datos mock de usuario
 │
-└── __tests__/                  # Tests unitarios y de integración (15 suites, 61 tests)
+└── __tests__/                  # Tests unitarios y de integración (18 suites, 73 tests)
     ├── context/
     │   └── cart-provider.test.tsx     # CartProvider: add, remove, updateQty, coupon, clear, localStorage
     ├── lib/
     │   ├── api.test.ts                # ApiClient: GET, 401 error, 204 response
-    │   └── auth.test.ts               # Auth: login, logout, isAuthenticated, register
+    │   ├── auth.test.ts               # Auth: login, logout, isAuthenticated, register
+    │   └── meta-pixel.test.ts         # Meta Pixel: pageView, trackSchedule, trackPurchase e-commerce
     ├── components/
     │   ├── service-card.test.tsx      # ServiceCard: render, badge, price, link
     │   ├── product-card.test.tsx      # ProductCard: name, sponsor, category, strikethrough, link

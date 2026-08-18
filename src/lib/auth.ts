@@ -10,7 +10,6 @@ import { ENDPOINTS, TOKEN_KEYS } from "./constants"
 export const auth = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     const response = await api.post<AuthResponse>(ENDPOINTS.AUTH.LOGIN, credentials)
-    api.setTokens(response.accessToken, response.refreshToken)
     if (typeof window !== "undefined") {
       localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(response.user))
     }
@@ -19,31 +18,43 @@ export const auth = {
 
   async register(data: RegisterRequest): Promise<AuthResponse> {
     const response = await api.post<AuthResponse>(ENDPOINTS.AUTH.REGISTER, data)
-    api.setTokens(response.accessToken, response.refreshToken)
-    if (typeof window !== "undefined") {
-      localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(response.user))
-    }
     return response
   },
 
   async logout(): Promise<void> {
     try {
-      await api.post(ENDPOINTS.AUTH.LOGOUT, {
-        refreshToken: api["_refreshToken"],
-      })
+      await api.post(ENDPOINTS.AUTH.LOGOUT, undefined)
     } catch {
       // Incluso si falla el endpoint, limpiamos localmente
     } finally {
-      api.clearTokens()
+      this.clearStoredUser()
     }
   },
 
-  async refreshToken(): Promise<boolean> {
-    return api["refreshAccessToken"]()
+  clearStoredUser(): void {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(TOKEN_KEYS.USER)
+    }
   },
 
   async getProfile(): Promise<User> {
     return api.get<User>(ENDPOINTS.USERS.ME)
+  },
+
+  async requestEmailChange(newEmail: string): Promise<{ message: string }> {
+    return api.post<{ message: string }>(ENDPOINTS.AUTH.EMAIL_CHANGE_REQUEST, { newEmail })
+  },
+
+  async confirmEmailChange(code: string): Promise<{ message: string }> {
+    return api.post<{ message: string }>(ENDPOINTS.AUTH.EMAIL_CHANGE_CONFIRM, { code })
+  },
+
+  async resendVerification(email: string): Promise<{ message: string }> {
+    return api.post<{ message: string }>(ENDPOINTS.AUTH.RESEND_VERIFICATION, { email })
+  },
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<{ message: string }> {
+    return api.post<{ message: string }>(ENDPOINTS.AUTH.CHANGE_PASSWORD, { currentPassword, newPassword })
   },
 
   getStoredUser(): User | null {
@@ -55,9 +66,5 @@ export const auth = {
     } catch {
       return null
     }
-  },
-
-  isAuthenticated(): boolean {
-    return api.isAuthenticated
   },
 }

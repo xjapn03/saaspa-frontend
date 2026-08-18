@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect } from "react"
-import { useSearchParams } from "next/navigation"
-import { getPixelId, isPixelEnabled } from "@/lib/meta-pixel"
+import { usePathname, useSearchParams } from "next/navigation"
+import { getPixelId, isPixelEnabled, pageView } from "@/lib/meta-pixel"
 
 export function MetaPixelScript() {
+  const pathname = usePathname()
   const searchParams = useSearchParams()
 
   useEffect(() => {
@@ -23,19 +24,26 @@ export function MetaPixelScript() {
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '${pixelId}');
-      fbq('track', 'PageView');
     `
     document.head.appendChild(script)
-
-    const ctwaClid = searchParams.get("ctwa_clid")
-    if (ctwaClid) {
-      document.cookie = `_fbc=fb.1.${Date.now()}.${ctwaClid}; path=/; max-age=7776000`
-    }
 
     return () => {
       document.head.removeChild(script)
     }
+  }, [])
+
+  useEffect(() => {
+    if (!isPixelEnabled()) return
+    const ctwaClid = searchParams.get("ctwa_clid")
+    if (ctwaClid) {
+      document.cookie = `_fbc=fb.1.${Date.now()}.${ctwaClid}; path=/; max-age=7776000`
+    }
   }, [searchParams])
+
+  useEffect(() => {
+    if (!isPixelEnabled()) return
+    pageView()
+  }, [pathname])
 
   return null
 }

@@ -30,7 +30,7 @@ export default function RecuperarPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <Link href="/" className="mb-3 inline-block font-heading text-xl font-semibold tracking-tight">Kamerinos SPA</Link>
+        <Link href="/" className="mb-3 inline-block font-heading text-xl font-semibold tracking-tight">Kamerinos by Sandra Pinzon</Link>
         <CardTitle className="font-heading text-2xl font-semibold">Recuperar contraseña</CardTitle>
         <p className="mt-1 text-sm text-muted-foreground">{sent ? "Revisa tu correo" : "Ingresa tu email para recibir instrucciones"}</p>
       </CardHeader>

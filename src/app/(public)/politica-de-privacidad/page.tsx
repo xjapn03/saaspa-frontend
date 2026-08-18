@@ -1,11 +1,19 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { LegalPage } from "@/components/legal/legal-page"
+import { absoluteUrl } from "@/lib/seo"
 
 export const metadata: Metadata = {
   title: "Política de Privacidad",
   description:
-    "Conoce cómo Kamerinos SPA recopila, usa y protege tus datos personales, conforme a la Ley 1581 de 2012 de Colombia.",
+    "Conoce cómo Kamerinos by Sandra Pinzon recopila, usa y protege tus datos personales, conforme a la Ley 1581 de 2012 de Colombia.",
+  alternates: { canonical: absoluteUrl("/politica-de-privacidad") },
+  openGraph: {
+    title: "Política de Privacidad — Kamerinos by Sandra Pinzon",
+    description:
+      "Conoce cómo Kamerinos by Sandra Pinzon recopila, usa y protege tus datos personales, conforme a la Ley 1581 de 2012 de Colombia.",
+    url: absoluteUrl("/politica-de-privacidad"),
+  },
 }
 
 export default function PrivacyPolicyPage() {
@@ -13,7 +21,7 @@ export default function PrivacyPolicyPage() {
     <LegalPage
       eyebrow="Privacidad"
       title="Política de Privacidad"
-      intro="En Kamerinos SPA nos comprometemos a proteger tu información personal y a tratarla con transparencia, de acuerdo con la Ley 1581 de 2012 y las normas sobre protección de datos personales en Colombia."
+      intro="En Kamerinos by Sandra Pinzon nos comprometemos a proteger tu información personal y a tratarla con transparencia, de acuerdo con la Ley 1581 de 2012 y las normas sobre protección de datos personales en Colombia."
       updatedAt="Agosto de 2026"
       sections={[
         {
@@ -22,8 +30,8 @@ export default function PrivacyPolicyPage() {
             <div className="space-y-3">
               <p>
                 El responsable del tratamiento de tus datos personales es
-                Kamerinos SPA, establecimiento de Sandra Pinzón Salud y Belleza,
-                ubicado en Bogotá (Usaquén), Colombia.
+                Kamerinos by Sandra Pinzon, establecimiento de Sandra Pinzón Salud y Belleza,
+                ubicado en Bogotá (Teusaquillo), Colombia.
               </p>
               <p>
                 Para cualquier consulta relacionada con tus datos puedes

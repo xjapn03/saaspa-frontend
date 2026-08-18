@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Loader2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { NumericInput } from "@/components/ui/numeric-input"
 import { couponsApi } from "@/lib/coupons-api"
 import { useToast } from "@/context/toast-provider"
 
@@ -110,15 +111,13 @@ export function CreateCouponDialog({ open, onOpenChange, onCreated }: CreateCoup
             <label className="mb-1 block text-sm font-medium text-muted-foreground">
               Descuento (%)
             </label>
-            <input
-              type="number"
+            <NumericInput
               value={discount}
-              onChange={(e) => setDiscount(e.target.value)}
+              onChange={setDiscount}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
               placeholder="15"
               min={1}
               max={100}
-              required
             />
           </div>
 
@@ -139,10 +138,9 @@ export function CreateCouponDialog({ open, onOpenChange, onCreated }: CreateCoup
             <label className="mb-1 block text-sm font-medium text-muted-foreground">
               Máximo de usos (opcional)
             </label>
-            <input
-              type="number"
+            <NumericInput
               value={maxUses}
-              onChange={(e) => setMaxUses(e.target.value)}
+              onChange={setMaxUses}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
               placeholder="Ilimitado si se deja vacío"
               min={1}

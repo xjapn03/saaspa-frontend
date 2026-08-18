@@ -16,6 +16,10 @@ export const servicesApi = {
     return api.get<PaginatedResult<Service>>(ENDPOINTS.SERVICES.PUBLIC)
   },
 
+  async listFeatured(): Promise<PaginatedResult<Service>> {
+    return api.get<PaginatedResult<Service>>(`${ENDPOINTS.SERVICES.PUBLIC}?featured=true&limit=4`)
+  },
+
   async getById(id: string): Promise<Service> {
     return api.get<Service>(ENDPOINTS.SERVICES.BY_ID(id))
   },

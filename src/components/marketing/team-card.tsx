@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Card,
   CardContent,
@@ -14,31 +14,19 @@ import { scrollRevealStagger, useReducedMotion } from "@/lib/animations"
 
 const teamMembers = [
   {
-    name: "Carolina Méndez",
-    initials: "CM",
-    role: "Cosmetóloga Senior",
-    credentials: "Especialista en dermatología estética · 12 años de experiencia",
-    bio: "Formada en Buenos Aires y Barcelona, Carolina lidera nuestro equipo de faciales con un enfoque que combina precisión clínica y sensibilidad artesanal.",
-  },
-  {
-    name: "Alejandra Ríos",
-    initials: "AR",
-    role: "Terapeuta Corporal",
-    credentials: "Fisioterapeuta · Certificada en drenaje linfático",
-    bio: "Sus manos leen el cuerpo como nadie. Alejandra convierte cada masaje en una experiencia transformadora, guiada por años de estudio en técnicas orientales y occidentales.",
-  },
-  {
-    name: "Daniela Vargas",
-    initials: "DV",
-    role: "Especialista Capilar",
-    credentials: "Tricóloga · Certificada en terapias de regeneración",
-    bio: "Apasionada por la salud del cuero cabelludo, Daniela trajo a Kamerinos los protocolos de nutrición capilar más avanzados del mercado.",
+    name: "Sandra Pinzón",
+    initials: "SP",
+    image: "/SandraPinzon.jpg",
+    role: "Profesional de la Salud",
+    credentials: "Enfermera Jefe y Esteticista · 18 años de experiencia",
+    bio: "Especialista en terapias alternativas y estética integral. En Kamerinos combino mi formación clínica con técnicas innovadoras para ofrecer un cuidado personalizado, enfocado en salud, belleza y bienestar integral.",
   },
 ]
 
 interface TeamCardProps {
   name: string
   initials: string
+  image?: string
   role: string
   credentials: string
   bio: string
@@ -48,6 +36,7 @@ interface TeamCardProps {
 function TeamCard({
   name,
   initials,
+  image,
   role,
   credentials,
   bio,
@@ -56,11 +45,6 @@ function TeamCard({
   return (
     <Card className={cn("text-center", className)}>
       <CardHeader className="items-center">
-        <Avatar size="lg" className="mb-3">
-          <AvatarFallback className="bg-primary/10 font-heading text-xl text-primary">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
         <CardTitle className="font-heading text-lg font-semibold">
           {name}
         </CardTitle>
@@ -68,7 +52,13 @@ function TeamCard({
           {role}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col items-center">
+        <Avatar size="xl" className="mb-6">
+          {image && <AvatarImage src={image} alt={name} className="object-cover" />}
+          <AvatarFallback className="bg-primary/10 font-heading text-primary">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
         <p className="mb-3 text-xs font-medium uppercase tracking-[0.1em] text-muted-foreground">
           {credentials}
         </p>
@@ -103,9 +93,9 @@ export function TeamSection() {
           </h2>
         </div>
 
-        <div ref={gridRef} className="grid gap-8 md:grid-cols-3">
+        <div ref={gridRef} className="grid justify-items-center gap-8 md:grid-cols-1">
           {teamMembers.map((member) => (
-            <TeamCard key={member.name} {...member} className="team-card" />
+            <TeamCard key={member.name} {...member} className="team-card w-full max-w-2xl" />
           ))}
         </div>
       </div>

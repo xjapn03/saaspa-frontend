@@ -9,6 +9,7 @@ import { DepositSummary } from "@/components/booking/deposit-summary"
 import { PaymentWidget } from "@/components/booking/payment-widget"
 import { Button } from "@/components/ui/button"
 import { servicesApi } from "@/lib/services-api"
+import { initiateCheckout } from "@/lib/meta-pixel"
 import type { Service } from "@/types/service"
 
 type Step = "service" | "slot" | "summary" | "payment"
@@ -47,6 +48,22 @@ function AgendarContent() {
       setIsPreloading(false)
     })
   }, [preselectedServiceId])
+
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 50)
+
+    if (step === "service") return
+    
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ""
+    }
+    
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+  }, [step])
 
   const steps: Step[] = ["service", "slot", "summary", "payment"]
   const currentIdx = steps.indexOf(step)
@@ -154,7 +171,14 @@ function AgendarContent() {
               <Button
                 className="flex-1"
                 size="lg"
-                onClick={() => setStep("payment")}
+                onClick={() => {
+                  initiateCheckout({
+                    contentName: selectedService.name,
+                    value: selectedService.price,
+                    numItems: 1,
+                  })
+                  setStep("payment")
+                }}
               >
                 Ir a pagar
               </Button>
@@ -168,6 +192,7 @@ function AgendarContent() {
             startTime={selectedTime}
             serviceName={selectedService.name}
             depositAmount={deposit}
+            totalAmount={selectedService.price}
             onPaymentComplete={handlePaymentComplete}
             onCancel={() => setStep("summary")}
           />

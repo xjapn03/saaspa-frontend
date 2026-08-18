@@ -5,12 +5,13 @@ import Link from "next/link"
 import { Phone, MapPin, Camera } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { scrollReveal, useReducedMotion } from "@/lib/animations"
+import { SocialLinks } from "@/components/layout/social-links"
 
 const serviceLinks = [
-  { href: "/servicios/facial-hidratante-premium", label: "Facial Hidratante Premium" },
-  { href: "/servicios/masaje-descontracturante", label: "Masaje Descontracturante" },
-  { href: "/servicios/ritual-detox-corporal", label: "Ritual Detox Corporal" },
-  { href: "/servicios/limpieza-facial-profunda", label: "Limpieza Facial Profunda" },
+  { href: "/servicios/korean-glow-signature", label: "Korean Glow Signature" },
+  { href: "/servicios/glass-skin-ritual", label: "Glass Skin Ritual" },
+  { href: "/servicios/exosome-skin-revival", label: "Exosome Skin Revival" },
+  { href: "/servicios/korean-head-spa-signature", label: "Korean Head Spa Signature" },
 ]
 
 const companyLinks = [
@@ -49,7 +50,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
             <p className="mb-3 font-heading text-2xl font-semibold">
-              Kamerinos SPA
+              Kamerinos by Sandra Pinzon
             </p>
             <p className="text-sm leading-relaxed text-background/60">
               Centro de bienestar y estética en Bogotá. Transformamos cada
@@ -83,7 +84,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-background/60">
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 size-4 shrink-0" strokeWidth={1.5} />
-                <span>Usaquén · Bogotá, Colombia</span>
+                <span>Teusaquillo · Bogotá, Colombia</span>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 size-4 shrink-0" strokeWidth={1.5} />
@@ -91,9 +92,13 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <Camera className="mt-0.5 size-4 shrink-0" strokeWidth={1.5} />
-                <span>@kamerinosspa</span>
+                <span>@kamerinos_co</span>
               </li>
             </ul>
+            <p className="mb-3 mt-6 text-xs font-semibold uppercase tracking-widest text-background/40">
+              Síguenos
+            </p>
+            <SocialLinks tone="light" />
           </div>
         </div>
       </div>
@@ -101,7 +106,7 @@ export function Footer() {
       <div className="border-t border-background/10">
         <div className="mx-auto flex max-w-6xl flex-col justify-between gap-4 px-6 py-6 text-xs text-background/40 sm:flex-row">
           <span>
-            &copy; {new Date().getFullYear()} Kamerinos SPA. Todos los derechos
+            &copy; {new Date().getFullYear()} Kamerinos by Sandra Pinzon. Todos los derechos
             reservados.
           </span>
           <span>Hecho con cuidado en Bogotá, Colombia</span>

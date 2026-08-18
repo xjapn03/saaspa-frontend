@@ -18,6 +18,8 @@ import {
   Menu,
   Receipt,
   ShieldCheck,
+  Globe,
+  Megaphone,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -122,6 +124,12 @@ export default function DashboardLayout({
       roles: ["ADMIN"],
     },
     {
+      href: "/dashboard/banners",
+      label: "Banners",
+      icon: Megaphone,
+      roles: ["ADMIN"],
+    },
+    {
       href: "/dashboard/configuracion",
       label: "Configuración",
       icon: Settings,
@@ -180,6 +188,18 @@ export default function DashboardLayout({
           </div>
         </div>
         <Button
+          variant="outline"
+          className="w-full justify-start text-muted-foreground"
+          size="sm"
+          nativeButton={false}
+          render={
+            <Link href="/" onClick={() => setMobileOpen(false)}>
+              <Globe className="size-4" strokeWidth={1.5} />
+              Ver sitio web
+            </Link>
+          }
+        />
+        <Button
           variant="ghost"
           className="w-full justify-start text-muted-foreground"
           size="sm"
@@ -193,14 +213,14 @@ export default function DashboardLayout({
   )
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen w-full max-w-[100vw] overflow-x-hidden">
       <aside className="hidden w-64 shrink-0 border-r border-border bg-card md:flex md:flex-col">
         {sidebarNav}
       </aside>
 
       <div className="flex flex-1 flex-col min-w-0">
         <header className="flex h-16 items-center justify-between gap-4 border-b border-border bg-card px-6 md:hidden">
-          <Link href="/" className="font-heading text-base font-semibold tracking-tight">
+          <Link href="/" className="font-heading text-base font-semibold tracking-tight truncate">
             Kamerinos SPA
           </Link>
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>

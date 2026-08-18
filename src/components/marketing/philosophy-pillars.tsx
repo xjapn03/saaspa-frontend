@@ -50,8 +50,8 @@ export function PhilosophyPillars() {
 
         <div className="grid gap-8 md:grid-cols-3">
           {pillars.map((pillar) => (
-            <div key={pillar.word} className="pillar-card group">
-              <div className="mb-6 flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+            <div key={pillar.word} className="pillar-card group text-center">
+              <div className="mx-auto mb-6 flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                 <pillar.icon className="size-6" strokeWidth={1.5} />
               </div>
               <h3 className="mb-3 font-heading text-xl font-semibold tracking-tight text-foreground">

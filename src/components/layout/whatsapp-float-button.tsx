@@ -4,11 +4,12 @@ import { useEffect, useRef } from "react"
 import gsap from "gsap"
 import { MessageCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { contactOrLead } from "@/lib/meta-pixel"
 
 export function WhatsAppFloatButton() {
   const ref = useRef<HTMLAnchorElement>(null)
   const phone = "573041338567"
-  const message = encodeURIComponent("Hola, quiero agendar una cita")
+  const message = encodeURIComponent("Hola Kamerinos, estuve revisando tu sitio web y me gustaría mas información.")
 
   useEffect(() => {
     if (!ref.current) return
@@ -26,6 +27,7 @@ export function WhatsAppFloatButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Agendar por WhatsApp"
+      onClick={() => contactOrLead({ contentName: "WhatsApp flotante" })}
       className={cn(
         "fixed bottom-6 right-6 z-50",
         "flex size-14 items-center justify-center",

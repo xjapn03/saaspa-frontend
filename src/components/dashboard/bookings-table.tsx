@@ -1,12 +1,13 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import Script from "next/script"
 import { Loader2, Check, X, ChevronLeft, ChevronRight, RefreshCw, CreditCard, Banknote } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { bookingsApi } from "@/lib/bookings-api"
 import { paymentsApi } from "@/lib/payments-api"
+import { openPaymentWidget } from "@/lib/payment-provider"
+import { PaymentWidgetScript } from "@/components/payment-widget-script"
 import { useToast } from "@/context/toast-provider"
 import { SlotPicker } from "@/components/booking/slot-picker"
 import type { Booking, BookingStatus } from "@/types/booking"
@@ -130,16 +131,9 @@ export function BookingsTable() {
     setPayingRemaining((prev) => new Set(prev).add(bookingId))
     try {
       const config = await paymentsApi.init(bookingId, "SALDO")
-      const widget = new window.WidgetCheckout({
-        publicKey: config.publicKey,
-        currency: config.currency,
-        amountInCents: config.amountInCents,
-        reference: config.reference,
-        signature: { integrity: config.signature },
-      } as any)
-      widget.open(async (result: unknown) => {
+      openPaymentWidget(config, async (result) => {
         document.body.style.overflow = ""
-        const transaction = (result as Record<string, unknown>)?.transaction as Record<string, string> | undefined
+        const transaction = result?.transaction
         if (transaction?.status === "APPROVED") {
           await fetchBalance(bookingId)
         }
@@ -261,7 +255,7 @@ export function BookingsTable() {
 
   return (
     <>
-    <Script src="https://checkout.wompi.co/widget.js" onReady={() => setScriptReady(true)} />
+    <PaymentWidgetScript onReady={() => setScriptReady(true)} />
     <div>
       <div className="overflow-x-auto rounded-2xl border border-border">
         <table className="w-full text-left text-sm">

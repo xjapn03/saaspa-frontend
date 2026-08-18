@@ -39,7 +39,7 @@ export default function ResetPasswordPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <Link href="/" className="mb-3 inline-block font-heading text-xl font-semibold tracking-tight">Kamerinos SPA</Link>
+        <Link href="/" className="mb-3 inline-block font-heading text-xl font-semibold tracking-tight">Kamerinos by Sandra Pinzon</Link>
         <CardTitle className="font-heading text-2xl font-semibold">Nueva contraseña</CardTitle>
         <p className="mt-1 text-sm text-muted-foreground">{done ? "Contraseña actualizada" : "Elige una contraseña nueva"}</p>
       </CardHeader>

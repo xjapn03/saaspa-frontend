@@ -1,6 +1,6 @@
 # Plan de Estructura & Diseño — Kamerinos SPA Frontend
 
-> **Estado actual:** Agosto 2026 — **v1.0.0 desplegada en producción** (`https://kamerinos.sandrapinzonsaludybelleza.com.co`). Layout público, auth, dashboard completo, Wompi real, Shop + Carrito + Checkout, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking + products, Recuperar contraseña, Verificación de email, Páginas legales, 61 tests (15 suites) — todos completos y mergeados.
+> **Estado actual:** Agosto 2026 — **v1.0.0 desplegada en producción** (`https://kamerinos.sandrapinzonsaludybelleza.com.co`). Layout público, auth, dashboard completo, Wompi real, Shop + Carrito + Checkout, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking + products, Recuperar contraseña, Verificación de email, Páginas legales, 73 tests (18 suites) — todos completos y mergeados.
 > **Próximo paso:** WhatsApp bot + IA agent.
 
 ---
@@ -38,13 +38,13 @@
 | 10 | **Dashboard admin** | Completo | `dashboard/layout.tsx` — sidebar con RBAC. Vistas reales: clientes (CRUD), servicios (CRUD), citas (tabla + reagendar), stats reales |
 | 11 | **Navbar auth dinámico** | Completo | Botones "Iniciar sesión" / "Dashboard + nombre" según estado, desktop y mobile |
 | 12 | **CORS + Envs** | Completo | `.env.example` + `.env.local`, CORS multi-origin en backend |
-| 13 | **Tests** | Completo (61 tests, 15 suites) | `vitest` + `@testing-library/react` + `msw`. 15 archivos. Ver `docs-general/TEST-COVERAGE.md` |
+| 13 | **Tests** | Completo (73 tests, 18 suites) | `vitest` + `@testing-library/react` + `msw`. 18 archivos. Ver `docs-general/TEST-COVERAGE.md` |
 | 14 | **Docker** | Completo | `Dockerfile`, `docker-compose.yml` raíz, Nginx reverse proxy |
 | 15 | **Documentación** | Completo | `docs/STRUCTURE.md`, `docs/Frontend-Plan.md`, `docs-general/` |
 | 16 | **Reagendar citas** | Completo | `bookings-table.tsx` — modal con SlotPicker para reagendar desde admin |
 | 17 | **Dashboard stats** | Completo | Citas hoy, Clientes activos, Ingresos del mes con datos reales |
 | 18 | **Cupones admin** | Completo | `coupons-table.tsx` + `create-coupon-dialog.tsx` — CRUD de cupones |
-| 19 | **Meta Pixel + CAPI** | Completo | `meta-pixel-script.tsx` — Pixel en <head> + captura ctwa_clid. `meta-pixel.ts` — helpers track(). CAPI server-side en backend |
+| 19 | **Meta Pixel + CAPI** | Completo | `meta-pixel-script.tsx` — Pixel en <head> + PageView por ruta SPA + captura ctwa_clid. `meta-pixel.ts` — helpers track() + `trackPurchase` e-commerce (initCart con fbc/fbp/eventId). CAPI server-side en backend (Purchase carrito siempre, citas solo ABONO) |
 | 20 | **Toast + Modal system** | Completo | `toast.tsx` + `modal.tsx` — feedback de errores, modales centrados con GSAP |
 | 21 | **Mobile sidebar + Client dashboard** | Completo | Menú hamburguesa con Sheet. Métricas personales para clientes. |
 | 22 | **Admin create booking** | Completo | `admin-create-booking.tsx` — crear citas para clientes desde mostrador |
@@ -57,7 +57,7 @@
 | 27 | **Carrito de compras** | Completo | `CartContext`, `CartProviderWithAuth`, `CartIcon`, `CartSheet`, `AddToCartButton`, `CouponInput`, `CartItemRow` |
 | 28 | **Checkout Wompi** | Completo | `initCartPayment`, widget Wompi en CartSheet, success/error states, carrito local + server-side sync |
 | 29 | **Admin categories CRUD** | Completo | `categories-table.tsx` + `category-form-drawer.tsx` + `/dashboard/categorias` con sidebar |
-| 30 | **Checkout page** | Completo | `/checkout` — 2 steps: facturación/envío + resumen + pago Wompi full-page |
+| 30 | **Checkout page** | Completo | `/checkout` — 2 steps: facturación/envío + resumen + pago Wompi full-page. Selectores de departamento/ciudad de Colombia (`lib/colombia.ts`) + campo Cédula/NIT (`shippingNit`) |
 | 31 | **Stock validation** | Completo | `CartItem.maxQuantity`, límites en `AddToCartButton` y `CartItemRow` |
 | 32 | **CategorySelect** | Completo | `category-select.tsx` — dropdown con búsqueda inline e indentación de subcategorías |
 | 33 | **Payment fallback** | Completo | WhatsApp button en `PaymentWidget` si Wompi no responde + mensaje de reserva temporal |
@@ -78,6 +78,14 @@
 | 48 | **Detalle de servicio por slug** | Completo | `/servicios/[slug]` consulta `GET /services/public/:slug`; cards usan `svc.slug` |
 | 49 | **Cupones con límites** | Completo | Tabla muestra `usedCount/maxUses` y estado (agotado/expirado/inactivo); diálogo con máximo de usos |
 | 50 | **Proxy de uploads** | Completo | `next.config.ts` rewrite `/uploads/*` → backend en dev; en producción Nginx proxea `location /uploads/` → backend: las imágenes de productos cargan desde el dominio |
+| 51 | **Auth por cookies** | Completo | `api.ts` con `credentials: include` y sin localStorage de tokens; login/register/logout vía cookies; `AuthProvider` resuelve sesión con `GET /users/me` |
+| 52 | **Proxy de rutas** | Completo | `src/proxy.ts` (Next.js 16, reemplaza `middleware.ts`) — protege `/dashboard` (redirige a `/login`) y redirige a `/dashboard` si ya hay sesión en `/login`/`/registro` (elimina el "back-nav" a login). Con tests (`__tests__/proxy.test.ts`) |
+| 53 | **Servicios admin con imágenes** | Completo | `service-form-drawer` con upload main+gallería (folder `services/<slug>`), toggle Destacado, precio anterior; `services-table` con thumbnail y badge; `ServiceCard` y detalle `/servicios/[slug]` con galería |
+| 54 | **Banners admin + home** | Completo | `/dashboard/banners` (CRUD con subida de imagen, posición HERO/STRIP, activo, orden, vigencia) + `BannerSlider` en el home (slider de campañas sobre el Hero + banda STRIP) |
+| 55 | **Configuración (perfil + email)** | Completo | `/dashboard/configuracion` — editar perfil (nombre, apellido, teléfono, nacimiento) y cambio de email con código (request → confirm → re-login) |
+| 56 | **FAQ /politicas** | Completo | Acordeón elegante con iconos (`faq-section.tsx`) en la página de políticas |
+| 57 | **Redes sociales** | Completo | `social-links.tsx` en el footer — Facebook, Instagram, TikTok, WhatsApp con links externos |
+| 58 | **Dashboard nav** | Completo | Botón "Ver sitio web" + "Cerrar sesión" en el sidebar (desktop y mobile sheet) |
 
 ## 3. Pendiente (orden de prioridad)
 
@@ -86,7 +94,7 @@
 | 1 | ~~Release v1.0.0 (merge a main)~~ ✅ Hecho y desplegado | — |
 | 2 | WhatsApp bot + IA agent | Backend: módulo WhatsApp + saaspa-IA |
 | 3 | ~~SSL/Certbot con Nginx en producción~~ ✅ Hecho (Cloudflare Origin Certificate + Full strict) | — |
-| 4 | Proxy.ts (migrar middleware deprecado de Next.js 16) | — |
+| 4 | ~~Proxy.ts (migrar middleware deprecado de Next.js 16)~~ ✅ Hecho (`src/proxy.ts` + tests) | — |
 | 5 | Backups automatizados en VPS | Scripts ya creados, falta activar cron (`scripts/crontab.txt`) |
 
 ## 4. Arquitectura de carpetas
@@ -140,6 +148,6 @@ src/
 npm run dev          # Next.js dev server (:3000)
 npm run build        # Build de producción
 npm run lint         # ESLint
-npm run test         # Vitest (61 tests, 15 suites)
+npm run test         # Vitest (73 tests, 18 suites)
 npm run test:watch   # Vitest en modo watch
 ```

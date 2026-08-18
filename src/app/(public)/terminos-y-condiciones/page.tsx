@@ -1,11 +1,19 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { LegalPage } from "@/components/legal/legal-page"
+import { absoluteUrl } from "@/lib/seo"
 
 export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
-    "Términos y condiciones que rigen el uso del sitio de Kamerinos SPA: agendamiento de citas, compras en línea, pagos, envíos y responsabilidades.",
+    "Términos y condiciones que rigen el uso del sitio de Kamerinos by Sandra Pinzon: agendamiento de citas, compras en línea, pagos, envíos y responsabilidades.",
+  alternates: { canonical: absoluteUrl("/terminos-y-condiciones") },
+  openGraph: {
+    title: "Términos y Condiciones — Kamerinos by Sandra Pinzon",
+    description:
+      "Términos y condiciones que rigen el uso del sitio de Kamerinos by Sandra Pinzon: agendamiento de citas, compras en línea, pagos, envíos y responsabilidades.",
+    url: absoluteUrl("/terminos-y-condiciones"),
+  },
 }
 
 export default function TermsPage() {
@@ -13,7 +21,7 @@ export default function TermsPage() {
     <LegalPage
       eyebrow="Legal"
       title="Términos y Condiciones"
-      intro="Estos términos rigen el uso del sitio web y la contratación de servicios y productos de Kamerinos SPA. Al agendar una cita o realizar una compra aceptas las condiciones descritas a continuación."
+      intro="Estos términos rigen el uso del sitio web y la contratación de servicios y productos de Kamerinos by Sandra Pinzon. Al agendar una cita o realizar una compra aceptas las condiciones descritas a continuación."
       updatedAt="Agosto de 2026"
       sections={[
         {
@@ -133,7 +141,7 @@ export default function TermsPage() {
           body: (
             <p>
               Todos los contenidos del sitio (textos, imágenes, logos y
-              diseño) son propiedad de Kamerinos SPA y están protegidos por la
+              diseño) son propiedad de Kamerinos by Sandra Pinzon y están protegidos por la
               legislación sobre propiedad intelectual. Queda prohibida su
               reproducción o uso sin autorización.
             </p>
@@ -146,7 +154,7 @@ export default function TermsPage() {
               Los tratamientos estéticos pueden tener contraindicaciones.
               Informaremos de las precauciones correspondientes y te
               recomendamos consultarnos antes de agendar si tienes alguna
-              condición particular. Kamerinos SPA no asume responsabilidad por
+              condición particular. Kamerinos by Sandra Pinzon no asume responsabilidad por
               el mal uso de los productos ni por decisiones basadas en la
               información general publicada en el sitio.
             </p>

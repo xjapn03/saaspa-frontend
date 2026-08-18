@@ -192,10 +192,20 @@ export function ServicesTable({
                     className="transition-colors hover:bg-muted/30"
                   >
                     <td className="px-4 py-3">
-                      <p className="font-medium text-foreground">{svc.name}</p>
-                      <p className="text-xs text-muted-foreground sm:hidden">
-                        {svc.categoryRel?.name || "Sin categoría"}
-                      </p>
+                      <div className="flex items-center gap-3">
+                        {svc.mainImage && <img src={svc.mainImage} alt="" className="size-10 rounded-lg object-cover" />}
+                        <div>
+                          <p className="font-medium text-foreground">{svc.name}</p>
+                          {svc.isFeatured && (
+                            <Badge variant="outline" className="mt-0.5 text-[10px]">
+                              Destacado
+                            </Badge>
+                          )}
+                          <p className="text-xs text-muted-foreground sm:hidden">
+                            {svc.categoryRel?.name || "Sin categoría"}
+                          </p>
+                        </div>
+                      </div>
                     </td>
                     <td className="hidden px-4 py-3 sm:table-cell">
                       <Badge variant="secondary">
@@ -209,7 +219,16 @@ export function ServicesTable({
                       </span>
                     </td>
                     <td className="px-4 py-3 font-medium text-foreground">
-                      {formatPrice(svc.price)}
+                      {svc.compareAtPrice && svc.compareAtPrice > svc.price ? (
+                        <div>
+                          <p className="text-xs text-muted-foreground line-through">
+                            {formatPrice(svc.compareAtPrice)}
+                          </p>
+                          <p>{formatPrice(svc.price)}</p>
+                        </div>
+                      ) : (
+                        formatPrice(svc.price)
+                      )}
                     </td>
                     <td className="hidden px-4 py-3 sm:table-cell">
                       <Badge

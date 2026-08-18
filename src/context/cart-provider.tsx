@@ -20,6 +20,7 @@ interface CartState {
   total: number
   couponCode: string | null
   couponId: string | null
+  couponDiscount: number | null
   itemCount: number
   addItem: (product: Product) => void
   removeItem: (productId: string) => void
@@ -54,6 +55,7 @@ export function CartProvider({ children, userId }: { children: ReactNode; userId
   const [items, setItems] = useState<CartItem[]>([])
   const [couponCode, setCouponCode] = useState<string | null>(null)
   const [couponId, setCouponId] = useState<string | null>(null)
+  const [couponDiscount, setCouponDiscount] = useState<number | null>(null)
   const [discount, setDiscount] = useState(0)
   const [mounted, setMounted] = useState(false)
 
@@ -134,12 +136,14 @@ export function CartProvider({ children, userId }: { children: ReactNode; userId
   const applyCoupon = useCallback((code: string, id: string, discountPercent: number) => {
     setCouponCode(code)
     setCouponId(id)
+    setCouponDiscount(discountPercent)
     setDiscount(Math.round(subtotal * discountPercent * 100) / 100)
   }, [subtotal])
 
   const removeCoupon = useCallback(() => {
     setCouponCode(null)
     setCouponId(null)
+    setCouponDiscount(null)
     setDiscount(0)
   }, [])
 
@@ -147,13 +151,14 @@ export function CartProvider({ children, userId }: { children: ReactNode; userId
     setItems([])
     setCouponCode(null)
     setCouponId(null)
+    setCouponDiscount(null)
     setDiscount(0)
     localStorage.removeItem(getGuestKey())
     if (userId) cartApi.clear().catch(() => {})
   }, [userId])
 
   return (
-    <CartContext.Provider value={{ items, subtotal, discount, total, couponCode, couponId, itemCount, addItem, removeItem, updateQuantity, applyCoupon, removeCoupon, clearCart }}>
+    <CartContext.Provider value={{ items, subtotal, discount, total, couponCode, couponId, couponDiscount, itemCount, addItem, removeItem, updateQuantity, applyCoupon, removeCoupon, clearCart }}>
       {children}
     </CartContext.Provider>
   )

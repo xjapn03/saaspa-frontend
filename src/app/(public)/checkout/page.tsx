@@ -29,7 +29,7 @@ interface BillingInfo {
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const { items, subtotal, discount, total, couponCode, couponId, removeCoupon, clearCart, itemCount } = useCart()
+  const { items, subtotal, discount, total, couponCode, couponId, couponDiscount, removeCoupon, clearCart, itemCount } = useCart()
   const { isAuthenticated, user } = useAuth()
   const { error: showError } = useToast()
 
@@ -282,7 +282,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span>{formatPrice(subtotal)}</span></div>
               {discount > 0 && (
                 <div className="flex justify-between text-green-600">
-                  <span>Descuento {couponCode && `(${couponCode})`}</span>
+                  <span>Descuento {couponCode && `(${couponCode}${couponDiscount ? ` · ${Math.round(couponDiscount * 100)}%` : ""})`}</span>
                   <span>-{formatPrice(discount)}</span>
                 </div>
               )}

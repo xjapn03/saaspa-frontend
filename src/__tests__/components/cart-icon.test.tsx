@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest"
-import { render, screen } from "@testing-library/react"
+import { render, screen, fireEvent } from "@testing-library/react"
 import { CartIcon } from "@/components/layout/cart-icon"
 
 vi.mock("next/navigation", () => ({
@@ -67,5 +67,18 @@ describe("CartIcon", () => {
     })
     render(<CartIcon />)
     expect(screen.queryByText("0")).not.toBeInTheDocument()
+  })
+
+  it("should show coupon discount percent in the cart sheet", () => {
+    mockUseCart.mockReturnValue({
+      items: [{ productId: "1", name: "A", price: 50000, mainImage: null, quantity: 1 }],
+      subtotal: 50000, discount: 5000, total: 45000,
+      couponCode: "DESC10", couponId: "coupon-1", couponDiscount: 0.1, itemCount: 1,
+      addItem: vi.fn(), removeItem: vi.fn(), updateQuantity: vi.fn(),
+      applyCoupon: vi.fn(), removeCoupon: vi.fn(), clearCart: vi.fn(),
+    })
+    render(<CartIcon />)
+    fireEvent.click(screen.getByText("Carrito"))
+    expect(screen.getByText(/Descuento \(DESC10 · 10%\)/)).toBeInTheDocument()
   })
 })

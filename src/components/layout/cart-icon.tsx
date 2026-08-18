@@ -13,7 +13,7 @@ import { CouponInput } from "./coupon-input"
 export function CartIcon() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
-  const { items, subtotal, discount, total, couponCode, couponId, itemCount, updateQuantity, removeItem, removeCoupon, applyCoupon, clearCart } = useCart()
+  const { items, subtotal, discount, total, couponCode, couponId, couponDiscount, itemCount, updateQuantity, removeItem, removeCoupon, applyCoupon, clearCart } = useCart()
   const { isAuthenticated } = useAuth()
   const formatPrice = (p: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(p)
 
@@ -55,7 +55,7 @@ export function CartIcon() {
               <CouponInput currentCode={couponCode} onApply={applyCoupon} onRemove={removeCoupon} />
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span>{formatPrice(subtotal)}</span></div>
-                {discount > 0 && <div className="flex justify-between text-green-600"><span>Descuento ({couponCode})</span><span>-{formatPrice(discount)}</span></div>}
+                {discount > 0 && <div className="flex justify-between text-green-600"><span>Descuento ({couponCode}{couponDiscount ? ` · ${Math.round(couponDiscount * 100)}%` : ""})</span><span>-{formatPrice(discount)}</span></div>}
                 <div className="flex justify-between border-t border-border pt-2 font-semibold"><span>Total</span><span>{formatPrice(Math.max(0, total))}</span></div>
               </div>
               <div className="flex gap-2">

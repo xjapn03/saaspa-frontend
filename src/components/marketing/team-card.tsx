@@ -45,12 +45,6 @@ function TeamCard({
   return (
     <Card className={cn("text-center", className)}>
       <CardHeader className="items-center">
-        <Avatar size="lg" className="mb-3">
-          {image && <AvatarImage src={image} alt={name} className="object-cover" />}
-          <AvatarFallback className="bg-primary/10 font-heading text-xl text-primary">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
         <CardTitle className="font-heading text-lg font-semibold">
           {name}
         </CardTitle>
@@ -58,7 +52,13 @@ function TeamCard({
           {role}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col items-center">
+        <Avatar size="xl" className="mb-6">
+          {image && <AvatarImage src={image} alt={name} className="object-cover" />}
+          <AvatarFallback className="bg-primary/10 font-heading text-primary">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
         <p className="mb-3 text-xs font-medium uppercase tracking-[0.1em] text-muted-foreground">
           {credentials}
         </p>
@@ -93,9 +93,9 @@ export function TeamSection() {
           </h2>
         </div>
 
-        <div ref={gridRef} className="grid gap-8 md:grid-cols-3">
+        <div ref={gridRef} className="grid justify-items-center gap-8 md:grid-cols-1">
           {teamMembers.map((member) => (
-            <TeamCard key={member.name} {...member} className="team-card" />
+            <TeamCard key={member.name} {...member} className="team-card w-full max-w-2xl" />
           ))}
         </div>
       </div>

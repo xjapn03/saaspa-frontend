@@ -61,15 +61,15 @@ La guía completa de arquitectura de carpetas está en [`docs/STRUCTURE.md`](./d
 
 ```
 src/
-├── middleware.ts    # Protección de rutas por cookie (dashboard + login/registro)
+├── proxy.ts         # Protección de rutas por cookie (Next 16, antes middleware.ts)
 ├── app/             # App Router — (public) con /checkout, (auth), dashboard
 ├── components/      # ui/ (shadcn + CategorySelect), layout/, marketing/, booking/, dashboard/, shop/
-├── lib/             # api.ts (cookies, credentials include), auth.ts, constants.ts, fonts.ts, utils.ts, *-api.ts (11 API clients), meta-pixel.ts, animations.ts
+├── lib/             # api.ts (cookies, credentials include), auth.ts, constants.ts, fonts.ts, utils.ts, *-api.ts (11 API clients), meta-pixel.ts, animations.ts, payment-provider.ts (widget de pago centralizado)
 ├── context/         # AuthProvider, CartProvider, CartProviderWithAuth, ToastProvider
 ├── hooks/           # Custom hooks
 ├── types/           # Tipos compartidos (auth, booking, service, payment, coupon, product, banner)
 ├── test/            # Mocks MSW + fixtures
-└── __tests__/       # Tests unitarios e integración (15 suites, 60 tests)
+└── __tests__/       # Tests unitarios e integración (17 suites, 69 tests)
 ```
 
 ## Puertos

@@ -167,7 +167,7 @@ src/
 │   └── fixtures/
 │       └── user.ts             # Datos mock de usuario
 │
-└── __tests__/                  # Tests unitarios y de integración (15 suites, 60 tests)
+└── __tests__/                  # Tests unitarios y de integración (17 suites, 69 tests)
     ├── context/
     │   └── cart-provider.test.tsx     # CartProvider: add, remove, updateQty, coupon, clear, localStorage
     ├── lib/

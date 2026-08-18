@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server"
 
 const ACCESS_COOKIE = "kamerinos_access_token"
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const hasAccess = request.cookies.has(ACCESS_COOKIE)
   const { pathname } = request.nextUrl
 

@@ -1,6 +1,6 @@
 # Plan de Estructura & Diseño — Kamerinos SPA Frontend
 
-> **Estado actual:** Agosto 2026 — **v1.0.0 desplegada en producción** (`https://kamerinos.sandrapinzonsaludybelleza.com.co`). Layout público, auth, dashboard completo, Wompi real, Shop + Carrito + Checkout, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking + products, Recuperar contraseña, Verificación de email, Páginas legales, 69 tests (17 suites) — todos completos y mergeados.
+> **Estado actual:** Agosto 2026 — **v1.0.0 desplegada en producción** (`https://kamerinos.sandrapinzonsaludybelleza.com.co`). Layout público, auth, dashboard completo, Wompi real, Shop + Carrito + Checkout, Google Calendar, Cupones, Meta Pixel/CAPI, Animaciones GSAP, Toast/Modal, Mobile sidebar, Client dashboard, Admin booking + products, Recuperar contraseña, Verificación de email, Páginas legales, 73 tests (18 suites) — todos completos y mergeados.
 > **Próximo paso:** WhatsApp bot + IA agent.
 
 ---
@@ -38,13 +38,13 @@
 | 10 | **Dashboard admin** | Completo | `dashboard/layout.tsx` — sidebar con RBAC. Vistas reales: clientes (CRUD), servicios (CRUD), citas (tabla + reagendar), stats reales |
 | 11 | **Navbar auth dinámico** | Completo | Botones "Iniciar sesión" / "Dashboard + nombre" según estado, desktop y mobile |
 | 12 | **CORS + Envs** | Completo | `.env.example` + `.env.local`, CORS multi-origin en backend |
-| 13 | **Tests** | Completo (69 tests, 17 suites) | `vitest` + `@testing-library/react` + `msw`. 17 archivos. Ver `docs-general/TEST-COVERAGE.md` |
+| 13 | **Tests** | Completo (73 tests, 18 suites) | `vitest` + `@testing-library/react` + `msw`. 18 archivos. Ver `docs-general/TEST-COVERAGE.md` |
 | 14 | **Docker** | Completo | `Dockerfile`, `docker-compose.yml` raíz, Nginx reverse proxy |
 | 15 | **Documentación** | Completo | `docs/STRUCTURE.md`, `docs/Frontend-Plan.md`, `docs-general/` |
 | 16 | **Reagendar citas** | Completo | `bookings-table.tsx` — modal con SlotPicker para reagendar desde admin |
 | 17 | **Dashboard stats** | Completo | Citas hoy, Clientes activos, Ingresos del mes con datos reales |
 | 18 | **Cupones admin** | Completo | `coupons-table.tsx` + `create-coupon-dialog.tsx` — CRUD de cupones |
-| 19 | **Meta Pixel + CAPI** | Completo | `meta-pixel-script.tsx` — Pixel en <head> + captura ctwa_clid. `meta-pixel.ts` — helpers track(). CAPI server-side en backend |
+| 19 | **Meta Pixel + CAPI** | Completo | `meta-pixel-script.tsx` — Pixel en <head> + PageView por ruta SPA + captura ctwa_clid. `meta-pixel.ts` — helpers track() + `trackPurchase` e-commerce (initCart con fbc/fbp/eventId). CAPI server-side en backend (Purchase carrito siempre, citas solo ABONO) |
 | 20 | **Toast + Modal system** | Completo | `toast.tsx` + `modal.tsx` — feedback de errores, modales centrados con GSAP |
 | 21 | **Mobile sidebar + Client dashboard** | Completo | Menú hamburguesa con Sheet. Métricas personales para clientes. |
 | 22 | **Admin create booking** | Completo | `admin-create-booking.tsx` — crear citas para clientes desde mostrador |
@@ -148,6 +148,6 @@ src/
 npm run dev          # Next.js dev server (:3000)
 npm run build        # Build de producción
 npm run lint         # ESLint
-npm run test         # Vitest (69 tests, 17 suites)
+npm run test         # Vitest (73 tests, 18 suites)
 npm run test:watch   # Vitest en modo watch
 ```

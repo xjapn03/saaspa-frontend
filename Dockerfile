@@ -24,6 +24,11 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
+# El standalone de Next.js necesita escribir el cache ISR/prerender en runtime
+# (.next/cache y .next/server/app) — dar permisos al usuario node (no-root)
+RUN mkdir -p /app/.next/cache \
+ && chown -R node:node /app
+
 # No ejecutar como root (seguridad)
 USER node
 

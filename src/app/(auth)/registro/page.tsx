@@ -34,6 +34,33 @@ export default function RegistroPage() {
   const [registered, setRegistered] = useState(false)
   const [registeredEmail, setRegisteredEmail] = useState("")
 
+  function errorToMessage(err: unknown): string {
+    if (!err || typeof err !== "object") return "Error al registrarse"
+    const raw =
+      "message" in err && err.message
+        ? Array.isArray(err.message)
+          ? err.message[0]
+          : err.message
+        : ""
+    const lower = String(raw).toLowerCase()
+    if (lower.includes("ya está registrado") || lower.includes("ya registrado")) {
+      return "Este correo ya está registrado. Inicia sesión o recupera tu contraseña."
+    }
+    if (lower.includes("email") || lower.includes("correo")) {
+      return "Revisa el correo electrónico: el formato no es válido."
+    }
+    if (lower.includes("password") || lower.includes("contraseña") || lower.includes("minlength")) {
+      return "La contraseña debe tener al menos 6 caracteres."
+    }
+    if (lower.includes("birthday") || lower.includes("fecha")) {
+      return "La fecha de nacimiento no es válida."
+    }
+    if (lower.includes("conexión") || lower.includes("fetch") || lower.includes("network")) {
+      return "Error de conexión. Inténtalo de nuevo."
+    }
+    return String(raw) || "Error al registrarse"
+  }
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
@@ -42,7 +69,18 @@ export default function RegistroPage() {
     e.preventDefault()
     setError("")
 
-    if (form.password !== form.confirmPassword) {
+    const fd = new FormData(e.currentTarget as HTMLFormElement)
+    const values = {
+      firstName: String(fd.get("firstName") || "").trim(),
+      lastName: String(fd.get("lastName") || "").trim(),
+      email: String(fd.get("email") || "").trim(),
+      phone: String(fd.get("phone") || "").trim(),
+      birthday: String(fd.get("birthday") || ""),
+      password: String(fd.get("password") || ""),
+      confirmPassword: String(fd.get("confirmPassword") || ""),
+    }
+
+    if (values.password !== values.confirmPassword) {
       setError("Las contraseñas no coinciden")
       return
     }
@@ -51,23 +89,17 @@ export default function RegistroPage() {
 
     try {
       await register({
-        firstName: form.firstName,
-        lastName: form.lastName,
-        email: form.email,
-        password: form.password,
-        phone: form.phone || undefined,
-        birthday: form.birthday || undefined,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        password: values.password,
+        phone: values.phone || undefined,
+        birthday: values.birthday || undefined,
       })
-      setRegisteredEmail(form.email)
+      setRegisteredEmail(values.email)
       setRegistered(true)
     } catch (err: unknown) {
-      const msg =
-        err && typeof err === "object" && "message" in err
-          ? Array.isArray(err.message)
-            ? err.message[0]
-            : err.message
-          : "Error al registrarse"
-      setError(String(msg))
+      setError(errorToMessage(err))
     } finally {
       setIsSubmitting(false)
     }
@@ -133,6 +165,7 @@ export default function RegistroPage() {
                   id="firstName"
                   name="firstName"
                   type="text"
+                  autoComplete="given-name"
                   value={form.firstName}
                   onChange={handleChange}
                   placeholder="María"
@@ -153,6 +186,7 @@ export default function RegistroPage() {
                 id="lastName"
                 name="lastName"
                 type="text"
+                autoComplete="family-name"
                 value={form.lastName}
                 onChange={handleChange}
                 placeholder="Gómez"
@@ -175,6 +209,7 @@ export default function RegistroPage() {
                 id="email"
                 name="email"
                 type="email"
+                autoComplete="email"
                 value={form.email}
                 onChange={handleChange}
                 placeholder="maria@email.com"
@@ -196,6 +231,7 @@ export default function RegistroPage() {
               id="phone"
               name="phone"
               type="tel"
+              autoComplete="tel"
               value={form.phone}
               onChange={handleChange}
               placeholder="300 000 0000"
@@ -215,6 +251,7 @@ export default function RegistroPage() {
               id="birthday"
               name="birthday"
               type="date"
+              autoComplete="bday"
               value={form.birthday}
               onChange={handleChange}
               className="w-full rounded-xl border border-border bg-background py-2.5 px-3 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -234,6 +271,7 @@ export default function RegistroPage() {
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Mínimo 6 caracteres"
@@ -269,6 +307,7 @@ export default function RegistroPage() {
                 id="confirmPassword"
                 name="confirmPassword"
                 type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
                 value={form.confirmPassword}
                 onChange={handleChange}
                 placeholder="Repite tu contraseña"

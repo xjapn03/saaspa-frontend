@@ -66,7 +66,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback(async (data: RegisterRequest) => {
     await auth.register(data)
-    completeRegistration("email")
+    try {
+      completeRegistration("email")
+    } catch {
+      // El evento de pixel no debe romper el registro ya completado
+    }
   }, [])
 
   const logout = useCallback(async () => {

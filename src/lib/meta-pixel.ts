@@ -15,17 +15,24 @@ export function isPixelEnabled(): boolean {
   return process.env.NODE_ENV === "production" && PIXEL_ID.length > 0
 }
 
-export function pageView(): void {
+function safeTrack(...args: unknown[]): void {
   if (!isPixelEnabled()) return
-  window.fbq?.("track", "PageView")
+  try {
+    window.fbq?.(...args)
+  } catch {
+    // El tracking nunca debe romper el flujo de la app
+  }
+}
+
+export function pageView(): void {
+  safeTrack("track", "PageView")
 }
 
 export function track(eventName: string, params?: Record<string, unknown>, eventId?: string): void {
-  if (!isPixelEnabled()) return
   if (eventId) {
-    window.fbq?.("track", eventName, params, { eventID: eventId })
+    safeTrack("track", eventName, params, { eventID: eventId })
   } else {
-    window.fbq?.("track", eventName, params)
+    safeTrack("track", eventName, params)
   }
 }
 
